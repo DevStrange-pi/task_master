@@ -19,7 +19,6 @@ class MyApp extends StatelessWidget {
     return GetMaterialApp(
       defaultTransition: Transition.leftToRightWithFade,
       debugShowCheckedModeBanner: false,
-      // initialRoute: AppRoutes.INTRO_PAGE,
       getPages: AppPages.pages,
       builder: BotToastInit(),
       initialBinding: AppBindings(),
@@ -36,7 +35,7 @@ class MyApp extends StatelessWidget {
             surface: AppColors.white),
         useMaterial3: true,
       ),
-      initialRoute: AppRoutes.INTRO_PAGE ,
+      initialRoute: AppRoutes.introPage,
       // home: const IntroPage(),
     );
   }

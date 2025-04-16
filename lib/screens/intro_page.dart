@@ -73,7 +73,7 @@ class IntroPage extends StatelessWidget {
                   buttonText: "Get Started",
                   onPressed: () {
                     // routeHistoryController.addRoute(AppRoutes.LOGIN_PAGE,RouteHistoryNames.INITIAL);
-                    Get.toNamed(AppRoutes.LOGIN_PAGE);
+                    Get.toNamed(AppRoutes.loginPage);
                     // PersistentNavBarNavigator.pushNewScreen(context, screen: LoginPage());
                   },
                 ),

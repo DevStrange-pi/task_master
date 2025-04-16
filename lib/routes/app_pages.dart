@@ -13,31 +13,31 @@ import 'app_routes.dart';
 class AppPages {
   static var pages = [
     GetPage(
-      name: AppRoutes.INTRO_PAGE,
+      name: AppRoutes.introPage,
       page: () => const IntroPage(),
     ),
     GetPage(
-      name: AppRoutes.LOGIN_PAGE,
+      name: AppRoutes.loginPage,
       page: () => LoginPage(),
     ),
     GetPage(
-      name: AppRoutes.HOME_PAGE,
+      name: AppRoutes.homePage,
       page: () => const HomePage(),
     ),
     GetPage(
-      name: AppRoutes.ADD_PROFILE_PAGE,
+      name: AppRoutes.addProfilePage,
       page: () => AddProfilePage(),
     ),
     GetPage(
-      name: AppRoutes.ALL_TASKS_PAGE,
+      name: AppRoutes.allTasksPage,
       page: () => AllTasksPage(),
     ),
     GetPage(
-      name: AppRoutes.TASK_LIST_PAGE,
+      name: AppRoutes.taskListPage,
       page: () => TaskListPage(),
     ),
     GetPage(
-      name: AppRoutes.ASSIGN_TASK_PAGE,
+      name: AppRoutes.assignTaskPage,
       page: () => AssignTaskPage(),
     ),
     

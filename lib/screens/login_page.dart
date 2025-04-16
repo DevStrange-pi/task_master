@@ -21,7 +21,7 @@ class LoginPage extends StatelessWidget {
           child: Container(
             // elevation: 16,
             decoration: BoxDecoration(
-                color: AppColors.white.withOpacity(0.95),
+                color: AppColors.white.withValues(alpha:0.95),
                 borderRadius: const BorderRadius.all(Radius.circular(20)),
                 boxShadow: const [
                   BoxShadow(
@@ -89,7 +89,7 @@ class LoginPage extends StatelessWidget {
                         needLoader: loginPageController.needLoader.value,
                         buttonText: "Login",
                         onPressed: () async {
-                          Get.offAllNamed(AppRoutes.HOME_PAGE);
+                          Get.offAllNamed(AppRoutes.homePage);
                           // await loginPageController.login();
                         },
                       ),

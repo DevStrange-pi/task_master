@@ -20,7 +20,7 @@ class HomePage extends StatelessWidget {
             MenuTile(
               title: "All Task",
               onTap: () {
-                Get.toNamed(AppRoutes.ALL_TASKS_PAGE, arguments: {
+                Get.toNamed(AppRoutes.allTasksPage, arguments: {
                   "pending_tasks": 8,
                   "completed_tasks": 1,
                   "expired_tasks": 1,
@@ -33,7 +33,7 @@ class HomePage extends StatelessWidget {
             MenuTile(
               title: "Assign Task",
               onTap: () {
-                Get.toNamed(AppRoutes.ASSIGN_TASK_PAGE);
+                Get.toNamed(AppRoutes.assignTaskPage);
               },
             ),
             const SizedBox(
@@ -42,7 +42,7 @@ class HomePage extends StatelessWidget {
             MenuTile(
               title: "Add Employee",
               onTap: () {
-                Get.toNamed(AppRoutes.ADD_PROFILE_PAGE);
+                Get.toNamed(AppRoutes.addProfilePage);
               },
             ),
           ],

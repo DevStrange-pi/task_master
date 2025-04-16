@@ -25,7 +25,7 @@ class AllTasksPage extends StatelessWidget {
                 child: MenuTile(
                   title: allTasksController.tasksCountList![index]["name"]!,
                   onTap: () {
-                    Get.toNamed(AppRoutes.TASK_LIST_PAGE, arguments: [
+                    Get.toNamed(AppRoutes.taskListPage, arguments: [
                       {"name": "Daily Office Cleaning"},
                       {"name": "Client Meeting"},
                       {"name": "System Update"} // this object is from another api call /api/admin/tasks
