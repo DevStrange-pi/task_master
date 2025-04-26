@@ -14,6 +14,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 // import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 // import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 // import 'package:get/get.dart';
@@ -21,7 +22,12 @@ import 'package:flutter/services.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../constants/app_url.dart';
+import '../constants/strings.dart';
 import '../main.dart';
+import '../network/http_req.dart';
+import '../routes/app_routes.dart';
+import 'circular_loader.dart';
 // import 'package:image/image.dart' as Im;
 // import 'package:image_picker/image_picker.dart';
 // import 'package:intl/intl.dart';
@@ -41,7 +47,8 @@ import '../main.dart';
 
 // import 'package:sip_ua/sip_ua.dart';
 
-myBotToast(String text, {s, duration}) => BotToast.showText(text: text, duration: Duration(seconds: duration ?? 4));
+myBotToast(String text, {s, duration}) =>
+    BotToast.showText(text: text, duration: Duration(seconds: duration ?? 4));
 
 class AppUtility {
   // static bool isSipRegistered(helper) {
@@ -153,7 +160,8 @@ class AppUtility {
   static Future<bool> isInternetConnected() async {
     print("isInternetConnected");
     final connectivityResult = await (Connectivity().checkConnectivity());
-    if (connectivityResult == ConnectivityResult.mobile || connectivityResult == ConnectivityResult.wifi) {
+    if (connectivityResult == ConnectivityResult.mobile ||
+        connectivityResult == ConnectivityResult.wifi) {
       return true;
     } else {
       return false;
@@ -162,7 +170,8 @@ class AppUtility {
 
   static Future<void> requestPermissions() async {
     debugPrint("Called requestPermissions");
-    await [Permission.camera, Permission.microphone, Permission.storage].request();
+    await [Permission.camera, Permission.microphone, Permission.storage]
+        .request();
   }
 
   static Future<bool> checkCameraPermission() async {
@@ -232,7 +241,20 @@ class AppUtility {
   static getDDMMYY(String inputDate) {
     if (inputDate == "") return "";
 
-    List<String> months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    List<String> months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec"
+    ];
 
     String dateTime = "";
     int day = DateTime.parse(inputDate).day;
@@ -241,7 +263,9 @@ class AppUtility {
     } else {
       dateTime = "$day-";
     }
-    dateTime += months[DateTime.parse(inputDate).month - 1] + "-" + DateTime.parse(inputDate).year.toString();
+    dateTime += months[DateTime.parse(inputDate).month - 1] +
+        "-" +
+        DateTime.parse(inputDate).year.toString();
     return dateTime;
   }
 
@@ -261,21 +285,45 @@ class AppUtility {
 
   static Future<Uint8List> getBytesFromAsset(String path, int width) async {
     ByteData? data = await rootBundle.load(path);
-    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(), targetWidth: width);
+    ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
+        targetWidth: width);
     ui.FrameInfo fi = await codec.getNextFrame();
-    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!.buffer.asUint8List();
+    return (await fi.image.toByteData(format: ui.ImageByteFormat.png))!
+        .buffer
+        .asUint8List();
   }
 
-  // static Future<void> logout(context) async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   prefs.clear();
-  //   prefs.setInt(AppPrefs.LOGIN_STATUS, AuthEnum.LOGOUT.index);
-  //   if (mqttClient != null &&
-  //       mqttClient!.connectionStatus!.state == MqttConnectionState.connected) {
-  //     mqttClient!.disconnect();
-  //   }
-  //   Get.offAll(IntroPage());
-  // }
+  Future<bool> logout() async {
+    SharedPreferences? prefs;
+    prefs = await SharedPreferences.getInstance();
+    CircularLoader circularLoader = Get.find<CircularLoader>();
+    circularLoader.showCircularLoader();
+    String token = prefs.getString(SpString.token)!;
+    var headers = {
+      "Authorization": "Bearer $token",
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    };
+    var resp = await HttpReq.postApi(
+        apiUrl: AppUrl().logout, headers: headers);
+    var respBody = json.decode(resp!.body);
+    if (resp.statusCode == 200) {
+      keepSomeSpValues();
+      Get.offAllNamed(AppRoutes.introPage);
+      myBotToast(respBody["message"]);
+      circularLoader.hideCircularLoader();
+      return true;
+    } else {
+      circularLoader.hideCircularLoader();
+      myBotToast(respBody["message"]);
+      return false;
+    }
+  }
+  void keepSomeSpValues()async{
+    SharedPreferences? prefs;
+    prefs = await SharedPreferences.getInstance();
+    prefs.clear();
+  }
 
   // Future<void> startMQTT() async {
   //   SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -370,7 +418,7 @@ class MySharedPreferences {
   //     Map<int, dynamic> myIntMap = getMap(key) ?? {};
   //     Map<String, dynamic> myStringMap = convertToStringMap(myIntMap);
   //     Map<String, dynamic> myNewMap = convertToStringMap(newMap);
-      
+
   //     // ignore: unnecessary_null_comparison
   //     if (myStringMap.isNotEmpty || myStringMap != null) {
   //       if (myStringMap.containsKey(myNewMap.keys.first)) {

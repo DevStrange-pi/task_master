@@ -5,6 +5,7 @@ class AppRoutes {
   static const String addProfilePage = '/addProfilePage';
   static const String allTasksPage = '/allTasksPage';
   static const String taskListPage = '/taskListPage';
-  static const String assignTaskPage = '/assignTaskPage';
+  static const String addTaskPage = '/addTaskPage';
+  static const String taskDetailsPage = '/taskDetailsPage';
   
 }

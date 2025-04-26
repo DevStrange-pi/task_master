@@ -18,6 +18,7 @@ class SpeedTextfield extends StatelessWidget {
   final Function()? fieldOnTap;
   final String hintText;
   final bool isTextArea;
+  final bool isEnabled;
 
   const SpeedTextfield({
     super.key,
@@ -33,7 +34,9 @@ class SpeedTextfield extends StatelessWidget {
     this.needPrefixIcon = false,
     this.needSuffixIcon = false,
     this.suffixIconOnPressed,
-    this.fieldOnTap, this.isTextArea = false,
+    this.fieldOnTap,
+    this.isTextArea = false,
+    this.isEnabled = true,
   });
 
   @override
@@ -44,7 +47,9 @@ class SpeedTextfield extends StatelessWidget {
         borderRadius: const BorderRadius.all(Radius.circular(12)),
         border: Border.all(
           width: 2,
-          color: AppColors.lightBlue,
+          color: isEnabled
+              ? AppColors.lightBlue
+              : AppColors.lightBlue.withValues(alpha: 0.55),
         ),
       ),
       child: Stack(
@@ -54,11 +59,16 @@ class SpeedTextfield extends StatelessWidget {
               const SizedBox(
                 height: 34,
               ),
-              
               TextFormField(
+                enabled: isEnabled,
                 maxLines: isTextArea ? 7 : 1,
-                style: const TextStyle(
-                    color: AppColors.blue, decoration: TextDecoration.none),
+                style: TextStyle(
+                  color: isEnabled
+                      ? AppColors.blue
+                      : AppColors.lightBlue.withValues(alpha: 0.70),
+                  decoration: TextDecoration.none,
+                  fontWeight: FontWeight.bold,
+                ),
                 readOnly: isDateTimePicker,
                 onTap: isDateTimePicker ? fieldOnTap : null,
                 keyboardType: textInputType,
@@ -97,26 +107,37 @@ class SpeedTextfield extends StatelessWidget {
                   contentPadding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                   border: const OutlineInputBorder(
-                    borderRadius: BorderRadius.only(bottomLeft: Radius.circular(12),bottomRight: Radius.circular(12)),
-                    borderSide: BorderSide(
-                        width: 0,
-                        style: BorderStyle.none,
-                        color: AppColors.white)
-                  ),
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(12),
+                          bottomRight: Radius.circular(12)),
+                      borderSide: BorderSide(
+                          width: 0,
+                          style: BorderStyle.none,
+                          color: AppColors.white)),
+                  disabledBorder: const OutlineInputBorder(
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(12),
+                          bottomRight: Radius.circular(12)),
+                      borderSide: BorderSide(
+                          width: 0,
+                          style: BorderStyle.none,
+                          color: AppColors.white)),
                   enabledBorder: const OutlineInputBorder(
-                     borderRadius: BorderRadius.only(bottomLeft: Radius.circular(12),bottomRight: Radius.circular(12)),
-                    borderSide: BorderSide(
-                        width: 0,
-                        style: BorderStyle.none,
-                        color: AppColors.white)
-                  ),
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(12),
+                          bottomRight: Radius.circular(12)),
+                      borderSide: BorderSide(
+                          width: 0,
+                          style: BorderStyle.none,
+                          color: AppColors.white)),
                   focusedBorder: const OutlineInputBorder(
-                     borderRadius: BorderRadius.only(bottomLeft: Radius.circular(12),bottomRight: Radius.circular(12)),
-                    borderSide: BorderSide(
-                        width: 0,
-                        style: BorderStyle.none,
-                        color: AppColors.white)
-                  ),
+                      borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(12),
+                          bottomRight: Radius.circular(12)),
+                      borderSide: BorderSide(
+                          width: 0,
+                          style: BorderStyle.none,
+                          color: AppColors.white)),
                   filled: true,
                   fillColor: AppColors.white,
                 ),
@@ -126,10 +147,12 @@ class SpeedTextfield extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
             width: double.infinity,
-            decoration: const BoxDecoration(
-                color: AppColors.lightBlue,
-                borderRadius: BorderRadius.all(Radius.circular(6))),
-            child:  Text(
+            decoration: BoxDecoration(
+                color: isEnabled
+                    ? AppColors.lightBlue
+                    : AppColors.lightBlue.withValues(alpha: 0.55),
+                borderRadius: const BorderRadius.all(Radius.circular(6))),
+            child: Text(
               labelText,
               textAlign: TextAlign.start,
               style: const TextStyle(

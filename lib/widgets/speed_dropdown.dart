@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../styles/colors.dart';
 
@@ -8,6 +7,7 @@ class SpeedDropdown extends StatelessWidget {
   final void Function(dynamic)? onChanged;
   final List<dynamic> dropdownItems;
   final dynamic selectedValue;
+  final bool enabled;
 
   const SpeedDropdown({
     super.key,
@@ -15,6 +15,7 @@ class SpeedDropdown extends StatelessWidget {
     required this.dropdownItems,
     required this.selectedValue,
     this.onChanged,
+    this.enabled = true,
   });
 
   @override
@@ -25,7 +26,9 @@ class SpeedDropdown extends StatelessWidget {
         borderRadius: const BorderRadius.all(Radius.circular(12)),
         border: Border.all(
           width: 2,
-          color: AppColors.lightBlue,
+          color: enabled
+              ? AppColors.lightBlue
+              : AppColors.lightBlue.withValues(alpha: 0.55),
         ),
       ),
       child: Stack(
@@ -37,13 +40,17 @@ class SpeedDropdown extends StatelessWidget {
               ),
               DropdownButtonHideUnderline(
                 child: DropdownButtonFormField(
+                  hint: Text('Select Task Type',
+                      style: TextStyle(
+                          color: AppColors.blue.withOpacity(0.5),
+                          fontSize: 16)),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   decoration: const InputDecoration(
                       border:
                           UnderlineInputBorder(borderSide: BorderSide.none)),
                   style: const TextStyle(
-                      color: AppColors.lightBlue,
+                      color: AppColors.blue,
                       fontWeight: FontWeight.bold,
                       fontSize: 16),
                   value: selectedValue,
@@ -53,7 +60,7 @@ class SpeedDropdown extends StatelessWidget {
                       child: Text(item.toString()),
                     );
                   }).toList(),
-                  onChanged: onChanged,
+                  onChanged: enabled ? onChanged : null,
                 ),
               )
             ],
@@ -61,9 +68,11 @@ class SpeedDropdown extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
             width: double.infinity,
-            decoration: const BoxDecoration(
-                color: AppColors.lightBlue,
-                borderRadius: BorderRadius.all(Radius.circular(6))),
+            decoration: BoxDecoration(
+                color: enabled
+                    ? AppColors.lightBlue
+                    : AppColors.lightBlue.withValues(alpha: 0.55),
+                borderRadius: const BorderRadius.all(Radius.circular(6))),
             child: Text(
               labelText,
               textAlign: TextAlign.start,

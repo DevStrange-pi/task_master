@@ -1,39 +1,40 @@
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:task_master/controllers/home_page_controller.dart';
 import 'package:task_master/routes/app_routes.dart';
 import 'package:task_master/widgets/menu_tile.dart';
 
 import '../widgets/scaffold_main.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+  HomePage({super.key});
+  final HomePageController homePageController = Get.find<HomePageController>();
 
   @override
   Widget build(BuildContext context) {
     return ScaffoldMain(
-      title: "Admin",
+      title: homePageController.loginData?.role?.capitalizeFirst ?? "Admin",
       content: Padding(
-        padding: const EdgeInsets.only(top: 70),
+        padding: const EdgeInsets.only(top: 40),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            MenuTile(
-              title: "All Task",
-              onTap: () {
-                Get.toNamed(AppRoutes.allTasksPage, arguments: {
-                  "pending_tasks": 8,
-                  "completed_tasks": 1,
-                  "expired_tasks": 1,
-                });
-              },
+            Obx(
+              () => MenuTile(
+                title: "All Task",
+                count: homePageController.statistics.value.totalTasks,
+                onTap: () {
+                  Get.toNamed(AppRoutes.allTasksPage, arguments: homePageController.statistics.value.toJson());
+                },
+              ),
             ),
             const SizedBox(
               height: 30,
             ),
             MenuTile(
-              title: "Assign Task",
-              onTap: () {
-                Get.toNamed(AppRoutes.assignTaskPage);
+              title: "Add Task",
+              onTap: (){
+                homePageController.addTaskTapped();
               },
             ),
             const SizedBox(

@@ -1,8 +1,9 @@
 import 'package:get/get.dart';
 import 'package:task_master/screens/add_profile_page.dart';
 import 'package:task_master/screens/all_tasks_page.dart';
-import 'package:task_master/screens/assign_task_page.dart';
+import 'package:task_master/screens/add_task_page.dart';
 import 'package:task_master/screens/home_page.dart';
+import 'package:task_master/screens/task_details_page.dart';
 import 'package:task_master/screens/task_list_page.dart';
 
 import '../screens/intro_page.dart';
@@ -22,7 +23,7 @@ class AppPages {
     ),
     GetPage(
       name: AppRoutes.homePage,
-      page: () => const HomePage(),
+      page: () => HomePage(),
     ),
     GetPage(
       name: AppRoutes.addProfilePage,
@@ -37,8 +38,12 @@ class AppPages {
       page: () => TaskListPage(),
     ),
     GetPage(
-      name: AppRoutes.assignTaskPage,
-      page: () => AssignTaskPage(),
+      name: AppRoutes.addTaskPage,
+      page: () => AddTaskPage(),
+    ),
+    GetPage(
+      name: AppRoutes.taskDetailsPage,
+      page: () => TaskDetailsPage(),
     ),
     
   ];

@@ -1,10 +1,13 @@
 import 'dart:convert';
-import 'package:device_info_plus/device_info_plus.dart';
+// import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/app_url.dart';
+import '../constants/strings.dart';
+import '../models/login_response_model.dart';
 import '../network/http_req.dart';
+import '../routes/app_routes.dart';
 import '../utilities/utilities.dart';
 
 class LoginPageController extends GetxController {
@@ -40,10 +43,13 @@ class LoginPageController extends GetxController {
   }
 
   void storeToken(String token) async {
-    prefs.setString("SpString.TOKEN", token);
-    print('the token is here : ${token}');
+    prefs.setString(SpString.token, token);
+    print('the token is here : $token');
   }
 
+  void storeRole(String role) async {
+    prefs.setString(SpString.role, role);
+  }
   void storeStudentId(int id) async {
     prefs.setInt("SpString.STID", id);
   }
@@ -55,23 +61,24 @@ class LoginPageController extends GetxController {
   Future<void> login() async {
     if (checkValidation()) {
       try {
-        DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
-        AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-        final String deviceId = androidInfo.id;
+        // DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+        // AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+        // final String deviceId = androidInfo.id;
         needLoader.value = true;
-        var body = {"email": emailController.text, "password": passController.text,"device_id":deviceId};
+        var body = {"username": emailController.text, "password": passController.text/*"device_id":deviceId*/};
         var resp = await HttpReq.postApi(apiUrl: AppUrl().login, body: body);
         var respBody = json.decode(resp!.body);
-        // LoginResponseModel loginData = LoginResponseModel.fromJson(respBody);
+        LoginResponseModel loginData = LoginResponseModel.fromJson(respBody);
         // print("Login data ========================= $loginData");
         if (resp.statusCode == 200) {
           needLoader.value = false;
           myBotToast(respBody["message"]);
-          // storeToken(loginData.accessToken!);
+          storeToken(loginData.data!.token!);
+          storeRole(loginData.data!.role!);
           // storeStudentId(loginData.studentId!);
           // storePlacementStatus(loginData.placementStatus ?? 0);
           // routeHistoryController.addRoute(AppRoutes.SCREEN_NAV_PAGE, RouteHistoryNames.INITIAL);
-          // Get.offAllNamed(AppRoutes.SCREEN_NAV_PAGE);
+          Get.offAllNamed(AppRoutes.homePage,arguments: loginData.data!);
         } else {
           needLoader.value = false;
           myBotToast("${respBody["message"]}\n${respBody["data"]}");

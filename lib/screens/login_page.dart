@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../controllers/login_page_controller.dart';
-import '../routes/app_routes.dart';
 import '../styles/colors.dart';
 import '../widgets/speed_button.dart';
 import '../widgets/speed_textfield.dart';
@@ -89,8 +88,7 @@ class LoginPage extends StatelessWidget {
                         needLoader: loginPageController.needLoader.value,
                         buttonText: "Login",
                         onPressed: () async {
-                          Get.offAllNamed(AppRoutes.homePage);
-                          // await loginPageController.login();
+                          await loginPageController.login();
                         },
                       ),
                     ),
