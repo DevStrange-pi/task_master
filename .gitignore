@@ -24,6 +24,7 @@
 .project
 .settings/
 .vscode/*
+.vscode
 .ccls-cache
 
 # This file, on the master branch, should never exist or be checked-in.
@@ -160,3 +161,4 @@ app.*.symbols
 .python-version
 .gclient_previous_custom_vars
 .gclient_previous_sync_commits
+.vscode/settings.json
