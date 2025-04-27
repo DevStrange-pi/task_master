@@ -81,23 +81,25 @@ class AddProfilePage extends StatelessWidget {
                 const SizedBox(
                   height: 16,
                 ),
-                SpeedButton(
-                  buttonText: "Upload Photo",
-                  onPressed: () {},
-                ),
-                 const SizedBox(
-                  height: 16,
-                ),
-                //TODO: uploaded photo thumbnail here
-                 const SizedBox(
-                  height: 16,
-                ),
+                // SpeedButton(
+                //   buttonText: "Upload Photo",
+                //   onPressed: () {},
+                // ),
+                //  const SizedBox(
+                //   height: 16,
+                // ),
+                // //TODO: uploaded photo thumbnail here
+                //  const SizedBox(
+                //   height: 16,
+                // ),
                 const SizedBox(
                   height: 28,
                 ),
                 SpeedButton(
                   buttonText: "Submit",
-                  onPressed: () {},
+                  onPressed: () {
+                    addProfileController.onSubmitPressed();
+                  },
                 )
               ],
             ),

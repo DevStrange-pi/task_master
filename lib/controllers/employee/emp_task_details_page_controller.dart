@@ -1,27 +1,26 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:task_master/models/get_employees_response_model.dart';
-import 'package:task_master/routes/app_routes.dart';
-// import 'package:task_master/models/task_details_response_model.dart';
+import 'package:task_master/models/employee/emp_task_updated_response_model.dart';
 
-import '../constants/app_url.dart';
-import '../constants/strings.dart';
-import '../models/all_tasks_response_model.dart';
-import '../models/task_details_response_model.dart';
-import '../network/http_req.dart';
-import '../utilities/circular_loader.dart';
-import '../utilities/utilities.dart';
+import '../../constants/app_url.dart';
+import '../../constants/strings.dart';
+import '../../models/all_tasks_response_model.dart';
+import '../../models/get_employees_response_model.dart';
+import '../../network/http_req.dart';
+import '../../routes/app_routes.dart';
+import '../../utilities/circular_loader.dart';
+import '../../utilities/utilities.dart';
 
-class TaskDetailsController extends GetxController {
+class EmpTaskDetailsPageController extends GetxController {
   SharedPreferences? prefs;
   CircularLoader circularLoader = Get.find<CircularLoader>();
 
-  Rx<Task>? task = Task().obs;
   final TextEditingController taskNameController = TextEditingController();
   final TextEditingController descController = TextEditingController();
   TextEditingController dateCont = TextEditingController();
@@ -34,7 +33,13 @@ class TaskDetailsController extends GetxController {
     "Once"
   ];
   RxString taskTypeSelected = "Daily".obs;
-  List<String> taskStatus = ["Pending", "Completed", "Expired", "Requested"];
+  List<String> taskStatus = [
+    "Pending",
+    "Completed",
+    "Requested",
+    "Expired",
+  ];
+  List<String> disabledItems = [];
   RxString taskStatusSelected = "Pending".obs;
   final RxList<DropdownItem<String>> assignDropdownOptions =
       <DropdownItem<String>>[].obs;
@@ -44,19 +49,32 @@ class TaskDetailsController extends GetxController {
   final RxList<Employee> employeeList = <Employee>[].obs;
   final RxBool canPop = true.obs;
 
-  final String taskId = Get.arguments["taskId"];
-  final bool statusFlag =
-      Get.arguments["taskStatus"] == "completed" ? false : true;
+  Rx<Task> task = Task().obs;
+  // final String taskId = Get.arguments["taskId"];
+  bool? statusFlag;
+  bool isEmployee = true;
+  bool isAdmin = false;
+  RxBool isMultiDropdownValueChanged = false.obs;
+  List<String> originalValues = [];
+  String originaltaskStatusSelected = "";
 
   @override
   void onInit() async {
+    task.value = Get.arguments;
+    statusFlag = task.value.status == "completed" ||
+            task.value.status == "expired" ||
+            task.value.status == "requested"
+        ? false
+        : true;
     prefs = await SharedPreferences.getInstance();
+    isEmployee = prefs!.getString(SpString.role) == "admin" ? false : true;
+    isAdmin = prefs!.getString(SpString.role) == "admin" ? true : false;
     await Future.wait([
-      getTask(),
       getEmployees(),
     ]);
     taskStatusSelected.value =
-        Get.arguments["taskStatus"]?.toString().capitalizeFirst ?? "Pending";
+        task.value.status?.toString().capitalizeFirst ?? "Pending";
+    originaltaskStatusSelected = taskStatusSelected.value;
     createDropdownOptions();
     getDefaultValues();
     multiSelectController.addListener(() {
@@ -102,55 +120,56 @@ class TaskDetailsController extends GetxController {
   }
 
   void createAssignSelected() {
-    if (task?.value == null || task?.value.employees == null) {
+    if (task.value.employees == null) {
       return;
     }
-    assignSelected = task!.value.employees!
+    assignSelected = task.value.employees!
         .map((employee) => DropdownItem(
               label: employee.name ?? "",
               value: employee.name ?? "",
               selected: true,
             ))
         .toList();
+    originalValues = assignSelected.map((e) => e.value).toList()..sort();
   }
 
   void getDefaultValues() {
-    taskNameController.text = task?.value.name ?? "";
-    descController.text = task?.value.description ?? "";
-    if (task?.value.deadline != null) {
-      final DateTime dateTime = task!.value.deadline!;
+    taskNameController.text = task.value.name ?? "";
+    descController.text = task.value.description ?? "";
+    if (task.value.deadline != null) {
+      final DateTime dateTime = task.value.deadline!;
       final formattedDateTime =
           DateFormat('dd MMMM yyyy, hh:mm a').format(dateTime);
       dateCont.text = formattedDateTime;
     } else {
       dateCont.text = "";
     }
-    taskTypeSelected.value = task?.value.type?.capitalizeFirst ?? "";
+    taskTypeSelected.value = task.value.type?.capitalizeFirst ?? "";
   }
 
-  Future<bool> getTask() async {
-    circularLoader.showCircularLoader();
-    String token = prefs!.getString(SpString.token)!;
-    var headers = {
-      "Authorization": "Bearer $token",
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    };
-    var resp = await HttpReq.getApi(
-        apiUrl: AppUrl().getTaskDetails(taskId), headers: headers);
-    var respBody = json.decode(resp!.body);
-    if (resp.statusCode == 200) {
-      TaskDetailsResponseModel taskDetails =
-          TaskDetailsResponseModel.fromJson(respBody);
-      task?.value = taskDetails.data?.task ?? Task();
-      circularLoader.hideCircularLoader();
-      return true;
-    } else {
-      circularLoader.hideCircularLoader();
-      myBotToast(respBody["message"]);
-      return false;
-    }
-  }
+  // Future<bool> getTask() async {
+  //   circularLoader.showCircularLoader();
+  //   String token = prefs!.getString(SpString.token)!;
+  //   var headers = {
+  //     "Authorization": "Bearer $token",
+  //     "Content-Type": "application/json",
+  //     "Accept": "application/json"
+  //   };
+  //   var resp = await HttpReq.getApi(
+  //       apiUrl: AppUrl().getTaskDetails(taskId), headers: headers);
+  //   var respBody = json.decode(resp!.body);
+  //   if (resp.statusCode == 200) {
+  //     TaskDetailsResponseModel taskDetails =
+  //         TaskDetailsResponseModel.fromJson(respBody);
+  //     task?.value = taskDetails.data?.task ?? Task();
+  //     circularLoader.hideCircularLoader();
+  //     return true;
+  //   } else {
+  //     circularLoader.hideCircularLoader();
+  //     myBotToast(respBody["message"]);
+  //     return false;
+  //   }
+  // }
 
   Future<bool> getEmployees() async {
     circularLoader.showCircularLoader();
@@ -160,8 +179,8 @@ class TaskDetailsController extends GetxController {
       "Content-Type": "application/json",
       "Accept": "application/json"
     };
-    var resp =
-        await HttpReq.getApi(apiUrl: AppUrl().getEmployees, headers: headers);
+    var resp = await HttpReq.getApi(
+        apiUrl: AppUrl().empGetEmployees, headers: headers);
     var respBody = json.decode(resp!.body);
     if (resp.statusCode == 200) {
       GetEmployeesResponseModel employeeListResp =
@@ -230,24 +249,23 @@ class TaskDetailsController extends GetxController {
         "Accept": "application/json"
       };
       var resp = await HttpReq.patchApi(
-          apiUrl: AppUrl().updateTaskDetails(taskId),
+          apiUrl: AppUrl().employeeUpdateTask(task.value.id!),
           headers: headers,
           body: {
-            "name": name,
-            "description": desc,
-            "type": type,
+            // "name": name,
+            // "description": desc,
+            // "type": type,
             "status": status,
-            "deadline": deadline,
+            // "deadline": deadline,
             "employee_ids": employeeIds
           });
       var respBody = json.decode(resp!.body);
       if (resp.statusCode == 200 || resp.statusCode == 201) {
-        TaskDetailsResponseModel taskDetails =
-            TaskDetailsResponseModel.fromJson(respBody);
+        EmpTaskUpdatedResponseModel taskDetails =
+            EmpTaskUpdatedResponseModel.fromJson(respBody);
         myBotToast(taskDetails.message ?? "");
         // Get.back(result: true);
-        // Get.until((route) => Get.currentRoute == AppRoutes.homePage);
-        Get.offAllNamed(AppRoutes.homePage,
+        Get.offAllNamed(AppRoutes.employeeHomePage,
             arguments: {"fromUpdateStatus": true});
         circularLoader.hideCircularLoader();
         return true;
@@ -265,6 +283,24 @@ class TaskDetailsController extends GetxController {
   String convertToApiDateFormat(String input) {
     final dateTime = DateFormat('dd MMMM yyyy, hh:mm a').parse(input);
     return DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
+  }
+
+  void compareMultiDropdownValues(List<String> val) {
+    final newValues = val.toList()..sort();
+    bool isChanged = !(const ListEquality().equals(originalValues, newValues));
+    isMultiDropdownValueChanged.value = isChanged;
+    debugPrint("isMultiDropdownValueChanged: $isChanged");
+    if (isMultiDropdownValueChanged.value) {
+      taskStatusSelected.value = "Requested";
+      if (statusFlag!) {
+        disabledItems.clear();
+      }
+    } else {
+      taskStatusSelected.value = originaltaskStatusSelected;
+      if (statusFlag!) {
+        disabledItems.addAll(["Requested", "Expired"]);
+      }
+    }
   }
 
   void onUpdatePressed() async {

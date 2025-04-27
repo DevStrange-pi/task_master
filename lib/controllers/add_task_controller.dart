@@ -9,8 +9,10 @@ import 'package:task_master/models/create_task_response_model.dart';
 
 import '../constants/app_url.dart';
 import '../constants/strings.dart';
+// import '../models/get_employees_response_model.dart';
+// import '../models/task_details_response_model.dart';
+import '../models/all_tasks_response_model.dart';
 import '../models/get_employees_response_model.dart';
-import '../models/task_details_response_model.dart';
 import '../network/http_req.dart';
 import '../utilities/circular_loader.dart';
 import '../utilities/utilities.dart';
@@ -27,7 +29,8 @@ class AddTaskController extends GetxController {
     "Daily",
     "Weekly",
     "Monthly",
-    "Yearly"
+    "Yearly",
+    "Once"
   ];
   String taskTypeSelected = "Daily";
   final RxList<DropdownItem<String>> assignDropdownOptions =

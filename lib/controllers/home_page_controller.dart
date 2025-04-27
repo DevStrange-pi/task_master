@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../constants/app_url.dart';
 import '../constants/strings.dart';
 import '../models/admin_home_response_model.dart';
-import '../models/login_response_model.dart';
 import '../network/http_req.dart';
 import '../routes/app_routes.dart';
 import '../utilities/circular_loader.dart';
@@ -16,11 +15,12 @@ class HomePageController extends GetxController{
   Rx<Statistics> statistics = Statistics().obs;
   SharedPreferences? prefs;
   CircularLoader circularLoader = Get.find<CircularLoader>();
-  Data? loginData = Get.arguments;
+  RxString empName = "Admin".obs;
 
   @override
   void onInit() async {
     prefs = await SharedPreferences.getInstance();
+    empName.value = prefs!.getString(SpString.name) ?? "Admin";
     await getTaskCount();
     super.onInit();
   }

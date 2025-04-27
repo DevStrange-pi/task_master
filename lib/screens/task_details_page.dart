@@ -1,3 +1,5 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task_master/controllers/task_details_controller.dart';
@@ -62,31 +64,35 @@ class TaskDetailsPage extends StatelessWidget {
                           const SizedBox(
                             height: 16,
                           ),
-                          SpeedDropdown(
-                            enabled: taskDetailsController.statusFlag,
-                            labelText: "Task Type",
-                            dropdownItems:
-                                taskDetailsController.taskTypeDropdownOptions,
-                            selectedValue:
-                                taskDetailsController.taskTypeSelected.value,
-                            onChanged: (val) {
-                              taskDetailsController.taskTypeSelected.value =
-                                  val;
-                            },
+                          Obx(
+                            () => SpeedDropdown(
+                              enabled: taskDetailsController.statusFlag,
+                              labelText: "Task Type",
+                              dropdownItems:
+                                  taskDetailsController.taskTypeDropdownOptions,
+                              selectedValue:
+                                  taskDetailsController.taskTypeSelected.value,
+                              onChanged: (val) {
+                                taskDetailsController.taskTypeSelected.value =
+                                    val;
+                              },
+                            ),
                           ),
                           const SizedBox(
                             height: 16,
                           ),
-                          SpeedDropdown(
-                            enabled: taskDetailsController.statusFlag,
-                            labelText: "Status",
-                            dropdownItems: taskDetailsController.taskStatus,
-                            selectedValue:
-                                taskDetailsController.taskStatusSelected.value,
-                            onChanged: (val) {
-                              taskDetailsController.taskStatusSelected.value =
-                                  val;
-                            },
+                          Obx(
+                            () => SpeedDropdown(
+                              enabled: taskDetailsController.statusFlag,
+                              labelText: "Status",
+                              dropdownItems: taskDetailsController.taskStatus,
+                              selectedValue: taskDetailsController
+                                  .taskStatusSelected.value,
+                              onChanged: (val) {
+                                taskDetailsController.taskStatusSelected.value =
+                                    val;
+                              },
+                            ),
                           ),
                           const SizedBox(
                             height: 16,
@@ -108,19 +114,21 @@ class TaskDetailsPage extends StatelessWidget {
                           const SizedBox(
                             height: 16,
                           ),
-                          SpeedMultiDropdown(
-                            enabled: taskDetailsController.statusFlag,
-                            multiSelectController:
-                                taskDetailsController.multiSelectController,
-                            labelText: "Whom to Assign",
-                            // ignore: invalid_use_of_protected_member
-                            dropdownItems: taskDetailsController.assignDropdownOptions.value,
-                            selectedValues:
-                                taskDetailsController.assignSelected,
-                            onChanged: (val) {
-                              taskDetailsController.storeSelectedValues(val);
-                              debugPrint("OnSelectionChange: $val");
-                            },
+                          Obx(
+                            () => SpeedMultiDropdown(
+                              enabled: taskDetailsController.statusFlag,
+                              multiSelectController:
+                                  taskDetailsController.multiSelectController,
+                              labelText: "Whom to Assign",
+                              dropdownItems: taskDetailsController
+                                  .assignDropdownOptions.value,
+                              selectedValues:
+                                  taskDetailsController.assignSelected,
+                              onChanged: (val) {
+                                taskDetailsController.storeSelectedValues(val);
+                                debugPrint("OnSelectionChange: $val");
+                              },
+                            ),
                           ),
                           const SizedBox(
                             height: 32,

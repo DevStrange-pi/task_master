@@ -13,19 +13,21 @@ import 'routes/app_routes.dart';
 import 'styles/colors.dart';
 import 'utilities/circular_loader.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences? prefs;
   prefs = await SharedPreferences.getInstance();
   String? token = prefs.getString(SpString.token) ?? "";
+  String? role = prefs.getString(SpString.role) ?? "";
   HttpOverrides.global = MyHttpOverrides();
   Get.put(CircularLoader());
-  runApp(MyApp(token: token));
+  runApp(MyApp(token: token, role: role));
 }
 
 class MyApp extends StatelessWidget {
   final String? token;
-  const MyApp({super.key,this.token});
+  final String? role;
+  const MyApp({super.key, this.token, this.role});
 
   @override
   Widget build(BuildContext context) {
@@ -42,15 +44,20 @@ class MyApp extends StatelessWidget {
           headerForegroundColor: AppColors.white,
         ),
         colorScheme: const ColorScheme.light(
-            outlineVariant:
-                Colors.transparent, // this is to remove unnecessary divider lines in datePicker dialogs and all
+            outlineVariant: Colors
+                .transparent, // this is to remove unnecessary divider lines in datePicker dialogs and all
             primary: AppColors.blue,
             surface: AppColors.white),
         useMaterial3: true,
       ),
-      initialRoute:token != null && token!.isNotEmpty ? AppRoutes.homePage : AppRoutes.introPage,
+      initialRoute: token != null && token!.isNotEmpty
+          ? role != null && role!.isNotEmpty
+              ? role == "admin"
+                  ? AppRoutes.homePage
+                  : AppRoutes.employeeHomePage
+              : AppRoutes.introPage
+          : AppRoutes.introPage,
       // home: const IntroPage(),
     );
   }
 }
-

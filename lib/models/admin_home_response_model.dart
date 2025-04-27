@@ -49,6 +49,7 @@ class Statistics {
     int? pendingTasks;
     int? completedTasks;
     int? expiredTasks;
+    int? requestedTasks;
     int? totalEmployees;
 
     Statistics({
@@ -56,6 +57,7 @@ class Statistics {
         this.pendingTasks,
         this.completedTasks,
         this.expiredTasks,
+        this.requestedTasks,
         this.totalEmployees,
     });
 
@@ -64,6 +66,7 @@ class Statistics {
         pendingTasks: json["pending_tasks"],
         completedTasks: json["completed_tasks"],
         expiredTasks: json["expired_tasks"],
+        requestedTasks: json["requested_tasks"],
         totalEmployees: json["total_employees"],
     );
 
@@ -72,6 +75,7 @@ class Statistics {
         "pending_tasks": pendingTasks,
         "completed_tasks": completedTasks,
         "expired_tasks": expiredTasks,
+        "requested_tasks": requestedTasks,
         "total_employees": totalEmployees,
     };
     bool isEmpty() {
@@ -79,6 +83,7 @@ class Statistics {
         pendingTasks == null &&
         completedTasks == null &&
         expiredTasks == null &&
-        totalEmployees == null;
+        totalEmployees == null &&
+        requestedTasks == null;
   }
 }

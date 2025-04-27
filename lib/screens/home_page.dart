@@ -12,41 +12,45 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScaffoldMain(
-      title: homePageController.loginData?.role?.capitalizeFirst ?? "Admin",
-      content: Padding(
-        padding: const EdgeInsets.only(top: 40),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Obx(
-              () => MenuTile(
-                title: "All Task",
-                count: homePageController.statistics.value.totalTasks,
+    return Obx(
+      () => ScaffoldMain(
+        title: homePageController.empName.value,
+        content: Padding(
+          padding: const EdgeInsets.only(top: 40),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Obx(
+                () => MenuTile(
+                  title: "All Task",
+                  count: homePageController.statistics.value.totalTasks,
+                  onTap: () {
+                    Get.toNamed(AppRoutes.allTasksPage,
+                        arguments:
+                            homePageController.statistics.value.toJson());
+                  },
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+              MenuTile(
+                title: "Add Task",
                 onTap: () {
-                  Get.toNamed(AppRoutes.allTasksPage, arguments: homePageController.statistics.value.toJson());
+                  homePageController.addTaskTapped();
                 },
               ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            MenuTile(
-              title: "Add Task",
-              onTap: (){
-                homePageController.addTaskTapped();
-              },
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            MenuTile(
-              title: "Add Employee",
-              onTap: () {
-                Get.toNamed(AppRoutes.addProfilePage);
-              },
-            ),
-          ],
+              const SizedBox(
+                height: 30,
+              ),
+              MenuTile(
+                title: "Add Employee",
+                onTap: () {
+                  Get.toNamed(AppRoutes.addProfilePage);
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

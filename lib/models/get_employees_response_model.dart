@@ -4,7 +4,8 @@
 
 import 'dart:convert';
 
-import 'task_details_response_model.dart';
+import 'all_tasks_response_model.dart';
+
 
 GetEmployeesResponseModel getEmployeesResponseModelFromJson(String str) => GetEmployeesResponseModel.fromJson(json.decode(str));
 

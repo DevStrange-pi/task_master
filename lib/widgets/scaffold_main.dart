@@ -7,11 +7,12 @@ class ScaffoldMain extends StatelessWidget {
       {super.key,
       required this.title,
       required this.content,
-      this.isTitleContainer = true});
+      this.isTitleContainer = true,this.infoWidget = const SizedBox()});
 
   final String title;
   final Widget content;
   final bool isTitleContainer;
+  final Widget infoWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +23,7 @@ class ScaffoldMain extends StatelessWidget {
           isTitleContainer
               ? Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.fromLTRB(40, 16, 10, 16),
+                  padding: const EdgeInsets.fromLTRB(40, 16, 20, 16),
                   decoration: const BoxDecoration(
                     borderRadius: BorderRadius.only(
                       topRight: Radius.circular(46),
@@ -33,12 +34,18 @@ class ScaffoldMain extends StatelessWidget {
                       colors: [AppColors.lightBlue, AppColors.blue],
                     ),
                   ),
-                  child: Text(
-                    title,
-                    style: const TextStyle(
-                        fontSize: 42,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.white),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        title,
+                        style: const TextStyle(
+                            fontSize: 32,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.white),
+                      ),
+                      infoWidget,
+                    ],
                   ),
                 )
               : const SizedBox(),

@@ -8,6 +8,7 @@ class SpeedDropdown extends StatelessWidget {
   final List<dynamic> dropdownItems;
   final dynamic selectedValue;
   final bool enabled;
+  final List<dynamic> disabledItems;
 
   const SpeedDropdown({
     super.key,
@@ -16,6 +17,7 @@ class SpeedDropdown extends StatelessWidget {
     required this.selectedValue,
     this.onChanged,
     this.enabled = true,
+    this.disabledItems = const [],
   });
 
   @override
@@ -42,22 +44,43 @@ class SpeedDropdown extends StatelessWidget {
                 child: DropdownButtonFormField(
                   hint: Text('Select Task Type',
                       style: TextStyle(
-                          color: AppColors.blue.withOpacity(0.5),
+                          color: enabled
+                              ? AppColors.blue
+                              : AppColors.blue.withValues(alpha: 0.5),
                           fontSize: 16)),
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                   decoration: const InputDecoration(
                       border:
                           UnderlineInputBorder(borderSide: BorderSide.none)),
-                  style: const TextStyle(
-                      color: AppColors.blue,
+                  style: TextStyle(
+                      color: enabled
+                          ? AppColors.blue
+                          : AppColors.blue.withValues(alpha: 0.5),
                       fontWeight: FontWeight.bold,
                       fontSize: 16),
                   value: selectedValue,
                   items: dropdownItems.map((item) {
+                    final bool isDisabled = disabledItems.contains(item);
                     return DropdownMenuItem(
-                      value: item,
-                      child: Text(item.toString()),
+                      value: isDisabled ? null : item,
+                      enabled: !isDisabled,
+                      child: IgnorePointer(
+                        ignoring: isDisabled,
+                        child: Text(
+                          item.toString(),
+                          style: TextStyle(
+                            color: isDisabled
+                                ? Colors.grey
+                                : enabled
+                                    ? AppColors.blue
+                                    : AppColors.blue.withValues(alpha: 0.5),
+                            fontWeight: isDisabled
+                                ? FontWeight.normal
+                                : FontWeight.bold,
+                          ),
+                        ),
+                      ),
                     );
                   }).toList(),
                   onChanged: enabled ? onChanged : null,

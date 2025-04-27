@@ -24,7 +24,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants/app_url.dart';
 import '../constants/strings.dart';
-import '../main.dart';
 import '../network/http_req.dart';
 import '../routes/app_routes.dart';
 import 'circular_loader.dart';

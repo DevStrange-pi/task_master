@@ -2,10 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:task_master/styles/colors.dart';
 
 class MenuTile extends StatelessWidget {
-  const MenuTile({super.key, required this.title, this.onTap, this.count});
+  const MenuTile({
+    super.key,
+    required this.title,
+    this.onTap,
+    this.count,
+    this.statusColor,
+  });
   final String title;
   final void Function()? onTap;
   final int? count;
+  final Color? statusColor;
 
   @override
   Widget build(BuildContext context) {
@@ -57,13 +64,27 @@ class MenuTile extends StatelessWidget {
                         colors: [AppColors.lightBlue, AppColors.blue],
                       ),
                     ),
-                    child: Text(
-                      title,
-                      style: const TextStyle(
-                        color: AppColors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            title,
+                            style: const TextStyle(
+                              color: AppColors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              overflow: TextOverflow.ellipsis
+                            ),
+                          ),
+                        ),
+                        statusColor == null
+                            ? const SizedBox()
+                            : CircleAvatar(
+                                radius: 8,
+                                backgroundColor: statusColor,
+                              ),
+                      ],
                     ),
                   ),
                 ),
@@ -79,7 +100,8 @@ class MenuTile extends StatelessWidget {
                     radius: 19,
                     child: Text(
                       count.toString(),
-                      style: const TextStyle(color: AppColors.white,fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          color: AppColors.white, fontWeight: FontWeight.bold),
                     ),
                   ),
                 )

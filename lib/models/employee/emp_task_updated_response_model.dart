@@ -1,50 +1,54 @@
 // To parse this JSON data, do
 //
-//     final allTasksResponseModel = allTasksResponseModelFromJson(jsonString);
+//     final empTaskUpdatedResponseModel = empTaskUpdatedResponseModelFromJson(jsonString);
 
 import 'dart:convert';
 
-AllTasksResponseModel allTasksResponseModelFromJson(String str) => AllTasksResponseModel.fromJson(json.decode(str));
+EmpTaskUpdatedResponseModel empTaskUpdatedResponseModelFromJson(String str) => EmpTaskUpdatedResponseModel.fromJson(json.decode(str));
 
-String allTasksResponseModelToJson(AllTasksResponseModel data) => json.encode(data.toJson());
+String empTaskUpdatedResponseModelToJson(EmpTaskUpdatedResponseModel data) => json.encode(data.toJson());
 
-class AllTasksResponseModel {
+class EmpTaskUpdatedResponseModel {
     String? status;
-    Data? data;
+    String? message;
+    UpdatedData? data;
 
-    AllTasksResponseModel({
+    EmpTaskUpdatedResponseModel({
         this.status,
+        this.message,
         this.data,
     });
 
-    factory AllTasksResponseModel.fromJson(Map<String, dynamic> json) => AllTasksResponseModel(
+    factory EmpTaskUpdatedResponseModel.fromJson(Map<String, dynamic> json) => EmpTaskUpdatedResponseModel(
         status: json["status"],
-        data: json["data"] == null ? null : Data.fromJson(json["data"]),
+        message: json["message"],
+        data: json["data"] == null ? null : UpdatedData.fromJson(json["data"]),
     );
 
     Map<String, dynamic> toJson() => {
         "status": status,
+        "message": message,
         "data": data?.toJson(),
     };
 }
 
-class Data {
-    List<Task>? tasks;
+class UpdatedData {
+    UpdatedTask? task;
 
-    Data({
-        this.tasks,
+    UpdatedData({
+        this.task,
     });
 
-    factory Data.fromJson(Map<String, dynamic> json) => Data(
-        tasks: json["tasks"] == null ? [] : List<Task>.from(json["tasks"]!.map((x) => Task.fromJson(x))),
+    factory UpdatedData.fromJson(Map<String, dynamic> json) => UpdatedData(
+        task: json["task"] == null ? null : UpdatedTask.fromJson(json["task"]),
     );
 
     Map<String, dynamic> toJson() => {
-        "tasks": tasks == null ? [] : List<dynamic>.from(tasks!.map((x) => x.toJson())),
+        "task": task?.toJson(),
     };
 }
 
-class Task {
+class UpdatedTask {
     int? id;
     String? name;
     String? description;
@@ -53,9 +57,9 @@ class Task {
     String? status;
     DateTime? createdAt;
     DateTime? updatedAt;
-    List<Employee>? employees;
+    List<UpdatedEmployee>? employees;
 
-    Task({
+    UpdatedTask({
         this.id,
         this.name,
         this.description,
@@ -67,7 +71,7 @@ class Task {
         this.employees,
     });
 
-    factory Task.fromJson(Map<String, dynamic> json) => Task(
+    factory UpdatedTask.fromJson(Map<String, dynamic> json) => UpdatedTask(
         id: json["id"],
         name: json["name"],
         description: json["description"],
@@ -76,7 +80,7 @@ class Task {
         status: json["status"],
         createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
         updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
-        employees: json["employees"] == null ? [] : List<Employee>.from(json["employees"]!.map((x) => Employee.fromJson(x))),
+        employees: json["employees"] == null ? [] : List<UpdatedEmployee>.from(json["employees"]!.map((x) => UpdatedEmployee.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
@@ -90,13 +94,9 @@ class Task {
         "updated_at": updatedAt?.toIso8601String(),
         "employees": employees == null ? [] : List<dynamic>.from(employees!.map((x) => x.toJson())),
     };
-    bool isNull() {
-      return id == null && name == null && description == null && type == null && deadline == null && status == null && createdAt == null && updatedAt == null && employees == null;
-    }
 }
 
-
-class Employee {
+class UpdatedEmployee {
     int? id;
     String? name;
     String? email;
@@ -108,9 +108,9 @@ class Employee {
     String? role;
     DateTime? createdAt;
     DateTime? updatedAt;
-    Pivot? pivot;
+    UpdatedPivot? pivot;
 
-    Employee({
+    UpdatedEmployee({
         this.id,
         this.name,
         this.email,
@@ -125,7 +125,7 @@ class Employee {
         this.pivot,
     });
 
-    factory Employee.fromJson(Map<String, dynamic> json) => Employee(
+    factory UpdatedEmployee.fromJson(Map<String, dynamic> json) => UpdatedEmployee(
         id: json["id"],
         name: json["name"],
         email: json["email"],
@@ -137,7 +137,7 @@ class Employee {
         role: json["role"],
         createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
         updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
-        pivot: json["pivot"] == null ? null : Pivot.fromJson(json["pivot"]),
+        pivot: json["pivot"] == null ? null : UpdatedPivot.fromJson(json["pivot"]),
     );
 
     Map<String, dynamic> toJson() => {
@@ -156,17 +156,16 @@ class Employee {
     };
 }
 
-
-class Pivot {
+class UpdatedPivot {
     int? taskId;
     int? employeeId;
 
-    Pivot({
+    UpdatedPivot({
         this.taskId,
         this.employeeId,
     });
 
-    factory Pivot.fromJson(Map<String, dynamic> json) => Pivot(
+    factory UpdatedPivot.fromJson(Map<String, dynamic> json) => UpdatedPivot(
         taskId: json["task_id"],
         employeeId: json["employee_id"],
     );
@@ -176,4 +175,3 @@ class Pivot {
         "employee_id": employeeId,
     };
 }
-

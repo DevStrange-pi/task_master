@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:task_master/controllers/task_list_controller.dart';
 import 'package:task_master/routes/app_routes.dart';
@@ -27,8 +26,9 @@ class TaskListPage extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.only(top: 30.0),
                   child: Tooltip(
+                    padding: const EdgeInsets.all(12),
                     showDuration: const Duration(minutes: 1),
-                    message: 'Description: ${taskListController.tasksList![index].description!}',
+                    message: 'Name: ${taskListController.tasksList![index].name!}\n\nDescription: ${taskListController.tasksList![index].description!}',
                     textStyle: const TextStyle(
                       fontSize: 18,
                       color: AppColors.greyWhite
