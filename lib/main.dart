@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +18,7 @@ void main() async {
   prefs = await SharedPreferences.getInstance();
   String? token = prefs.getString(SpString.token) ?? "";
   String? role = prefs.getString(SpString.role) ?? "";
-  HttpOverrides.global = MyHttpOverrides();
+  // HttpOverrides.global = MyHttpOverrides();
   Get.put(CircularLoader());
   runApp(MyApp(token: token, role: role));
 }
