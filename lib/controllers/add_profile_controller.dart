@@ -8,7 +8,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_master/models/register_employee_response_model.dart';
 
 import '../constants/app_url.dart';
-import '../constants/strings.dart';
 import '../network/http_req.dart';
 import '../utilities/circular_loader.dart';
 import '../utilities/utilities.dart';
