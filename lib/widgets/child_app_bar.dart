@@ -39,7 +39,7 @@ class ChildAppBar extends StatelessWidget implements PreferredSizeWidget {
             radius: 28,
             backgroundColor: AppColors.lightestBlue,
             child: Image.asset(
-              PROFILE,
+              profile,
               height: 28,
             ),
           )

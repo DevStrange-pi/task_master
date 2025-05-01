@@ -1,9 +1,13 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:collection/collection.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:mime/mime.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_master/models/employee/emp_task_updated_response_model.dart';
@@ -58,6 +62,9 @@ class EmpTaskDetailsPageController extends GetxController {
   List<String> originalValues = [];
   String originaltaskStatusSelected = "";
 
+  RxList<File> selectedFiles = <File>[].obs;
+  final ImagePicker _picker = ImagePicker();
+
   @override
   void onInit() async {
     task.value = Get.arguments;
@@ -86,7 +93,38 @@ class EmpTaskDetailsPageController extends GetxController {
     });
     super.onInit();
   }
+  Future<void> pickFromGallery() async {
+    final List<XFile>? images = await _picker.pickMultiImage();
+    if (images != null && images.isNotEmpty) {
+      selectedFiles.addAll(images.map((xfile) => File(xfile.path)));
+    }
+  }
 
+  Future<void> pickFromCamera() async {
+    final XFile? photo = await _picker.pickImage(source: ImageSource.camera);
+    if (photo != null) {
+      selectedFiles.add(File(photo.path));
+    }
+  }
+
+  // Future<void> pickFiles() async {
+  //   FilePickerResult? result = await FilePicker.platform.pickFiles(
+  //     allowMultiple: true,
+  //     type: FileType.image, // or FileType.any for all files
+  //   );
+  //   if (result != null) {
+  //     selectedFiles.value = result.paths.map((path) => File(path!)).toList();
+  //   }
+  // }
+
+  void removeFile(int index) {
+    selectedFiles.removeAt(index);
+  }
+
+  Future<void> uploadFiles() async {
+    // Implement your upload logic here (API call, etc.)
+    // Use selectedFiles list
+  }
   @override
   void onClose() {
     assignDropdownOptions.clear();
@@ -146,30 +184,21 @@ class EmpTaskDetailsPageController extends GetxController {
     }
     taskTypeSelected.value = task.value.type?.capitalizeFirst ?? "";
   }
-
-  // Future<bool> getTask() async {
-  //   circularLoader.showCircularLoader();
-  //   String token = prefs!.getString(SpString.token)!;
-  //   var headers = {
-  //     "Authorization": "Bearer $token",
-  //     "Content-Type": "application/json",
-  //     "Accept": "application/json"
-  //   };
-  //   var resp = await HttpReq.getApi(
-  //       apiUrl: AppUrl().getTaskDetails(taskId), headers: headers);
-  //   var respBody = json.decode(resp!.body);
-  //   if (resp.statusCode == 200) {
-  //     TaskDetailsResponseModel taskDetails =
-  //         TaskDetailsResponseModel.fromJson(respBody);
-  //     task?.value = taskDetails.data?.task ?? Task();
-  //     circularLoader.hideCircularLoader();
-  //     return true;
-  //   } else {
-  //     circularLoader.hideCircularLoader();
-  //     myBotToast(respBody["message"]);
-  //     return false;
-  //   }
-  // }
+  bool get isPhotoUploadEnabled {
+  return statusFlag == true &&
+      isEmployee == true &&
+      taskStatusSelected.value.toLowerCase() == "completed";
+}
+  Future<List<String>> getSelectedFilesAsBase64() async {
+    List<String> base64Images = [];
+    for (var file in selectedFiles) {
+      final bytes = await file.readAsBytes();
+      final base64Str = base64Encode(bytes);
+      final mimeType = lookupMimeType(file.path) ?? 'image/png';
+      base64Images.add('data:$mimeType;$base64Str');
+    }
+    return base64Images;
+  }
 
   Future<bool> getEmployees() async {
     circularLoader.showCircularLoader();
@@ -207,10 +236,11 @@ class EmpTaskDetailsPageController extends GetxController {
   }
 
   Future<void> showDateTimePicker() async {
+    DateTime now = DateTime.now();
     DateTime? selectedDate = await showDatePicker(
       context: Get.context!,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
+      initialDate: now,
+      firstDate: DateTime(now.year, now.month, now.day),
       lastDate: DateTime(2100),
     );
 
@@ -243,6 +273,7 @@ class EmpTaskDetailsPageController extends GetxController {
     circularLoader.showCircularLoader();
     String token = prefs!.getString(SpString.token)!;
     try {
+      List<String> base64Images = await getSelectedFilesAsBase64();
       var headers = {
         "Authorization": "Bearer $token",
         "Content-Type": "application/json",
@@ -257,7 +288,8 @@ class EmpTaskDetailsPageController extends GetxController {
             // "type": type,
             "status": status,
             // "deadline": deadline,
-            "employee_ids": employeeIds
+            "employee_ids": employeeIds,
+            "photo_base64": base64Images,
           });
       var respBody = json.decode(resp!.body);
       if (resp.statusCode == 200 || resp.statusCode == 201) {

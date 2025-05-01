@@ -29,7 +29,7 @@ class IntroPage extends StatelessWidget {
                   color: AppColors.black,
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   child: Image.asset(
-                    LOGO,
+                    logo,
                   ),
                 ),
                 const SizedBox(

@@ -1,5 +1,7 @@
 // ignore_for_file: invalid_use_of_protected_member
 
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:task_master/controllers/task_details_controller.dart';
@@ -133,6 +135,10 @@ class TaskDetailsPage extends StatelessWidget {
                           const SizedBox(
                             height: 32,
                           ),
+                          Obx(() => buildPhotoThumbnails(context)),
+                          const SizedBox(
+                            height: 32,
+                          ),
                           SpeedButton(
                             isDisabled: !taskDetailsController.statusFlag,
                             buttonText: "Update",
@@ -150,6 +156,45 @@ class TaskDetailsPage extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget buildPhotoThumbnails(BuildContext context) {
+    final photos = taskDetailsController.photoBase64List;
+    if (photos.isEmpty) return const SizedBox();
+
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children: photos.map<Widget>((base64Str) {
+        final cleanedBase64 = base64Str.contains(';')
+            ? base64Str.split(';').last
+            : base64Str.replaceAll('\\', '');
+        return GestureDetector(
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (_) => Dialog(
+                child: InteractiveViewer(
+                  child: Image.memory(
+                    base64Decode(cleanedBase64),
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+            );
+          },
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.memory(
+              base64Decode(cleanedBase64),
+              width: 64,
+              height: 64,
+              fit: BoxFit.cover,
+            ),
+          ),
+        );
+      }).toList(),
     );
   }
 }

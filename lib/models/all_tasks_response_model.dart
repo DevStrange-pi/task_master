@@ -54,6 +54,7 @@ class Task {
     DateTime? createdAt;
     DateTime? updatedAt;
     List<Employee>? employees;
+    List<dynamic>? photos;
 
     Task({
         this.id,
@@ -65,6 +66,7 @@ class Task {
         this.createdAt,
         this.updatedAt,
         this.employees,
+        this.photos
     });
 
     factory Task.fromJson(Map<String, dynamic> json) => Task(
@@ -77,6 +79,26 @@ class Task {
         createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
         updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
         employees: json["employees"] == null ? [] : List<Employee>.from(json["employees"]!.map((x) => Employee.fromJson(x))),
+        photos: (() {
+          final raw = json["photos"];
+          if (raw == null || raw == "") return [];
+          if (raw is List) {
+            return List<String>.from(raw.map((x) => x.toString()));
+          }
+          if (raw is String) {
+            try {
+              final decoded = jsonDecode(raw);
+              if (decoded is List) {
+                return List<String>.from(decoded.map((x) => x.toString()));
+              }
+            } catch (e) {
+              // If it's not a valid JSON string, just return it as a single-item list
+              return [raw];
+            }
+          }
+          return [];
+        })(),
+        // photos: json["photos"] == null || json["photos"] == "" ? [] : List<String>.from(json["photos"]!.map((x) => x)),
     );
 
     Map<String, dynamic> toJson() => {
@@ -89,7 +111,12 @@ class Task {
         "created_at": createdAt?.toIso8601String(),
         "updated_at": updatedAt?.toIso8601String(),
         "employees": employees == null ? [] : List<dynamic>.from(employees!.map((x) => x.toJson())),
-    };
+        "photos": photos == null
+          ? []
+          : photos is List<String>
+              ? photos
+              : List<String>.from(photos!.map((x) => x.toString())),
+          };
     bool isNull() {
       return id == null && name == null && description == null && type == null && deadline == null && status == null && createdAt == null && updatedAt == null && employees == null;
     }

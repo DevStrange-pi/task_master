@@ -47,6 +47,7 @@ class TaskDetailsController extends GetxController {
   final String taskId = Get.arguments["taskId"];
   final bool statusFlag =
       Get.arguments["taskStatus"] == "completed" ? false : true;
+  final RxList<String> photoBase64List = <String>[].obs;
 
   @override
   void onInit() async {
@@ -143,6 +144,10 @@ class TaskDetailsController extends GetxController {
       TaskDetailsResponseModel taskDetails =
           TaskDetailsResponseModel.fromJson(respBody);
       task?.value = taskDetails.data?.task ?? Task();
+      photoBase64List.clear();
+      if (task?.value.photos != null) {
+        photoBase64List.assignAll(task!.value.photos!.map((e) => e.toString()));
+      }
       circularLoader.hideCircularLoader();
       return true;
     } else {
@@ -188,10 +193,11 @@ class TaskDetailsController extends GetxController {
   }
 
   Future<void> showDateTimePicker() async {
+    DateTime now = DateTime.now();
     DateTime? selectedDate = await showDatePicker(
       context: Get.context!,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
+      initialDate: now,
+      firstDate: DateTime(now.year, now.month, now.day),
       lastDate: DateTime(2100),
     );
 

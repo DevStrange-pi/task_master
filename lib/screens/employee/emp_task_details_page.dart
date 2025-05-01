@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../controllers/employee/emp_task_details_page_controller.dart';
+import '../../styles/colors.dart';
 import '../../widgets/child_app_bar.dart';
 import '../../widgets/speed_button.dart';
 import '../../widgets/speed_dropdown.dart';
@@ -85,11 +86,11 @@ class EmpTaskDetailsPage extends StatelessWidget {
                           ),
                           Obx(
                             () => SpeedDropdown(
-                              enabled: empTaskDetailsPageController
-                                      .statusFlag! &&
-                                  empTaskDetailsPageController.isEmployee &&
-                                  !empTaskDetailsPageController
-                                      .isMultiDropdownValueChanged.value,
+                              enabled:
+                                  empTaskDetailsPageController.statusFlag! &&
+                                      empTaskDetailsPageController.isEmployee &&
+                                      !empTaskDetailsPageController
+                                          .isMultiDropdownValueChanged.value,
                               labelText: "Status",
                               dropdownItems:
                                   empTaskDetailsPageController.taskStatus,
@@ -148,6 +149,131 @@ class EmpTaskDetailsPage extends StatelessWidget {
                           const SizedBox(
                             height: 32,
                           ),
+                          // const SizedBox(height: 16),
+                          Row(
+                            children: [
+                              ElevatedButton.icon(
+                                style: ButtonStyle(
+                                  backgroundColor:
+                                      WidgetStateProperty.resolveWith<Color>(
+                                    (Set<WidgetState> states) {
+                                      return AppColors
+                                          .white; // Always white, even when disabled
+                                    },
+                                  ),
+                                  shape: WidgetStateProperty.all(
+                                    RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                      side: BorderSide(
+                                        color: empTaskDetailsPageController
+                                            .isPhotoUploadEnabled
+                                    ? AppColors.lightBlue : AppColors.lightestBlue,
+                                        width: 2,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                icon: Icon(
+                                  Icons.upload_file,
+                                  color: empTaskDetailsPageController
+                                            .isPhotoUploadEnabled
+                                    ? AppColors.lightBlue : AppColors.lightBlue.withValues(alpha: 0.55),
+                                  size: 22,
+                                ),
+                                label: Text(
+                                  "Upload Photos",
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: empTaskDetailsPageController
+                                            .isPhotoUploadEnabled
+                                    ? AppColors.lightBlue : AppColors.lightBlue.withValues(alpha: 0.55),
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                onPressed: empTaskDetailsPageController
+                                            .isPhotoUploadEnabled
+                                    ? () {
+                                        // empTaskDetailsPageController.pickFiles();
+                                        showModalBottomSheet(
+                                          context: context,
+                                          builder: (context) => SafeArea(
+                                            child: Wrap(
+                                              children: [
+                                                ListTile(
+                                                  leading: const Icon(
+                                                    Icons.camera_alt,
+                                                    color: AppColors.lightBlue,
+                                                  ),
+                                                  title: const Text(
+                                                    'Camera',
+                                                  ),
+                                                  onTap: () {
+                                                    Get.back();
+                                                    empTaskDetailsPageController
+                                                        .pickFromCamera();
+                                                  },
+                                                ),
+                                                ListTile(
+                                                  leading: const Icon(
+                                                    Icons.photo_library,
+                                                    color: AppColors.lightBlue,
+                                                  ),
+                                                  title: const Text('Gallery'),
+                                                  onTap: () {
+                                                    Get.back();
+                                                    empTaskDetailsPageController
+                                                        .pickFromGallery();
+                                                  },
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        );
+                                      }
+                                    : null,
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          Obx(() => Wrap(
+                                runSpacing: 8,
+                                spacing: 8,
+                                children: empTaskDetailsPageController
+                                    .selectedFiles
+                                    .asMap()
+                                    .entries
+                                    .map((entry) {
+                                  final index = entry.key;
+                                  final file = entry.value;
+                                  return Stack(
+                                    alignment: Alignment.topRight,
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.file(
+                                          file,
+                                          width: 64,
+                                          height: 64,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () =>
+                                            empTaskDetailsPageController
+                                                .removeFile(index),
+                                        child: Container(
+                                          decoration: const BoxDecoration(
+                                            color: AppColors.lightRed,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: const Icon(Icons.close,
+                                              color: Colors.white, size: 18),
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                }).toList(),
+                              )),
+                          const SizedBox(height: 16),
                           SpeedButton(
                             isDisabled:
                                 !empTaskDetailsPageController.statusFlag!,

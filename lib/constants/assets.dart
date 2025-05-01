@@ -1,3 +1,4 @@
-const String LOGO = "assets/logo.png";
-const String PROFILE = "assets/profile.png";
+const String logo = "assets/logo.png";
+const String appIcon = "assets/app_icon.png";
+const String profile = "assets/profile.png";
 

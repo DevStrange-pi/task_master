@@ -22,7 +22,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
               color: AppColors.black,
             ),
             child: Image.asset(
-              LOGO,
+              logo,
               height: 32,
             ),
           ),
@@ -53,7 +53,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                 radius: 32,
                 backgroundColor: AppColors.lightestBlue,
                 child: Image.asset(
-                  PROFILE,
+                  profile,
                   height: 32,
                 ),
               ),
