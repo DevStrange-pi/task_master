@@ -1,10 +1,8 @@
-// final String baseUrl = "https://app.cocolifehealthcare.com.ph"; //For Production
 
-// const String baseUrl = "https://educationcarrier.org/laravel/public/api"; //For Development
-const String baseUrl = "http://test.speedupinfotech.com/api"; //For Development
+// const String baseUrl = "http://test.speedupinfotech.com/api"; //For Development
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-// const String baseUrl ="http://dheeraj.000.pe/public/api"; //For Development
-
+String get baseUrl => dotenv.env['BASE_URL'] ?? '';
 class AppUrl {
   final String login = "$baseUrl/login";
   final String register = "$baseUrl/register";

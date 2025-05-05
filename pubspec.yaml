@@ -52,11 +52,19 @@ dependencies:
   file_picker: ^10.1.2
   mime: ^2.0.0
   flutter_launcher_icons: ^0.14.3
+  flutter_dotenv: ^5.2.1
 
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/app_icon.png"
+  image_path: "assets/app_icon_speedup.png"
+  flavors:
+    speedup:
+      image_path: "assets/app_icon_speedup.png"
+    fortunecloud:
+      image_path: "assets/app_icon_speedup.png"
+    fortunecloudpcmc:
+      image_path: "assets/app_icon_speedup.png"
 
 dev_dependencies:
   flutter_test:
@@ -80,7 +88,13 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
-    - assets/
+    - assets/logo_speedup.png
+    - assets/logo_fortunecloud.jpg
+    - assets/logo_fortunecloudpcmc.jpg
+    - .env.fortunecloud
+    - .env.fortunecloudpcmc
+    - .env.speedup
+    - assets/app_icon_speedup.png
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:task_master/utilities/utilities.dart';
 
 import '../constants/assets.dart';
+import '../main.dart';
 import '../styles/colors.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -22,7 +23,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
               color: AppColors.black,
             ),
             child: Image.asset(
-              logo,
+              logo!,
               height: 32,
             ),
           ),
@@ -53,7 +54,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                 radius: 32,
                 backgroundColor: AppColors.lightestBlue,
                 child: Image.asset(
-                  profile,
+                  profileAsset,
                   height: 32,
                 ),
               ),

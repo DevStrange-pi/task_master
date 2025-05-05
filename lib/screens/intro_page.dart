@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../constants/assets.dart';
+import '../main.dart';
 import '../routes/app_routes.dart';
 import '../styles/colors.dart';
 import '../widgets/speed_button.dart';
@@ -29,7 +29,7 @@ class IntroPage extends StatelessWidget {
                   color: AppColors.black,
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   child: Image.asset(
-                    logo,
+                    logo!,
                   ),
                 ),
                 const SizedBox(

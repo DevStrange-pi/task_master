@@ -54,6 +54,24 @@ android {
             signingConfig = signingConfigs.debug
         }
     }
+    flavorDimensions "app"
+    productFlavors {
+        speedup {
+            dimension "app"
+            applicationIdSuffix ".speedup"
+            resValue "string", "app_name", "Speed Up"
+        }
+        fortunecloud {
+            dimension "app"
+            applicationIdSuffix ".fortunecloud"
+            resValue "string", "app_name", "Fortune Cloud"
+        }
+        fortunecloudpcmc {
+            dimension "app"
+            applicationIdSuffix ".fortunecloudpcmc"
+            resValue "string", "app_name", "Fortune Cloud PCMC"
+        }
+    }
 }
 
 flutter {
