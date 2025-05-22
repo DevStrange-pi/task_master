@@ -339,4 +339,5 @@ class ReportingEmpDetailsController extends GetxController {
     }
     FocusScope.of(Get.context!).unfocus();
   }
+
 }

@@ -7,6 +7,7 @@ import '../../constants/app_url.dart';
 import '../../constants/strings.dart';
 import '../../models/employee/emp_dashboard_response_model.dart';
 import '../../network/http_req.dart';
+import '../../routes/app_routes.dart';
 import '../../utilities/circular_loader.dart';
 import '../../utilities/utilities.dart';
 
@@ -33,6 +34,11 @@ class EmpHomePageController extends GetxController {
       await getTaskCount();
     }
   }
+  
+  void goToMyProfile(){
+    Get.toNamed(AppRoutes.employeeMyProfilePage);
+  }
+
 
   Future<bool> getTaskCount() async {
     circularLoader.showCircularLoader();

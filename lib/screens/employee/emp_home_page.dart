@@ -32,6 +32,15 @@ class EmpHomePage extends StatelessWidget {
               const SizedBox(
                 height: 30,
               ),
+              MenuTile(
+                title: "My Profile",
+                onTap: () {
+                  empHomePageController.goToMyProfile();
+                },
+              ),
+              const SizedBox(
+                height: 30,
+              ),
               // MenuTile(
               //   title: "Request Task",
               //   onTap: () {

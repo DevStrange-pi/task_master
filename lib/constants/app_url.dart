@@ -54,4 +54,10 @@ class AppUrl {
   }
 
   final String empGetEmployees = "$baseUrl/employee/employees";
+  String getEmployeeReportUrlForEmployee({
+    required String fromDate,
+    required String toDate,
+  }) {
+    return "$baseUrl/employee/employee-report?from_date=$fromDate&to_date=$toDate";
+  }
 }

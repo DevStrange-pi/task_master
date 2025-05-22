@@ -5,6 +5,7 @@ import 'package:task_master/bindings/login_binding.dart';
 import 'package:task_master/screens/add_profile_page.dart';
 import 'package:task_master/screens/all_tasks_page.dart';
 import 'package:task_master/screens/add_task_page.dart';
+import 'package:task_master/screens/employee/emp_my_profile_page.dart';
 import 'package:task_master/screens/employee/emp_task_details_page.dart';
 import 'package:task_master/screens/employee/emp_task_list_page.dart';
 import 'package:task_master/screens/home_page.dart';
@@ -15,6 +16,7 @@ import 'package:task_master/screens/task_list_page.dart';
 import '../bindings/add_task_binding.dart';
 import '../bindings/all_tasks_binding.dart';
 import '../bindings/emp_home_binding.dart';
+import '../bindings/emp_my_profile_binding.dart';
 import '../bindings/emp_my_task_binding.dart';
 import '../bindings/emp_task_details_binding.dart';
 import '../bindings/emp_task_list_binding.dart';
@@ -110,5 +112,10 @@ class AppPages {
     //   name: AppRoutes.employeeRequestTaskPage,
     //   page: () => EmpRequestTaskPage(),
     // ),
+    GetPage(
+      name: AppRoutes.employeeMyProfilePage,
+      page: () => EmpMyProfilePage(),
+      binding: EmpMyProfileBinding()
+    ),
   ];
 }
