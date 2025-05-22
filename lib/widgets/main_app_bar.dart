@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:task_master/utilities/utilities.dart';
 
 import '../constants/assets.dart';
@@ -6,11 +7,22 @@ import '../main.dart';
 import '../styles/colors.dart';
 
 class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const MainAppBar({super.key});
+  final void Function()? onBackPressed;
+  final bool? isHome;
+  const MainAppBar({super.key,this.onBackPressed,this.isHome});
 
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      leading: isHome !=null ? null:IconButton(
+        padding: const EdgeInsets.only(left: 8),
+        icon: const Icon(
+          Icons.arrow_back_ios,
+        ),
+        onPressed: onBackPressed ?? () {
+          Get.back();
+        },
+      ),
       toolbarHeight: 100,
       backgroundColor: AppColors.white,
       title: Row(
@@ -38,7 +50,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
             },
             itemBuilder: (context) => [
               const PopupMenuItem(
-                padding: EdgeInsets.symmetric(horizontal:16,vertical: 8),
+                padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 height: 16,
                 value: 'logout',
                 child: Text('Logout'),
@@ -49,7 +61,6 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
               borderRadius: BorderRadius.circular(32),
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
-              
               child: CircleAvatar(
                 radius: 32,
                 backgroundColor: AppColors.lightestBlue,

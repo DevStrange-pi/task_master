@@ -66,7 +66,12 @@ class EmpTaskDetailsPageController extends GetxController {
   final ImagePicker _picker = ImagePicker();
 
   @override
-  void onInit() async {
+  void onInit() {
+    initAsync();
+    super.onInit();
+  }
+
+  void initAsync() async {
     task.value = Get.arguments;
     statusFlag = task.value.status == "completed" ||
             task.value.status == "expired" ||
@@ -91,8 +96,8 @@ class EmpTaskDetailsPageController extends GetxController {
         canPop.value = true;
       }
     });
-    super.onInit();
   }
+
   Future<void> pickFromGallery() async {
     final List<XFile>? images = await _picker.pickMultiImage();
     if (images != null && images.isNotEmpty) {
@@ -184,11 +189,13 @@ class EmpTaskDetailsPageController extends GetxController {
     }
     taskTypeSelected.value = task.value.type?.capitalizeFirst ?? "";
   }
+
   bool get isPhotoUploadEnabled {
-  return statusFlag == true &&
-      isEmployee == true &&
-      taskStatusSelected.value.toLowerCase() == "completed";
-}
+    return statusFlag == true &&
+        isEmployee == true &&
+        taskStatusSelected.value.toLowerCase() == "completed";
+  }
+
   Future<List<String>> getSelectedFilesAsBase64() async {
     List<String> base64Images = [];
     for (var file in selectedFiles) {

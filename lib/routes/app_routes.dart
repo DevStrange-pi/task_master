@@ -8,7 +8,9 @@ class AppRoutes {
   static const String taskListPage = '/taskListPage';
   static const String addTaskPage = '/addTaskPage';
   static const String taskDetailsPage = '/taskDetailsPage';
-  
+  static const String reportingPage = '/reportingPage';
+  static const String reportingEmpDetailsPage = '/reportingEmpDetailsPage';
+
   // EMPLOYEE
   static const String employeeHomePage = '/employeeHomePage';
   static const String employeeMyTaskPage= '/employeeMyTaskPage';

@@ -11,42 +11,66 @@ import '../routes/app_routes.dart';
 import '../utilities/circular_loader.dart';
 import '../utilities/utilities.dart';
 
-class HomePageController extends GetxController{
+class HomePageController extends GetxController {
   Rx<Statistics> statistics = Statistics().obs;
   SharedPreferences? prefs;
   CircularLoader circularLoader = Get.find<CircularLoader>();
   RxString empName = "Admin".obs;
 
   @override
-  void onInit() async {
-    prefs = await SharedPreferences.getInstance();
-    empName.value = prefs!.getString(SpString.name) ?? "Admin";
-    await getTaskCount();
+  void onInit() {
+    initAsync();
     super.onInit();
   }
+  
+  void initAsync() async {
+    prefs = await SharedPreferences.getInstance();
+    empName.value = prefs!.getString(SpString.name) ?? "Admin";
+    if (Get.arguments != null &&
+        Get.arguments is Map &&
+        Get.arguments['fromUpdateStatus'] == true) {
+      await getTaskCount();
+    } else {
+      await getTaskCount();
+    }
+  }
+
+  void goToReporting() async {
+    final flag = await Get.toNamed(AppRoutes.reportingPage);
+    if (flag != null && flag == true) {
+      getTaskCount();
+    }
+  }
+
   Future<bool> getTaskCount() async {
     circularLoader.showCircularLoader();
     String token = prefs!.getString(SpString.token)!;
-    var headers = {"Authorization": "Bearer $token", "Content-Type": "application/json", "Accept": "application/json"};
-    var resp = await HttpReq.getApi(apiUrl: AppUrl().adminHome, headers: headers);
+    var headers = {
+      "Authorization": "Bearer $token",
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    };
+    var resp =
+        await HttpReq.getApi(apiUrl: AppUrl().adminHome, headers: headers);
     var respBody = json.decode(resp!.body);
     if (resp.statusCode == 200) {
-      AdminHomeResponseModel tokenData = AdminHomeResponseModel.fromJson(respBody);
+      AdminHomeResponseModel tokenData =
+          AdminHomeResponseModel.fromJson(respBody);
       statistics.value = tokenData.data?.statistics ?? Statistics();
       circularLoader.hideCircularLoader();
       return true;
       // myBotToast( respBody["message"]);
     } else {
       circularLoader.hideCircularLoader();
-      myBotToast( respBody["message"]);
+      myBotToast(respBody["message"]);
       // syllabusModelList.value = syllabusData.data!;
       return false;
     }
   }
 
-  void addTaskTapped()async{
-    bool res = await Get.toNamed(AppRoutes.addTaskPage);
-    if (res) {
+  void addTaskTapped() async {
+    var res = await Get.toNamed(AppRoutes.addTaskPage);
+    if (res != null && res == true) {
       await getTaskCount();
     }
   }

@@ -1,8 +1,8 @@
-
 // const String baseUrl = "http://test.speedupinfotech.com/api"; //For Development
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 String get baseUrl => dotenv.env['BASE_URL'] ?? '';
+
 class AppUrl {
   final String login = "$baseUrl/login";
   final String register = "$baseUrl/register";
@@ -22,6 +22,29 @@ class AppUrl {
   final String getEmployees = "$baseUrl/admin/employees";
   final String logout = "$baseUrl/logout";
   final String addTask = "$baseUrl/admin/tasks";
+  String getEmployeeReportUrl({
+    required String fromDate,
+    required String toDate,
+    required int employeeId,
+  }) {
+    return "$baseUrl/admin/tasks/employee-report"
+        "?from_date=$fromDate&to_date=$toDate&employee_id=$employeeId";
+  }
+
+  String getTaskReportUrl({
+    required String fromDate,
+    required String toDate,
+    required int employeeId,
+  }) {
+    return "$baseUrl/admin/task-report"
+        "?from_date=$fromDate&to_date=$toDate&employee_id=$employeeId";
+  }
+  String adminUpdateTask(int taskId) {
+    return "$baseUrl/admin/tasks/$taskId/status";
+  }
+  
+// COMMON
+  final String getProfile = "$baseUrl/profile";
 
 // EMPLOYEE
   final String employeeHome = "$baseUrl/employee/dashboard";

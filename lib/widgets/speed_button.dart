@@ -10,6 +10,7 @@ class SpeedButton extends StatelessWidget {
   final bool isDisabled;
   final void Function()? onPressed;
   final double buttonHeight;
+  final double elevation;
   const SpeedButton(
       {super.key,
       required this.buttonText,
@@ -18,7 +19,7 @@ class SpeedButton extends StatelessWidget {
       this.needLoader = false,
       this.isDisabled = false,
       required this.onPressed,
-      this.buttonHeight = 50.0});
+      this.buttonHeight = 50.0,this.elevation=16});
   @override
   Widget build(BuildContext context) {
     return AbsorbPointer(
@@ -30,7 +31,7 @@ class SpeedButton extends StatelessWidget {
           backgroundColor: invertedColors
               ? const WidgetStatePropertyAll(AppColors.white)
               : isDisabled ? const WidgetStatePropertyAll(AppColors.lightestBlue)  : const WidgetStatePropertyAll(AppColors.lightBlue),
-          elevation: const WidgetStatePropertyAll(16),
+          elevation: WidgetStatePropertyAll(elevation),
           shape: WidgetStatePropertyAll(RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10)
           ))

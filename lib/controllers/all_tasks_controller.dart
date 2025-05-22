@@ -21,13 +21,16 @@ class AllTasksController extends GetxController {
   CircularLoader circularLoader = Get.find<CircularLoader>();
 
   @override
-  void onInit() async {
-    prefs = await SharedPreferences.getInstance();
-    tasksCount = Get.arguments;
-    tasksCountList!.assignAll(convertTaskMap(tasksCount ?? {}));
+  void onInit() {
+    initAsync();
     super.onInit();
   }
 
+  void initAsync() async {
+    prefs = await SharedPreferences.getInstance();
+    tasksCount = Get.arguments;
+    tasksCountList!.assignAll(convertTaskMap(tasksCount ?? {}));
+  }
 
   List<Map<String, String>?> convertTaskMap(Map<String, dynamic> taskMap) {
     if (taskMap.isEmpty) {
@@ -81,12 +84,16 @@ class AllTasksController extends GetxController {
       filteredTasks = tasks!
           .where((task) => task.status.toString() == newTitle.toLowerCase())
           .toList();
-      Get.toNamed(
-        AppRoutes.taskListPage,
-        arguments: [filteredTasks, title],
-      );
+      if (filteredTasks.isNotEmpty) {
+        Get.toNamed(
+          AppRoutes.taskListPage,
+          arguments: [filteredTasks, title, ""],
+        );
+      } else {
+        myBotToast("No Task Found", duration: 2);
+      }
     } else {
-      myBotToast("No Task Found", duration: const Duration(seconds: 2));
+      myBotToast("No Task Found", duration: 2);
     }
   }
 }

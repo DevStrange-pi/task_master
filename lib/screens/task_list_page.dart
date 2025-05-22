@@ -17,7 +17,7 @@ class TaskListPage extends StatelessWidget {
       title: taskListController.title!,
       content: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.only(top: 20,bottom: 40),
+          padding: const EdgeInsets.only(top: 20, bottom: 40),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: List.generate(
@@ -27,23 +27,39 @@ class TaskListPage extends StatelessWidget {
                   padding: const EdgeInsets.only(top: 30.0),
                   child: Tooltip(
                     padding: const EdgeInsets.all(12),
-                    showDuration: const Duration(minutes: 1),
-                    message: 'Name: ${taskListController.tasksList![index].name!}\n\nDescription: ${taskListController.tasksList![index].description!}',
+                    showDuration: const Duration(seconds: 10),
+                    message:
+                        'Name: ${taskListController.tasksList![index].name!}\n\nDescription: ${taskListController.tasksList![index].description!}',
                     textStyle: const TextStyle(
-                      fontSize: 18,
-                      color: AppColors.greyWhite
-                    ),
+                        fontSize: 18, color: AppColors.greyWhite),
                     margin: const EdgeInsets.fromLTRB(50, 0, 50, 0),
                     child: MenuTile(
                       title: taskListController.tasksList![index].name!,
+                      expiredCount: taskListController
+                                  .tasksList![index].status ==
+                              "pending"
+                          ? taskListController.tasksList![index].expiredCount
+                          : null,
+                      needReassign: taskListController
+                                  .tasksList![index].status ==
+                              "expired"
+                          ? true
+                          : null,
+                      reassignCallback: () {
+                        taskListController.reassignCallback(context,taskListController.tasksList![index].id!);
+                      },
                       onTap: () {
-                        Get.toNamed(AppRoutes.taskDetailsPage,arguments: {
-                          "taskId": taskListController.tasksList![index].id!.toString(),
-                          "taskName": taskListController.tasksList![index].name!,
+                        Get.toNamed(AppRoutes.taskDetailsPage, arguments: {
+                          "taskId": taskListController.tasksList![index].id!
+                              .toString(),
+                          "taskName":
+                              taskListController.tasksList![index].name!,
                           "taskDescription":
                               taskListController.tasksList![index].description!,
-                          "taskType": taskListController.tasksList![index].type!,
-                          "taskStatus": taskListController.tasksList![index].status!,
+                          "taskType":
+                              taskListController.tasksList![index].type!,
+                          "taskStatus":
+                              taskListController.tasksList![index].status!,
                         });
                       },
                     ),

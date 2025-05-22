@@ -53,6 +53,7 @@ class Task {
     String? status;
     DateTime? createdAt;
     DateTime? updatedAt;
+    int? expiredCount; 
     List<Employee>? employees;
     List<dynamic>? photos;
 
@@ -65,6 +66,7 @@ class Task {
         this.status,
         this.createdAt,
         this.updatedAt,
+        this.expiredCount,
         this.employees,
         this.photos
     });
@@ -78,6 +80,7 @@ class Task {
         status: json["status"],
         createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
         updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
+        expiredCount: json["expired_count"],
         employees: json["employees"] == null ? [] : List<Employee>.from(json["employees"]!.map((x) => Employee.fromJson(x))),
         photos: (() {
           final raw = json["photos"];
@@ -110,6 +113,7 @@ class Task {
         "status": status,
         "created_at": createdAt?.toIso8601String(),
         "updated_at": updatedAt?.toIso8601String(),
+        "expired_count": expiredCount,
         "employees": employees == null ? [] : List<dynamic>.from(employees!.map((x) => x.toJson())),
         "photos": photos == null
           ? []
@@ -133,6 +137,7 @@ class Employee {
     String? username;
     dynamic imagePath;
     String? role;
+    String? deviceToken;
     DateTime? createdAt;
     DateTime? updatedAt;
     Pivot? pivot;
@@ -147,6 +152,7 @@ class Employee {
         this.username,
         this.imagePath,
         this.role,
+        this.deviceToken,
         this.createdAt,
         this.updatedAt,
         this.pivot,
@@ -162,6 +168,7 @@ class Employee {
         username: json["username"],
         imagePath: json["image_path"],
         role: json["role"],
+        deviceToken: json["device_token"],
         createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
         updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
         pivot: json["pivot"] == null ? null : Pivot.fromJson(json["pivot"]),
@@ -177,6 +184,7 @@ class Employee {
         "username": username,
         "image_path": imagePath,
         "role": role,
+        "device_token": deviceToken,
         "created_at": createdAt?.toIso8601String(),
         "updated_at": updatedAt?.toIso8601String(),
         "pivot": pivot?.toJson(),

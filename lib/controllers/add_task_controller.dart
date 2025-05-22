@@ -42,7 +42,12 @@ class AddTaskController extends GetxController {
   final RxBool canPop = true.obs;
 
   @override
-  void onInit() async {
+  void onInit(){
+    initAsync();
+    super.onInit();
+  }
+
+  void initAsync() async {
     prefs = await SharedPreferences.getInstance();
     await getEmployees();
     multiSelectController.addListener(() {
@@ -52,7 +57,6 @@ class AddTaskController extends GetxController {
         canPop.value = true;
       }
     });
-    super.onInit();
   }
 
   @override

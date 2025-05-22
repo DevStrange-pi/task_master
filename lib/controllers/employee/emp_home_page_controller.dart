@@ -10,34 +10,51 @@ import '../../network/http_req.dart';
 import '../../utilities/circular_loader.dart';
 import '../../utilities/utilities.dart';
 
-class EmpHomePageController extends GetxController{
+class EmpHomePageController extends GetxController {
   Rx<EmpStatistics> statistics = EmpStatistics().obs;
   SharedPreferences? prefs;
   CircularLoader circularLoader = Get.find<CircularLoader>();
   RxString empName = "User".obs;
 
   @override
-  void onInit() async {
+  void onInit() {
+    initAsync();
     super.onInit();
+  }
+
+  void initAsync() async {
     prefs = await SharedPreferences.getInstance();
     empName.value = prefs!.getString(SpString.name) ?? "User";
-    await getTaskCount();
+    if (Get.arguments != null &&
+        Get.arguments is Map &&
+        Get.arguments['fromUpdateStatus'] == true) {
+      await getTaskCount();
+    } else {
+      await getTaskCount();
+    }
   }
+
   Future<bool> getTaskCount() async {
     circularLoader.showCircularLoader();
     String token = prefs!.getString(SpString.token)!;
-    var headers = {"Authorization": "Bearer $token", "Content-Type": "application/json", "Accept": "application/json"};
-    var resp = await HttpReq.getApi(apiUrl: AppUrl().employeeHome, headers: headers);
+    var headers = {
+      "Authorization": "Bearer $token",
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    };
+    var resp =
+        await HttpReq.getApi(apiUrl: AppUrl().employeeHome, headers: headers);
     var respBody = json.decode(resp!.body);
     if (resp.statusCode == 200) {
-      EmpDashboardResponseModel tokenData = EmpDashboardResponseModel.fromJson(respBody);
+      EmpDashboardResponseModel tokenData =
+          EmpDashboardResponseModel.fromJson(respBody);
       statistics.value = tokenData.data?.statistics ?? EmpStatistics();
       circularLoader.hideCircularLoader();
       // myBotToast(respBody["message"]);
       return true;
     } else {
       circularLoader.hideCircularLoader();
-      myBotToast( respBody["message"]);
+      myBotToast(respBody["message"]);
       // syllabusModelList.value = syllabusData.data!;
       return false;
     }

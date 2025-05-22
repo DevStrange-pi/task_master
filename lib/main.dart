@@ -3,10 +3,11 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:task_master/network/http_overrides.dart';
 
-import 'bindings/app_bindings.dart';
+// import 'bindings/app_bindings.dart';
 import 'constants/strings.dart';
 import 'routes/app_pages.dart';
 import 'routes/app_routes.dart';
@@ -18,6 +19,7 @@ String? logo;
 String? flavor;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await requestPermissions();
   await envConfig();
   SharedPreferences? prefs;
   prefs = await SharedPreferences.getInstance();
@@ -28,6 +30,20 @@ void main() async {
   runApp(MyApp(token: token, role: role));
 }
 
+Future<void> requestStoragePermission() async {
+  if (await Permission.storage.request().isGranted) {
+    // Permission granted, proceed
+  } else {
+    // Show dialog or handle denied permissions
+  }
+}
+Future<void> requestPermissions() async {
+  await [
+    Permission.storage,
+    Permission.manageExternalStorage,
+    Permission.notification, // For Android 13+
+  ].request();
+}
 Future<void> envConfig() async {
   flavor = const String.fromEnvironment('FLAVOR');
   switch (flavor) {
@@ -57,7 +73,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       getPages: AppPages.pages,
       builder: BotToastInit(),
-      initialBinding: AppBindings(),
+      // initialBinding: AppBindings(),
       theme: ThemeData(
         datePickerTheme: const DatePickerThemeData(
           backgroundColor: AppColors.white,

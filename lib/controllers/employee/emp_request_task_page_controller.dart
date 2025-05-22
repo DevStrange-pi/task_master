@@ -26,19 +26,22 @@
 //   final RxBool canPop = true.obs;
 
 //   @override
-//   void onInit() async {
-//     prefs = await SharedPreferences.getInstance();
-//     await getEmployees();
-//     multiSelectController.addListener(() {
-//       if (multiSelectController.isOpen) {
-//         canPop.value = false;
-//       } else {
-//         canPop.value = true;
-//       }
-//     });
+//   void onInit() {
+      // initAsync();
 //     super.onInit();
 //   }
 
+// void initAsync() async {
+//   prefs = await SharedPreferences.getInstance();
+//   await getEmployees();
+//   multiSelectController.addListener(() {
+//     if (multiSelectController.isOpen) {
+//       canPop.value = false;
+//     } else {
+//       canPop.value = true;
+//     }
+//   });
+// }
 //   @override
 //   void onClose() {
 //     assignDropdownOptions.clear();

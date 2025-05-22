@@ -50,7 +50,12 @@ class TaskDetailsController extends GetxController {
   final RxList<String> photoBase64List = <String>[].obs;
 
   @override
-  void onInit() async {
+  void onInit() {
+    initAsync();
+    super.onInit();
+  }
+
+  void initAsync() async {
     prefs = await SharedPreferences.getInstance();
     await Future.wait([
       getTask(),
@@ -67,7 +72,6 @@ class TaskDetailsController extends GetxController {
         canPop.value = true;
       }
     });
-    super.onInit();
   }
 
   @override
@@ -253,9 +257,9 @@ class TaskDetailsController extends GetxController {
         myBotToast(taskDetails.message ?? "");
         // Get.back(result: true);
         // Get.until((route) => Get.currentRoute == AppRoutes.homePage);
+        circularLoader.hideCircularLoader();
         Get.offAllNamed(AppRoutes.homePage,
             arguments: {"fromUpdateStatus": true});
-        circularLoader.hideCircularLoader();
         return true;
       } else {
         circularLoader.hideCircularLoader();

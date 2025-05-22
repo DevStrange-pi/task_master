@@ -53,6 +53,9 @@ dependencies:
   mime: ^2.0.0
   flutter_launcher_icons: ^0.14.3
   flutter_dotenv: ^5.2.1
+  flutter_local_notifications: ^19.2.1
+  open_file: ^3.5.10
+  path_provider: ^2.1.5
 
 flutter_icons:
   android: true
@@ -88,13 +91,14 @@ flutter:
   # the material Icons class.
   uses-material-design: true
   assets:
-    - assets/logo_speedup.png
-    - assets/logo_fortunecloud.jpg
-    - assets/logo_fortunecloudpcmc.jpg
+    # - assets/logo_speedup.png
+    # - assets/logo_fortunecloud.jpg
+    # - assets/logo_fortunecloudpcmc.jpg
+    # - assets/app_icon_speedup.png
+    - assets/
     - .env.fortunecloud
     - .env.fortunecloudpcmc
     - .env.speedup
-    - assets/app_icon_speedup.png
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

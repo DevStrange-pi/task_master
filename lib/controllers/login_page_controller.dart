@@ -26,7 +26,7 @@ class LoginPageController extends GetxController {
   }
 
   @override
-  void onInit() async {
+  void onInit(){
     super.onInit();
     sharedData();
   }

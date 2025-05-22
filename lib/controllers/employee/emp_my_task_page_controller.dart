@@ -21,21 +21,25 @@ class EmpMyTaskPageController extends GetxController {
   CircularLoader circularLoader = Get.find<CircularLoader>();
 
   @override
-  void onInit() async {
+  void onInit() {
+    initAsync();
+    super.onInit();
+  }
+
+  void initAsync() async {
     prefs = await SharedPreferences.getInstance();
     tasksCount = Get.arguments;
     tasksCountList!.assignAll(convertTaskMap(tasksCount ?? {}));
-    super.onInit();
-  } 
-
+  }
 
   List<Map<String, String>?> convertTaskMap(Map<String, dynamic> taskMap) {
     if (taskMap.isEmpty) {
       return [];
     }
     return taskMap.entries
-    .where((entry) =>
-            entry.key.contains("tasks") && !entry.key.contains("requested_tasks"))
+        .where((entry) =>
+            entry.key.contains("tasks") &&
+            !entry.key.contains("requested_tasks"))
         .map((entry) {
       final name = entry.key
           .split('_')
@@ -81,12 +85,16 @@ class EmpMyTaskPageController extends GetxController {
       filteredTasks = tasks!
           .where((task) => task.type.toString() == newTitle.toLowerCase())
           .toList();
-      Get.toNamed(
-        AppRoutes.employeeTaskListPage,
-        arguments: [filteredTasks, title],
-      );
+      if (filteredTasks.isNotEmpty) {
+        Get.toNamed(
+          AppRoutes.employeeTaskListPage,
+          arguments: [filteredTasks, title],
+        );
+      } else {
+        myBotToast("No Task Found", duration: 2);
+      }
     } else {
-      myBotToast("No Task Found", duration: const Duration(seconds: 2));
+      myBotToast("No Task Found", duration: 2);
     }
   }
 }

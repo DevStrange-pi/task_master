@@ -2,16 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:task_master/styles/colors.dart';
 
 class MenuTile extends StatelessWidget {
-  const MenuTile({
-    super.key,
-    required this.title,
-    this.onTap,
-    this.count,
-    this.statusColor,
-  });
+  const MenuTile(
+      {super.key,
+      required this.title,
+      this.onTap,
+      this.count,
+      this.statusColor,
+      this.expiredCount,
+      this.needReassign,
+      this.reassignCallback});
   final String title;
   final void Function()? onTap;
   final int? count;
+  final int? expiredCount;
+  final bool? needReassign;
+  final void Function()? reassignCallback;
   final Color? statusColor;
 
   @override
@@ -20,9 +25,32 @@ class MenuTile extends StatelessWidget {
       onTap: onTap,
       child: Stack(
         children: [
+          expiredCount != null
+              ? Positioned(
+                  right: 70,
+                  top: 0,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10)),
+                        color: AppColors.black),
+                    child: Text(
+                      "Expired $expiredCount times",
+                      style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.white),
+                    ),
+                  ),
+                )
+              : const SizedBox(),
           Container(
             width: double.infinity,
-            margin: const EdgeInsets.fromLTRB(56, 16, 56, 8),
+            margin:
+                EdgeInsets.fromLTRB(56, expiredCount != null ? 22 : 16, 56, 8),
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
@@ -71,11 +99,10 @@ class MenuTile extends StatelessWidget {
                           child: Text(
                             title,
                             style: const TextStyle(
-                              color: AppColors.white,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              overflow: TextOverflow.ellipsis
-                            ),
+                                color: AppColors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                                overflow: TextOverflow.ellipsis),
                           ),
                         ),
                         statusColor == null
@@ -91,12 +118,35 @@ class MenuTile extends StatelessWidget {
               ],
             ),
           ),
+          needReassign != null
+              ? Positioned(
+                  right: 36,
+                  top: 34,
+                  child: IconButton(
+                    style: const ButtonStyle(
+                        backgroundColor:
+                            WidgetStatePropertyAll(AppColors.white),
+                        shape: WidgetStatePropertyAll(
+                          CircleBorder(
+                            side: BorderSide(color: AppColors.grey),
+                          ),
+                        )),
+                    padding: EdgeInsets.zero,
+                    visualDensity:
+                        const VisualDensity(horizontal: -2, vertical: -2),
+                    onPressed: reassignCallback,
+                    icon: const Icon(
+                      Icons.restart_alt_rounded,
+                    ),
+                  ),
+                )
+              : const SizedBox(),
           count != null
               ? Positioned(
                   right: 36,
                   top: 0,
                   child: CircleAvatar(
-                    backgroundColor: AppColors.lightBlue,
+                    backgroundColor: AppColors.black,
                     radius: 19,
                     child: Text(
                       count.toString(),
