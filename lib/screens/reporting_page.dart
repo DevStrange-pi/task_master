@@ -46,7 +46,7 @@ class ReportingPage extends StatelessWidget {
                               reportingPageController
                                       .employeeList[index].name ??
                                   "",
-                              reportingPageController.employeeList[index].id!);
+                              reportingPageController.employeeList[index].id!, reportingPageController.employeeList[index].latestLocation);
                         },
                       ),
                     );

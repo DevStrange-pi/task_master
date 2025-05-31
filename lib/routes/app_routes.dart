@@ -1,4 +1,5 @@
 class AppRoutes {
+  static const String splashPage = '/splashPage';
   // ADMIN
   static const String introPage= '/introPage';
   static const String loginPage = '/loginPage';

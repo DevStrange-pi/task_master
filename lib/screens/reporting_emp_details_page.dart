@@ -32,6 +32,108 @@ class ReportingEmpDetailsPage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                      child: Column(
+                        children: [
+                          const Row(
+                            children: [
+                              Text(
+                                "Last Location",
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppColors.blue,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Obx(
+                            () => Container(
+                              margin: const EdgeInsets.only(top: 4),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 12),
+                              decoration: const BoxDecoration(
+                                  color: Color.fromARGB(99, 182, 183, 183),
+                                  borderRadius: BorderRadius.only(
+                                      bottomLeft: Radius.circular(14),
+                                      bottomRight: Radius.circular(14))),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        reportingEmpDetailsController
+                                            .latestLocation.value!.name!,
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.darkGrey,
+                                        ),
+                                      ),
+                                      reportingEmpDetailsController
+                                              .latestLocation
+                                              .value!
+                                              .address!
+                                              .isEmpty
+                                          ? const SizedBox()
+                                          : Text(
+                                              reportingEmpDetailsController
+                                                  .latestLocation
+                                                  .value!
+                                                  .address!,
+                                              style: const TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: AppColors.darkGrey,
+                                              ),
+                                            ),
+                                    ],
+                                  ),
+                                  IconButton(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 6),
+                                    visualDensity: const VisualDensity(
+                                        horizontal: -4, vertical: -4),
+                                    onPressed: () {
+                                      reportingEmpDetailsController
+                                          .onTapLocationIcon();
+                                    },
+                                    icon: const Row(
+                                      children: [
+                                        // Text(
+                                        //   "Show on Map",
+                                        //   style: TextStyle(
+                                        //     fontSize: 14,
+                                        //     fontWeight: FontWeight.bold,
+                                        //     color: AppColors.lightBlue,
+                                        //   ),
+                                        // ),
+                                        Icon(
+                                          Icons.location_on,
+                                          color: AppColors.blue,
+                                          size: 22,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 14,
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 40.0),
                       child: Row(

@@ -7,7 +7,7 @@ class ScaffoldMain extends StatelessWidget {
       {super.key,
       required this.title,
       required this.content,
-      this.isTitleContainer = true,this.infoWidget = const SizedBox(),this.isHome,this.onBackPressed});
+      this.isTitleContainer = true,this.infoWidget = const SizedBox(),this.isHome,this.onBackPressed,this.isNotificationsVisible = false,this.onNotificationsPressed,this.notificationCount = 0});
 
   final String title;
   final Widget content;
@@ -15,11 +15,17 @@ class ScaffoldMain extends StatelessWidget {
   final Widget infoWidget;
   final void Function()? onBackPressed;
   final bool? isHome; 
+  final bool isNotificationsVisible;
+  final void Function()? onNotificationsPressed;
+  final int notificationCount;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: MainAppBar(
+        notificationCount: notificationCount,
+        onNotificationsPressed: onNotificationsPressed,
+        isNotificationsVisible: isNotificationsVisible,
         isHome: isHome,
         onBackPressed: onBackPressed,
       ),

@@ -45,6 +45,7 @@ class AppUrl {
   
 // COMMON
   final String getProfile = "$baseUrl/profile";
+  final String sendFcmToken = "$baseUrl/save-device-token";
 
 // EMPLOYEE
   final String employeeHome = "$baseUrl/employee/dashboard";
@@ -59,5 +60,8 @@ class AppUrl {
     required String toDate,
   }) {
     return "$baseUrl/employee/employee-report?from_date=$fromDate&to_date=$toDate";
+  }
+  String trackLocationForEmployee(int empId,String baseUrlPrefs){
+    return "$baseUrlPrefs/employee/$empId/track-location";
   }
 }

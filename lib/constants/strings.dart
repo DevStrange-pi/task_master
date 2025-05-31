@@ -1,6 +1,7 @@
 const APP_VERSION = "1.2.2";
 
 class SpString {
+  static const id = "id";
   static const token = "token";
   static const role = "role";
   static const name = "name";
@@ -9,6 +10,7 @@ class SpString {
   static const designation = "designation";
   static const employeeId = "employeeId";
   static const username = "username";
+  static const fcmToken = "fcm_token";
 
 }
 

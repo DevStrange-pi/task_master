@@ -22,6 +22,7 @@ import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../background/location_service.dart';
 import '../constants/app_url.dart';
 import '../constants/strings.dart';
 import '../network/http_req.dart';
@@ -307,6 +308,7 @@ class AppUtility {
         apiUrl: AppUrl().logout, headers: headers);
     var respBody = json.decode(resp!.body);
     if (resp.statusCode == 200) {
+      stopService();
       keepSomeSpValues();
       Get.offAllNamed(AppRoutes.introPage);
       myBotToast(respBody["message"]);

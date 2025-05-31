@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 // import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/widgets.dart';
@@ -9,6 +10,7 @@ import '../models/login_response_model.dart';
 import '../network/http_req.dart';
 import '../routes/app_routes.dart';
 import '../utilities/utilities.dart';
+
 
 class LoginPageController extends GetxController {
   late SharedPreferences prefs;
@@ -26,7 +28,7 @@ class LoginPageController extends GetxController {
   }
 
   @override
-  void onInit(){
+  void onInit() {
     super.onInit();
     sharedData();
   }
@@ -48,13 +50,15 @@ class LoginPageController extends GetxController {
   }
 
   void storeProfileDetails(
+      int id,
       String role,
       String name,
       String email,
       String contactNumber,
       String designation,
       String employeeId,
-      String username){
+      String username) {
+    prefs.setInt(SpString.id, id);
     prefs.setString(SpString.role, role);
     prefs.setString(SpString.name, name);
     prefs.setString(SpString.email, email);
@@ -83,6 +87,7 @@ class LoginPageController extends GetxController {
           myBotToast(respBody["message"]);
           storeToken(loginData.data!.token!);
           storeProfileDetails(
+              loginData.data!.employee!.id!,
               loginData.data!.role!,
               loginData.data!.employee!.name!,
               loginData.data!.employee!.email!,
@@ -92,8 +97,9 @@ class LoginPageController extends GetxController {
               loginData.data!.employee!.username!);
           if (loginData.data!.role! == "admin") {
             Get.offAllNamed(AppRoutes.homePage, arguments: loginData.data!);
-          } else{
-            Get.offAllNamed(AppRoutes.employeeHomePage, arguments: loginData.data!);
+          } else {
+            Get.offAllNamed(AppRoutes.employeeHomePage,
+                arguments: loginData.data!);
           }
         } else {
           needLoader.value = false;

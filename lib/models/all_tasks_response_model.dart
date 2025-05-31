@@ -141,6 +141,7 @@ class Employee {
     DateTime? createdAt;
     DateTime? updatedAt;
     Pivot? pivot;
+    LatestLocation? latestLocation;
 
     Employee({
         this.id,
@@ -156,6 +157,7 @@ class Employee {
         this.createdAt,
         this.updatedAt,
         this.pivot,
+        this.latestLocation,
     });
 
     factory Employee.fromJson(Map<String, dynamic> json) => Employee(
@@ -172,6 +174,7 @@ class Employee {
         createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
         updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
         pivot: json["pivot"] == null ? null : Pivot.fromJson(json["pivot"]),
+        latestLocation: json["latest_location"] == null ? null : LatestLocation.fromJson(json["latest_location"]),
     );
 
     Map<String, dynamic> toJson() => {
@@ -191,6 +194,59 @@ class Employee {
     };
 }
 
+class LatestLocation {
+  int? id;
+  int? employeeId;
+  String? name;
+  String? address;
+  String? latitude;
+  String? longitude;
+  DateTime? createdAt;
+  DateTime? updatedAt;
+
+  LatestLocation({
+    this.id,
+    this.employeeId,
+    this.name,
+    this.address,
+    this.latitude,
+    this.longitude,
+    this.createdAt,
+    this.updatedAt,
+  });
+
+  factory LatestLocation.fromJson(Map<String, dynamic> json) => LatestLocation(
+        id: json["id"],
+        employeeId: json["employee_id"],
+        name: json["name"],
+        address: json["address"],
+        latitude: json["latitude"] ,
+        // != null
+        //     ? double.tryParse(json["latitude"].toString())
+        //     : null,
+        longitude: json["longitude"] ,
+        // != null
+        //     ? double.tryParse(json["longitude"].toString())
+        //     : null,
+        createdAt: json["created_at"] == null
+            ? null
+            : DateTime.parse(json["created_at"]),
+        updatedAt: json["updated_at"] == null
+            ? null
+            : DateTime.parse(json["updated_at"]),
+      );
+
+  Map<String, dynamic> toJson() => {
+        "id": id,
+        "employee_id": employeeId,
+        "name": name,
+        "address": address,
+        "latitude": latitude,
+        "longitude": longitude,
+        "created_at": createdAt?.toIso8601String(),
+        "updated_at": updatedAt?.toIso8601String(),
+      };
+}
 
 class Pivot {
     int? taskId;

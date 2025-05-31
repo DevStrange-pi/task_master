@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "745211613486",
+    "project_id": "task-master-2b2bf",
+    "storage_bucket": "task-master-2b2bf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:745211613486:android:73c64f1d09c797b09c6abf",
+        "android_client_info": {
+          "package_name": "com.example.task_master.speedup"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqimcW-rSDjDfWukG1d_6SUpecEue0iw8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

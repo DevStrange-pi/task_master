@@ -15,6 +15,12 @@ class EmpHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Obx(
       () => ScaffoldMain(
+        isHome: true,
+        isNotificationsVisible: true,
+        notificationCount: 1,
+        onNotificationsPressed: () {
+          
+        },
         title: empHomePageController.empName.value,
         content: Padding(
           padding: const EdgeInsets.only(top: 60),

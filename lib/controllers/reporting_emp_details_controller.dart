@@ -10,6 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:task_master/models/get_employee_report_response_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../constants/app_url.dart';
 import '../constants/strings.dart';
@@ -22,6 +23,12 @@ import '../utilities/utilities.dart';
 class ReportingEmpDetailsController extends GetxController {
   RxString employeeName = "".obs;
   int? employeeId;
+  Rx<LatestLocation?> latestLocation = LatestLocation(
+          latitude: "0.0",
+          longitude: "0.0",
+          name: "No Location Found",
+          address: "")
+      .obs;
   Rx<EmployeeReportData> reportData = EmployeeReportData().obs;
   RxList<Map<String, String>?>? tasksCountList = <Map<String, String>>[].obs;
   List<Task> filteredTasks = <Task>[].obs;
@@ -40,7 +47,7 @@ class ReportingEmpDetailsController extends GetxController {
       FlutterLocalNotificationsPlugin();
 
   @override
-  void onInit(){
+  void onInit() {
     initAsync();
     super.onInit();
   }
@@ -49,6 +56,7 @@ class ReportingEmpDetailsController extends GetxController {
     prefs = await SharedPreferences.getInstance();
     employeeName.value = Get.arguments[0];
     employeeId = Get.arguments[1];
+    latestLocation.value = Get.arguments[2];
 
     DateTime today = DateTime.now();
     originalToDate = DateFormat('dd MMMM yyyy').format(today);
@@ -83,6 +91,22 @@ class ReportingEmpDetailsController extends GetxController {
 
   void onTapCalendarIcon() {
     isDatePickerVisible.value = !isDatePickerVisible.value;
+  }
+
+  void onTapLocationIcon() async {
+    final lat = latestLocation.value?.latitude;
+    final lng = latestLocation.value?.longitude;
+    if (lat != null && lng != null && lat != "0.0" && lng != "0.0") {
+      final url = Uri.parse(
+          'https://www.google.com/maps/search/?api=1&query=$lat,$lng');
+      if (await canLaunchUrl(url)) {
+        await launchUrl(url, mode: LaunchMode.externalApplication);
+      } else {
+        myBotToast('Could not open Google Maps');
+      }
+    } else {
+      myBotToast('No valid location found');
+    }
   }
 
   void onTapExcelSheetIcon() async {
@@ -339,5 +363,4 @@ class ReportingEmpDetailsController extends GetxController {
     }
     FocusScope.of(Get.context!).unfocus();
   }
-
 }

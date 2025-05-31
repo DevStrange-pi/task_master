@@ -1,33 +1,49 @@
+import 'dart:async';
 
 import 'package:bot_toast/bot_toast.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:task_master/constants/strings.dart';
 // import 'package:task_master/network/http_overrides.dart';
 
 // import 'bindings/app_bindings.dart';
-import 'constants/strings.dart';
+import 'firebase_options.dart';
 import 'routes/app_pages.dart';
 import 'routes/app_routes.dart';
+import 'services/notification_service.dart';
 import 'styles/colors.dart';
 import 'utilities/circular_loader.dart';
 
-
 String? logo;
 String? flavor;
+SharedPreferences? prefs;
+
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // Handle background message
+  print('Handling a background message: ${message.messageId}');
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await requestPermissions();
   await envConfig();
-  SharedPreferences? prefs;
   prefs = await SharedPreferences.getInstance();
-  String? token = prefs.getString(SpString.token) ?? "";
-  String? role = prefs.getString(SpString.role) ?? "";
   // HttpOverrides.global = MyHttpOverrides();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform,);
+  FirebaseMessaging.instance.getToken().then((token) {
+    print("Firebase Messaging Token: $token");
+    prefs!.setString(SpString.fcmToken, token!);
+  });
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
   Get.put(CircularLoader());
-  runApp(MyApp(token: token, role: role));
+ 
+  runApp(const MyApp());
 }
 
 Future<void> requestStoragePermission() async {
@@ -37,13 +53,7 @@ Future<void> requestStoragePermission() async {
     // Show dialog or handle denied permissions
   }
 }
-Future<void> requestPermissions() async {
-  await [
-    Permission.storage,
-    Permission.manageExternalStorage,
-    Permission.notification, // For Android 13+
-  ].request();
-}
+
 Future<void> envConfig() async {
   flavor = const String.fromEnvironment('FLAVOR');
   switch (flavor) {
@@ -60,41 +70,40 @@ Future<void> envConfig() async {
       logo = 'assets/logo_speedup.png'; // fallback
   }
   await dotenv.load(fileName: ".env.$flavor");
+  // Save baseUrl to SharedPreferences for background isolate
+  final prefs = await SharedPreferences.getInstance();
+  prefs.setString('BASE_URL', dotenv.env['BASE_URL'] ?? '');
 }
+
 class MyApp extends StatelessWidget {
-  final String? token;
-  final String? role;
-  const MyApp({super.key, this.token, this.role});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
+    NotificationService().init(context);
     return GetMaterialApp(
-      defaultTransition: Transition.leftToRightWithFade,
-      debugShowCheckedModeBanner: false,
-      getPages: AppPages.pages,
-      builder: BotToastInit(),
-      // initialBinding: AppBindings(),
-      theme: ThemeData(
-        datePickerTheme: const DatePickerThemeData(
-          backgroundColor: AppColors.white,
-          headerBackgroundColor: AppColors.blue,
-          headerForegroundColor: AppColors.white,
+        defaultTransition: Transition.leftToRightWithFade,
+        debugShowCheckedModeBanner: false,
+        getPages: AppPages.pages,
+        builder: BotToastInit(),
+        // initialBinding: AppBindings(),
+        theme: ThemeData(
+          datePickerTheme: const DatePickerThemeData(
+            backgroundColor: AppColors.white,
+            headerBackgroundColor: AppColors.blue,
+            headerForegroundColor: AppColors.white,
+          ),
+          colorScheme: const ColorScheme.light(
+              outlineVariant: Colors
+                  .transparent, // this is to remove unnecessary divider lines in datePicker dialogs and all
+              primary: AppColors.blue,
+              surface: AppColors.white),
+          useMaterial3: true,
         ),
-        colorScheme: const ColorScheme.light(
-            outlineVariant: Colors
-                .transparent, // this is to remove unnecessary divider lines in datePicker dialogs and all
-            primary: AppColors.blue,
-            surface: AppColors.white),
-        useMaterial3: true,
-      ),
-      initialRoute: token != null && token!.isNotEmpty
-          ? role != null && role!.isNotEmpty
-              ? role == "admin"
-                  ? AppRoutes.homePage
-                  : AppRoutes.employeeHomePage
-              : AppRoutes.introPage
-          : AppRoutes.introPage,
-      // home: const IntroPage(),
-    );
+        initialRoute: AppRoutes.splashPage
+
+        // home: const IntroPage(),
+        );
   }
+
 }

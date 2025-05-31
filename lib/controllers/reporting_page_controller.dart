@@ -20,12 +20,12 @@ class ReportingPageController extends GetxController {
   CircularLoader circularLoader = Get.find<CircularLoader>();
 
   @override
-  void onInit(){
+  void onInit() {
     initAsync();
     super.onInit();
   }
 
-  void initAsync()async{
+  void initAsync() async {
     prefs = await SharedPreferences.getInstance();
     await getEmployees();
   }
@@ -54,12 +54,23 @@ class ReportingPageController extends GetxController {
     }
   }
 
-  void onTapMenuTile(String title,int empId) async {
+  void onTapMenuTile(
+      String title, int empId, LatestLocation? latestLocation) async {
     flag = await Get.toNamed(
-        AppRoutes.reportingEmpDetailsPage,
-        arguments: [title,empId],
-      );
+      AppRoutes.reportingEmpDetailsPage,
+      arguments: [
+        title,
+        empId,
+        latestLocation ??
+            LatestLocation(
+                latitude: "0.0",
+                longitude: "0.0",
+                name: "No Location Found",
+                address: "")
+      ],
+    );
   }
+
   void onBackPressed() {
     Get.back(result: flag);
   }

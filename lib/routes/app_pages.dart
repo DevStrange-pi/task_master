@@ -10,6 +10,7 @@ import 'package:task_master/screens/employee/emp_task_details_page.dart';
 import 'package:task_master/screens/employee/emp_task_list_page.dart';
 import 'package:task_master/screens/home_page.dart';
 import 'package:task_master/screens/reporting_emp_details_page.dart';
+import 'package:task_master/screens/splash_screen.dart';
 import 'package:task_master/screens/task_details_page.dart';
 import 'package:task_master/screens/task_list_page.dart';
 
@@ -32,90 +33,77 @@ import '../screens/login_page.dart';
 import '../screens/reporting_page.dart';
 import 'app_routes.dart';
 
-
 class AppPages {
   static var pages = [
     GetPage(
-      name: AppRoutes.introPage,
-      page: () => const IntroPage(),
-      binding: IntroBinding()
+      name: AppRoutes.splashPage,
+      page: () => SplashScreen(),
     ),
     GetPage(
-      name: AppRoutes.loginPage,
-      page: () => LoginPage(),
-      binding: LoginBinding()
-    ),
+        name: AppRoutes.introPage,
+        page: () => const IntroPage(),
+        binding: IntroBinding()),
     GetPage(
-      name: AppRoutes.homePage,
-      page: () => HomePage(),
-      binding: HomeBinding()
-    ),
+        name: AppRoutes.loginPage,
+        page: () => LoginPage(),
+        binding: LoginBinding()),
     GetPage(
-      name: AppRoutes.addProfilePage,
-      page: () => AddProfilePage(),
-      binding: AddProfileBinding()
-    ),
+        name: AppRoutes.homePage,
+        page: () => HomePage(),
+        binding: HomeBinding()),
     GetPage(
-      name: AppRoutes.allTasksPage,
-      page: () => AllTasksPage(),
-      binding: AllTasksBinding()
-    ),
+        name: AppRoutes.addProfilePage,
+        page: () => AddProfilePage(),
+        binding: AddProfileBinding()),
     GetPage(
-      name: AppRoutes.taskListPage,
-      page: () => TaskListPage(),
-      binding: TaskListBinding()
-    ),
+        name: AppRoutes.allTasksPage,
+        page: () => AllTasksPage(),
+        binding: AllTasksBinding()),
     GetPage(
-      name: AppRoutes.addTaskPage,
-      page: () => AddTaskPage(),
-      binding: AddTaskBinding()
-    ),
+        name: AppRoutes.taskListPage,
+        page: () => TaskListPage(),
+        binding: TaskListBinding()),
     GetPage(
-      name: AppRoutes.taskDetailsPage,
-      page: () => TaskDetailsPage(),
-      binding: TaskDetailsBinding()
-    ),
+        name: AppRoutes.addTaskPage,
+        page: () => AddTaskPage(),
+        binding: AddTaskBinding()),
     GetPage(
-      name: AppRoutes.reportingPage,
-      page: () => ReportingPage(),
-      binding: ReportingBinding()
-    ),
+        name: AppRoutes.taskDetailsPage,
+        page: () => TaskDetailsPage(),
+        binding: TaskDetailsBinding()),
     GetPage(
-      name: AppRoutes.reportingEmpDetailsPage,
-      page: () => ReportingEmpDetailsPage(),
-      binding: ReportingEmpDetailsBinding()
-    ),
-
+        name: AppRoutes.reportingPage,
+        page: () => ReportingPage(),
+        binding: ReportingBinding()),
+    GetPage(
+        name: AppRoutes.reportingEmpDetailsPage,
+        page: () => ReportingEmpDetailsPage(),
+        binding: ReportingEmpDetailsBinding()),
 
     // EMPLOYEE
     GetPage(
-      name: AppRoutes.employeeHomePage,
-      page: () => EmpHomePage(),
-      binding: EmpHomeBinding()
-    ),
+        name: AppRoutes.employeeHomePage,
+        page: () => EmpHomePage(),
+        binding: EmpHomeBinding()),
     GetPage(
-      name: AppRoutes.employeeMyTaskPage,
-      page: () => EmpMyTaskPage(),
-      binding: EmpMyTaskBinding()
-    ),
+        name: AppRoutes.employeeMyTaskPage,
+        page: () => EmpMyTaskPage(),
+        binding: EmpMyTaskBinding()),
     GetPage(
-      name: AppRoutes.employeeTaskListPage,
-      page: () => EmpTaskListPage(),
-      binding: EmpTaskListBinding()
-    ),
+        name: AppRoutes.employeeTaskListPage,
+        page: () => EmpTaskListPage(),
+        binding: EmpTaskListBinding()),
     GetPage(
-      name: AppRoutes.employeeTaskDetailsPage,
-      page: () => EmpTaskDetailsPage(),
-      binding: EmpTaskDetailsBinding()
-    ),
+        name: AppRoutes.employeeTaskDetailsPage,
+        page: () => EmpTaskDetailsPage(),
+        binding: EmpTaskDetailsBinding()),
     // GetPage(
     //   name: AppRoutes.employeeRequestTaskPage,
     //   page: () => EmpRequestTaskPage(),
     // ),
     GetPage(
-      name: AppRoutes.employeeMyProfilePage,
-      page: () => EmpMyProfilePage(),
-      binding: EmpMyProfileBinding()
-    ),
+        name: AppRoutes.employeeMyProfilePage,
+        page: () => EmpMyProfilePage(),
+        binding: EmpMyProfileBinding()),
   ];
 }
