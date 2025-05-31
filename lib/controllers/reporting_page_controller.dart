@@ -15,7 +15,7 @@ import '../utilities/utilities.dart';
 class ReportingPageController extends GetxController {
   final RxList<Employee> employeeList = <Employee>[].obs;
   bool flag = false;
-
+  RxBool isLoading = false.obs;
   SharedPreferences? prefs;
   CircularLoader circularLoader = Get.find<CircularLoader>();
 
@@ -32,6 +32,7 @@ class ReportingPageController extends GetxController {
 
   Future<bool> getEmployees() async {
     circularLoader.showCircularLoader();
+    isLoading.value = true;
     String token = prefs!.getString(SpString.token)!;
     var headers = {
       "Authorization": "Bearer $token",
@@ -46,9 +47,11 @@ class ReportingPageController extends GetxController {
           GetEmployeesResponseModel.fromJson(respBody);
       employeeList.value = employeeListResp.data?.employees ?? [];
       circularLoader.hideCircularLoader();
+      isLoading.value = false;
       return true;
     } else {
       circularLoader.hideCircularLoader();
+      isLoading.value = false;
       myBotToast(respBody["message"]);
       return false;
     }
