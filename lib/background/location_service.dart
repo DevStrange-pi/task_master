@@ -30,34 +30,35 @@ void backgroundServiceOnStart(ServiceInstance service) async {
   service.on('stopService').listen((event) {
     service.stopSelf();
   });
-  Timer.periodic(const Duration(minutes: 5), (timer) async {
-    try {
-      Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high,
-      );
-      List<Placemark> placemarks =
-          await placemarkFromCoordinates(position.latitude, position.longitude);
-      Placemark place = placemarks.first;
+  try {
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
+    Placemark place = placemarks.first;
 
-      String name = "${place.name ?? ''}, ${place.subLocality ?? ''}";
-      String address =
-          "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
-      final body = {
-        "name": name,
-        // "Office HQ 1",
-        "address": address,
-        // "Connaught Place, Delhi",
-        "latitude": position.latitude,
-        "longitude": position.longitude,
-      };
-      int? empId = prefs.getInt(SpString.id) ?? 0;
-      if (empId != 0 && baseUrl.isNotEmpty) {
+    String name = "${place.name ?? ''}, ${place.subLocality ?? ''}";
+    String address =
+        "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
+    final body = {
+      "name": name,
+      // "Office HQ 1",
+      "address": address,
+      // "Connaught Place, Delhi",
+      "latitude": position.latitude,
+      "longitude": position.longitude,
+    };
+    int? empId = prefs.getInt(SpString.id) ?? 0;
+    if (empId != 0 && baseUrl.isNotEmpty) {
+      await trackLocation(baseUrl, token, empId, body);
+      Timer.periodic(const Duration(minutes: 5), (timer) async {
         await trackLocation(baseUrl, token, empId, body);
-      }
-    } catch (e) {
-      print(e.toString());
+      });
     }
-  });
+  } catch (e) {
+    print(e.toString());
+  }
 }
 
 @pragma('vm:entry-point')
