@@ -1,6 +1,10 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+import '../main.dart';
+import '../routes/app_routes.dart';
 
 class NotificationService {
   static final NotificationService _instance = NotificationService._internal();
@@ -24,13 +28,33 @@ class NotificationService {
 
     // Handle foreground messages
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      unreadCount.value++;
+      // messages coming here
       _showNotification(message);
     });
+
+    // FirebaseMessaging.onBackgroundMessage((RemoteMessage message) {
+    //   // Handle background messages
+    //   print('Handling a background message: ${message.messageId}');
+    // });
 
     // Handle notification tap when app is in background/terminated
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       // Handle navigation or logic here
+      _handleNotificationTap(message);
     });
+
+    // Optionally handle notification tap when app is launched from terminated state
+    RemoteMessage? initialMessage = await _messaging.getInitialMessage();
+    if (initialMessage != null) {
+      _handleNotificationTap(initialMessage);
+    }
+  }
+  void _handleNotificationTap(RemoteMessage message) {
+    // You can check payload here
+    print('Notification payload: ${message.data}');
+    // Navigate to notification page
+    Get.toNamed(AppRoutes.employeeNotificationPage);
   }
 
   Future<void> _showNotification(RemoteMessage message) async {

@@ -17,9 +17,9 @@ class EmpHomePage extends StatelessWidget {
       () => ScaffoldMain(
         isHome: true,
         isNotificationsVisible: true,
-        notificationCount: 1,
+        // notificationCount: 1,
         onNotificationsPressed: () {
-          
+          Get.toNamed(AppRoutes.employeeNotificationPage);
         },
         title: empHomePageController.empName.value,
         content: Padding(

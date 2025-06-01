@@ -22,7 +22,7 @@ import 'utilities/circular_loader.dart';
 String? logo;
 String? flavor;
 SharedPreferences? prefs;
-
+RxInt unreadCount = 0.obs;
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // Handle background message

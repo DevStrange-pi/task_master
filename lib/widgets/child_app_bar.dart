@@ -5,7 +5,8 @@ import '../constants/assets.dart';
 import '../styles/colors.dart';
 
 class ChildAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const ChildAppBar({super.key});
+  const ChildAppBar({super.key, this.title});
+  final String? title;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +26,7 @@ class ChildAppBar extends StatelessWidget implements PreferredSizeWidget {
           GestureDetector(
             onTap: () => Get.back(),
             child: Container(
-                padding: const EdgeInsets.all(0),
+                padding: const EdgeInsets.only( left: 6),
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(12)),
                 ),
@@ -35,6 +36,15 @@ class ChildAppBar extends StatelessWidget implements PreferredSizeWidget {
                   size: 28,
                 )),
           ),
+          title == null
+              ? const SizedBox()
+              : Text(
+                  title!,
+                  style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: AppColors.white),
+                ),
           CircleAvatar(
             radius: 28,
             backgroundColor: AppColors.lightestBlue,

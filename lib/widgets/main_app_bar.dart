@@ -13,7 +13,12 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
   final void Function()? onNotificationsPressed;
   final int notificationCount;
   const MainAppBar(
-      {super.key, this.onBackPressed, this.isHome, this.isNotificationsVisible = false, this.onNotificationsPressed, this.notificationCount = 0});
+      {super.key,
+      this.onBackPressed,
+      this.isHome,
+      this.isNotificationsVisible = false,
+      this.onNotificationsPressed,
+      this.notificationCount = 0});
 
   @override
   Widget build(BuildContext context) {
@@ -60,30 +65,32 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                             size: 40,
                           ),
                         ),
-                        Positioned(
-                          right: 8,
-                          top: 8,
-                          child: Container(
-                            padding: const EdgeInsets.all(2),
-                            decoration: BoxDecoration(
-                              color: Colors.red,
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            constraints: const BoxConstraints(
-                              minWidth: 18,
-                              minHeight: 18,
-                            ),
-                            child: Text(
-                              notificationCount.toString(),
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 12,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
+                        notificationCount > 0
+                            ? Positioned(
+                                right: 8,
+                                top: 8,
+                                child: Container(
+                                  padding: const EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  constraints: const BoxConstraints(
+                                    minWidth: 18,
+                                    minHeight: 18,
+                                  ),
+                                  child: Text(
+                                    notificationCount.toString(),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              )
+                            : SizedBox(),
                       ],
                     )
                   : const SizedBox(),

@@ -64,4 +64,6 @@ class AppUrl {
   String trackLocationForEmployee(int empId,String baseUrlPrefs){
     return "$baseUrlPrefs/employee/$empId/track-location";
   }
+
+  final String getNotifications = "$baseUrl/notifications";
 }
