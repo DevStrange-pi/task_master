@@ -242,7 +242,7 @@ class EmpMyProfilePageController extends GetxController {
     profileData.value = profileDetails
         .toJson()
         .entries
-        .where((entry) => entry.key != "image_path" && entry.key != "pivot")
+        .where((entry) => entry.key != "image_path" && entry.key != "pivot"&& entry.key != "device_token")
         .map((entry) {
       final value = entry.value;
       final valueStr = value?.toString() ?? '';
