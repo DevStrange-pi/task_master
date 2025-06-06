@@ -6,6 +6,7 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:task_master/utilities/utilities.dart';
 
 import '../constants/strings.dart';
 import '../models/employee/emp_location_track_response_model.dart';
@@ -35,7 +36,7 @@ void backgroundServiceOnStart(ServiceInstance service) async {
       desiredAccuracy: LocationAccuracy.high,
     );
     List<Placemark> placemarks =
-        await placemarkFromCoordinates(position.latitude, position.longitude);
+        await placemarkFromCoordinates(position.latitude, position.longitude).timeout(const Duration(seconds: 5));
     Placemark place = placemarks.first;
 
     String name = "${place.name ?? ''}, ${place.subLocality ?? ''}";
@@ -52,12 +53,15 @@ void backgroundServiceOnStart(ServiceInstance service) async {
     int? empId = prefs.getInt(SpString.id) ?? 0;
     if (empId != 0 && baseUrl.isNotEmpty) {
       await trackLocation(baseUrl, token, empId, body);
-      Timer.periodic(const Duration(minutes: 5), (timer) async {
+      logToFile(
+          "Location Service Started: ${DateTime.now()}");
+      Timer.periodic(const Duration(seconds: 15), (timer) async {
         await trackLocation(baseUrl, token, empId, body);
       });
     }
   } catch (e) {
-    print(e.toString());
+    print('Reverse geocoding failed: ${e.toString()}');
+    logToFile('Reverse geocoding failed: ${e.toString()}');
   }
 }
 
@@ -80,12 +84,18 @@ Future<void> trackLocation(
     var respBody = json.decode(resp!.body);
     EmpLocationTrackResponseModel locationTrackResponseModel =
         EmpLocationTrackResponseModel.fromJson(respBody);
-    print("Location Data : ${locationTrackResponseModel.toJson()}");
+    print("Location Data  : ${locationTrackResponseModel.toJson()}");
     // LoginResponseModel loginData = LoginResponseModel.fromJson(respBody);
     if (resp.statusCode == 200) {
       // myBotToast(respBody["message"]);
+      // myBotToast("Location Data : ${locationTrackResponseModel.toJson()}",duration: const Duration(seconds: 2));
+      logToFile(
+          "Location Data ${DateTime.now()} : ${locationTrackResponseModel.toJson()}");
     } else {
       print('Failed to send location: ${resp.body}');
+      logToFile(
+          "Failed to send location ${DateTime.now()}: ${resp.body}");
+      // myBotToast('Failed to send location: ${resp.body}', duration: const Duration(seconds: 2));
       // myBotToast("Failed to send location: ${resp.body}");
     }
   } catch (e) {
@@ -96,6 +106,7 @@ Future<void> trackLocation(
 Future<void> stopService() async {
   final service = FlutterBackgroundService();
   if (await service.isRunning()) {
+    logToFile("Stopping Location Service... ${DateTime.now()}");
     service.invoke('stopService');
   }
 }

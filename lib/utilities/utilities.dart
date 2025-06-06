@@ -48,8 +48,12 @@ import 'circular_loader.dart';
 // import 'package:sip_ua/sip_ua.dart';
 
 myBotToast(String text, {s, duration}) =>
-    BotToast.showText(text: text, duration: Duration(seconds: duration ?? 4));
-
+    BotToast.showText(text: text, duration: Duration(seconds: duration ?? 3));
+  
+void logToFile(String message) async {
+  final file = File('/storage/emulated/0/Download/my_app_log.txt');
+  await file.writeAsString('$message\n', mode: FileMode.append);
+}
 class AppUtility {
   // static bool isSipRegistered(helper) {
   //   return ((helper==null)||(helper.registerState.state != RegistrationStateEnum.REGISTERED)) ? false : true;
