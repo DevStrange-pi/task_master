@@ -43,7 +43,7 @@ class AppPages {
     ),
     GetPage(
         name: AppRoutes.introPage,
-        page: () => const IntroPage(),
+        page: () => IntroPage(),
         binding: IntroBinding()),
     GetPage(
         name: AppRoutes.loginPage,

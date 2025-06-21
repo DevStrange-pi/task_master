@@ -73,6 +73,7 @@ Future<void> envConfig() async {
   // Save baseUrl to SharedPreferences for background isolate
   final prefs = await SharedPreferences.getInstance();
   prefs.setString('BASE_URL', dotenv.env['BASE_URL'] ?? '');
+  prefs.setString('FLAVOR', flavor ?? "speedup");
 }
 
 class MyApp extends StatelessWidget {

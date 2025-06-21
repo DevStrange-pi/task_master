@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:task_master/controllers/intro_page_controller.dart';
 
 import '../main.dart';
 import '../routes/app_routes.dart';
@@ -7,8 +8,9 @@ import '../styles/colors.dart';
 import '../widgets/speed_button.dart';
 
 class IntroPage extends StatelessWidget {
-  const IntroPage({super.key});
-
+  IntroPage({super.key});
+  final IntroPageController introPageController =
+      Get.find<IntroPageController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,7 +18,6 @@ class IntroPage extends StatelessWidget {
         decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [AppColors.lightBlue, AppColors.blue],
-             
           ),
         ),
         child: Center(
@@ -54,12 +55,19 @@ class IntroPage extends StatelessWidget {
                     fontSize: 16.0,
                   ),
                 ),
-                const Text(
-                  "Speedup Infotech",
-                  style: TextStyle(
-                    color: AppColors.white,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 16.0,
+                Obx(
+                  () => Text(
+                    introPageController.flavor.value == "speedup"
+                        ? "Speedup Infotech"
+                        : introPageController.flavor.value == "fortunecloud" ||
+                                introPageController.flavor.value == "fortunecloudpcmc"
+                            ? "Fortune Cloud"
+                            : "Speedup Infotech",
+                    style: const TextStyle(
+                      color: AppColors.white,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 16.0,
+                    ),
                   ),
                 ),
                 const SizedBox(
