@@ -5,6 +5,7 @@ A new Flutter project.
 ## Getting Started
 
 This project is a starting point for a Flutter application.
+Flutter version 3.27.4
 
 ## Generate Icons for All Flavors
 
