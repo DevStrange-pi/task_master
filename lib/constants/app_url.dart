@@ -17,8 +17,13 @@ class AppUrl {
   String updateTaskDetails(taskId) {
     return "$baseUrl/admin/tasks/$taskId";
   }
+  String deleteTask(taskId) {
+    return "$baseUrl/admin/tasks/$taskId";
+  }
+  String deleteEmployee(empId) {
+    return "$baseUrl/admin/employees/$empId";
+  }
 
-  // final String taskDetails = "$baseUrl/admin/tasks/1";
   final String getEmployees = "$baseUrl/admin/employees";
   final String logout = "$baseUrl/logout";
   final String addTask = "$baseUrl/admin/tasks";

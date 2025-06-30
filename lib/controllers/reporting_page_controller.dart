@@ -77,4 +77,25 @@ class ReportingPageController extends GetxController {
   void onBackPressed() {
     Get.back(result: flag);
   }
+  Future<void> deleteEmployee(int empId) async {
+    print("Employee id : $empId");
+    circularLoader.showCircularLoader();
+    // isLoading.value = true;
+    String token = prefs!.getString(SpString.token)!;
+    var headers = {
+      "Authorization": "Bearer $token",
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    };
+    var resp =
+        await HttpReq.deleteApi(apiUrl: AppUrl().deleteEmployee(empId), headers: headers);
+    var respBody = json.decode(resp!.body);
+    if (resp.statusCode == 200) {
+      // Call get API again
+      await getEmployees();
+    } else {
+      circularLoader.hideCircularLoader();
+      myBotToast(respBody["message"]);
+    }
+  }
 }

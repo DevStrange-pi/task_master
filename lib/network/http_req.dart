@@ -49,6 +49,22 @@ class HttpReq {
     return null;
   }
 
+  static Future<http.Response?> deleteApi({String? apiUrl, var headers}) async {
+    try {
+      // ***APP_LOG***
+      if (headers == null || (headers.length == 0)) {
+        headers = {"Content-Type": "application/json", "Accept": "application/json"};
+      }
+      print("AppUrl -> $apiUrl , Headers $headers");
+      http.Response response = await http.delete(Uri.parse(apiUrl!), headers: headers).timeout(const Duration(seconds: 50));
+      print("Response code ${response.statusCode} , response ${response.body}");
+      return response;
+    } catch (e) {
+      myBotToast(e.toString());
+    }
+    return null;
+  }
+
   static Future<http.Response?> getApi({String? apiUrl, var headers}) async {
     try {
       // ***APP_LOG***

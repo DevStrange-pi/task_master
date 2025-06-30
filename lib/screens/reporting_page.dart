@@ -54,6 +54,19 @@ class ReportingPage extends StatelessWidget {
                           return Padding(
                             padding: const EdgeInsets.only(top: 30.0),
                             child: MenuTile(
+                              customFloatingWidget: GestureDetector(
+                                onTap: () async {
+                                  await reportingPageController.deleteEmployee(
+                                      reportingPageController
+                                          .employeeList[index].id!);
+                                },
+                                child: const CircleAvatar(
+                                  backgroundColor: AppColors.darkGrey,
+                                  radius: 19,
+                                  child: Icon(Icons.delete,
+                                      color: AppColors.red),
+                                ),
+                              ),
                               title: reportingPageController
                                       .employeeList[index].name ??
                                   "",

@@ -82,6 +82,9 @@ class TaskDetailsController extends GetxController {
   }
 
   void createDropdownOptions() {
+    multiSelectController.clearAll();
+    multiSelectController.items.clear();
+    assignDropdownOptions.clear();
     createAssignSelected();
     for (var employee in employeeList) {
       int indx = assignSelected

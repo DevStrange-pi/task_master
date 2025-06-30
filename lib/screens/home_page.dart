@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:task_master/controllers/home_page_controller.dart';
@@ -16,51 +17,57 @@ class HomePage extends StatelessWidget {
       () => ScaffoldMain(
         isHome: true,
         title: homePageController.empName.value,
-        content: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.only(top: 40,bottom: 40),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Obx(
-                  () => MenuTile(
-                    title: "All Task",
-                    count: homePageController.statistics.value.totalTasks,
+        content: RefreshIndicator(
+          onRefresh: () async {
+            await homePageController.getTaskCount();
+          },
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 40,bottom: 40),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  Obx(
+                    () => MenuTile(
+                      title: "All Task",
+                      count: homePageController.statistics.value.totalTasks,
+                      onTap: () {
+                        Get.toNamed(AppRoutes.allTasksPage,
+                            arguments:
+                                homePageController.statistics.value.toJson());
+                      },
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  MenuTile(
+                    title: "Add Task",
                     onTap: () {
-                      Get.toNamed(AppRoutes.allTasksPage,
-                          arguments:
-                              homePageController.statistics.value.toJson());
+                      homePageController.addTaskTapped();
                     },
                   ),
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                MenuTile(
-                  title: "Add Task",
-                  onTap: () {
-                    homePageController.addTaskTapped();
-                  },
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                MenuTile(
-                  title: "Add Employee",
-                  onTap: () {
-                    Get.toNamed(AppRoutes.addProfilePage);
-                  },
-                ),
-                const SizedBox(
-                  height: 30,
-                ),
-                MenuTile(
-                  title: "Reporting",
-                  onTap: () {
-                    homePageController.goToReporting();
-                  },
-                ),
-              ],
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  MenuTile(
+                    title: "Add Employee",
+                    onTap: () {
+                      Get.toNamed(AppRoutes.addProfilePage);
+                    },
+                  ),
+                  const SizedBox(
+                    height: 30,
+                  ),
+                  MenuTile(
+                    title: "Reporting",
+                    onTap: () {
+                      homePageController.goToReporting();
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),

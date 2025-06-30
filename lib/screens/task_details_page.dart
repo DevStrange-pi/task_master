@@ -38,118 +38,126 @@ class TaskDetailsPage extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(32, 16, 32, 16),
               child: taskDetailsController.task!.value.isNull()
                   ? const SizedBox()
-                  : SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const SizedBox(
-                            height: 12,
-                          ),
-                          SpeedTextfield(
-                            isEnabled: false,
-                            labelText: "Task Name",
-                            hintText: "Type here...",
-                            textEditingController:
-                                taskDetailsController.taskNameController,
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          SpeedTextfield(
-                            isEnabled: false,
-                            isTextArea: true,
-                            labelText: "Description",
-                            hintText: "Type here...",
-                            textEditingController:
-                                taskDetailsController.descController,
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Obx(
-                            () => SpeedDropdown(
-                              enabled: taskDetailsController.statusFlag,
-                              labelText: "Task Type",
-                              dropdownItems:
-                                  taskDetailsController.taskTypeDropdownOptions,
-                              selectedValue:
-                                  taskDetailsController.taskTypeSelected.value,
-                              onChanged: (val) {
-                                taskDetailsController.taskTypeSelected.value =
-                                    val;
+                  : RefreshIndicator(
+                      onRefresh: () async {
+                        taskDetailsController.initAsync();
+                      },
+                      child: SingleChildScrollView(
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            SpeedTextfield(
+                              isEnabled: false,
+                              labelText: "Task Name",
+                              hintText: "Type here...",
+                              textEditingController:
+                                  taskDetailsController.taskNameController,
+                            ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            SpeedTextfield(
+                              isEnabled: false,
+                              isTextArea: true,
+                              labelText: "Description",
+                              hintText: "Type here...",
+                              textEditingController:
+                                  taskDetailsController.descController,
+                            ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            Obx(
+                              () => SpeedDropdown(
+                                enabled: taskDetailsController.statusFlag,
+                                labelText: "Task Type",
+                                dropdownItems: taskDetailsController
+                                    .taskTypeDropdownOptions,
+                                selectedValue: taskDetailsController
+                                    .taskTypeSelected.value,
+                                onChanged: (val) {
+                                  taskDetailsController.taskTypeSelected.value =
+                                      val;
+                                },
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            Obx(
+                              () => SpeedDropdown(
+                                enabled: taskDetailsController.statusFlag,
+                                labelText: "Status",
+                                dropdownItems: taskDetailsController.taskStatus,
+                                selectedValue: taskDetailsController
+                                    .taskStatusSelected.value,
+                                onChanged: (val) {
+                                  taskDetailsController
+                                      .taskStatusSelected.value = val;
+                                },
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            SpeedTextfield(
+                              isEnabled: taskDetailsController.statusFlag,
+                              isPasswordHidden: false,
+                              needSuffixIcon: true,
+                              suffixIconData: Icons.calendar_month_sharp,
+                              labelText: "Deadline Date Time",
+                              hintText: "Select here...",
+                              textEditingController:
+                                  taskDetailsController.dateCont,
+                              isDateTimePicker: true,
+                              fieldOnTap: () {
+                                taskDetailsController.showDateTimePicker();
                               },
                             ),
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Obx(
-                            () => SpeedDropdown(
-                              enabled: taskDetailsController.statusFlag,
-                              labelText: "Status",
-                              dropdownItems: taskDetailsController.taskStatus,
-                              selectedValue: taskDetailsController
-                                  .taskStatusSelected.value,
-                              onChanged: (val) {
-                                taskDetailsController.taskStatusSelected.value =
-                                    val;
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            Obx(
+                              () => SpeedMultiDropdown(
+                                enabled: taskDetailsController.statusFlag,
+                                multiSelectController:
+                                    taskDetailsController.multiSelectController,
+                                labelText: "Whom to Assign",
+                                dropdownItems: taskDetailsController
+                                    .assignDropdownOptions.value,
+                                selectedValues:
+                                    taskDetailsController.assignSelected,
+                                onChanged: (val) {
+                                  taskDetailsController
+                                      .storeSelectedValues(val);
+                                  debugPrint("OnSelectionChange: $val");
+                                  debugPrint("assignSelected: ${taskDetailsController.assignSelected}");
+                                },
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 32,
+                            ),
+                            Obx(() => buildPhotoThumbnails(context)),
+                            const SizedBox(
+                              height: 32,
+                            ),
+                            SpeedButton(
+                              isDisabled: !taskDetailsController.statusFlag,
+                              buttonText: "Update",
+                              onPressed: () {
+                                taskDetailsController.onUpdatePressed();
                               },
                             ),
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          SpeedTextfield(
-                            isEnabled: taskDetailsController.statusFlag,
-                            isPasswordHidden: false,
-                            needSuffixIcon: true,
-                            suffixIconData: Icons.calendar_month_sharp,
-                            labelText: "Deadline Date Time",
-                            hintText: "Select here...",
-                            textEditingController:
-                                taskDetailsController.dateCont,
-                            isDateTimePicker: true,
-                            fieldOnTap: () {
-                              taskDetailsController.showDateTimePicker();
-                            },
-                          ),
-                          const SizedBox(
-                            height: 16,
-                          ),
-                          Obx(
-                            () => SpeedMultiDropdown(
-                              enabled: taskDetailsController.statusFlag,
-                              multiSelectController:
-                                  taskDetailsController.multiSelectController,
-                              labelText: "Whom to Assign",
-                              dropdownItems: taskDetailsController
-                                  .assignDropdownOptions.value,
-                              selectedValues:
-                                  taskDetailsController.assignSelected,
-                              onChanged: (val) {
-                                taskDetailsController.storeSelectedValues(val);
-                                debugPrint("OnSelectionChange: $val");
-                              },
+                            const SizedBox(
+                              height: 32,
                             ),
-                          ),
-                          const SizedBox(
-                            height: 32,
-                          ),
-                          Obx(() => buildPhotoThumbnails(context)),
-                          const SizedBox(
-                            height: 32,
-                          ),
-                          SpeedButton(
-                            isDisabled: !taskDetailsController.statusFlag,
-                            buttonText: "Update",
-                            onPressed: () {
-                              taskDetailsController.onUpdatePressed();
-                            },
-                          ),
-                          const SizedBox(
-                            height: 32,
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
             ),

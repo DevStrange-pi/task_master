@@ -19,10 +19,12 @@ class TaskListController extends GetxController {
   SharedPreferences? prefs;
   CircularLoader circularLoader = Get.find<CircularLoader>();
 
+  List<Task>? tasks = <Task>[].obs;
   List<Task>? tasksList = <Task>[].obs;
   String? title;
   String fromPage = "";
   TextEditingController deadlineDateCont = TextEditingController();
+  RxBool isLoading = false.obs;
 
   @override
   void onInit() {
@@ -196,6 +198,64 @@ class TaskListController extends GetxController {
       }
     } catch (e) {
       circularLoader.hideCircularLoader();
+    }
+  }
+
+  Future<void> deleteTask(int taskId) async {
+    print("Task id : $taskId");
+    circularLoader.showCircularLoader();
+    String token = prefs!.getString(SpString.token)!;
+    var headers = {
+      "Authorization": "Bearer $token",
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    };
+    var resp =
+        await HttpReq.deleteApi(apiUrl: AppUrl().deleteTask(taskId), headers: headers);
+    var respBody = json.decode(resp!.body);
+    if (resp.statusCode == 200) {
+      // Call get API again
+      await getAllTasks();
+    } else {
+      circularLoader.hideCircularLoader();
+      myBotToast(respBody["message"]);
+    }
+  }
+
+  Future<void> onRefresh() async {
+    if (await getAllTasks()) {
+      List<Task> filteredTasks = tasks!
+          .where((task) => task.status.toString() == title!.toLowerCase().split(" ").first)
+          .toList();
+      tasksList!.assignAll(filteredTasks);
+    } else {
+      myBotToast("No Task Found", duration: 2);
+    }
+  }
+
+  Future<bool> getAllTasks() async {
+    circularLoader.showCircularLoader();
+    String token = prefs!.getString(SpString.token)!;
+    var headers = {
+      "Authorization": "Bearer $token",
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    };
+    var resp =
+        await HttpReq.getApi(apiUrl: AppUrl().allTasks, headers: headers);
+    var respBody = json.decode(resp!.body);
+    if (resp.statusCode == 200) {
+      AllTasksResponseModel tasksDetails =
+          AllTasksResponseModel.fromJson(respBody);
+      tasks = tasksDetails.data?.tasks ?? <Task>[];
+      circularLoader.hideCircularLoader();
+      return true;
+      // myBotToast( respBody["message"]);
+    } else {
+      circularLoader.hideCircularLoader();
+      myBotToast(respBody["message"]);
+      // syllabusModelList.value = syllabusData.data!;
+      return false;
     }
   }
 }

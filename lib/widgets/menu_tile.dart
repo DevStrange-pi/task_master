@@ -10,7 +10,8 @@ class MenuTile extends StatelessWidget {
       this.statusColor,
       this.expiredCount,
       this.needReassign,
-      this.reassignCallback});
+      this.reassignCallback,
+      this.customFloatingWidget});
   final String title;
   final void Function()? onTap;
   final int? count;
@@ -18,6 +19,7 @@ class MenuTile extends StatelessWidget {
   final bool? needReassign;
   final void Function()? reassignCallback;
   final Color? statusColor;
+  final Widget? customFloatingWidget;
 
   @override
   Widget build(BuildContext context) {
@@ -155,7 +157,20 @@ class MenuTile extends StatelessWidget {
                     ),
                   ),
                 )
-              : const SizedBox(),
+              : customFloatingWidget != null
+                  ? Positioned(
+                      right: 36,
+                      top: 0,
+                      child: customFloatingWidget!,
+                        // Text(
+                        //   count.toString(),
+                        //   style: const TextStyle(
+                        //       color: AppColors.white,
+                        //       fontWeight: FontWeight.bold),
+                        // ),
+                      
+                    )
+                  : const SizedBox(),
         ],
       ),
     );
