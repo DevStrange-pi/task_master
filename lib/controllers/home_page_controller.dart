@@ -10,6 +10,8 @@ import '../network/http_req.dart';
 import '../routes/app_routes.dart';
 import '../utilities/circular_loader.dart';
 import '../utilities/utilities.dart';
+import 'task_list_controller.dart';
+import '../globals/observables.dart';
 
 class HomePageController extends GetxController {
   Rx<Statistics> statistics = Statistics().obs;
@@ -21,6 +23,14 @@ class HomePageController extends GetxController {
   void onInit() {
     initAsync();
     super.onInit();
+
+    // Listen for task deletion events
+    // ever(TaskListController.taskDeleted, (deleted) {
+    //   if (deleted == true) {
+    //     getTaskCount();
+    //     TaskListController.taskDeleted.value = false; // Reset the flag
+    //   }
+    // });
   }
   
   void initAsync() async {
@@ -57,6 +67,10 @@ class HomePageController extends GetxController {
       AdminHomeResponseModel tokenData =
           AdminHomeResponseModel.fromJson(respBody);
       statistics.value = tokenData.data?.statistics ?? Statistics();
+
+      final statsJson = tokenData.data?.statistics?.toJson() ?? {};
+      globalStatistics.value = Statistics.fromJson(statsJson);
+
       circularLoader.hideCircularLoader();
       return true;
       // myBotToast( respBody["message"]);

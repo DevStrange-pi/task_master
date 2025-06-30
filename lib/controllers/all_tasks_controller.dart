@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:task_master/globals/observables.dart';
 
 import '../constants/app_url.dart';
 import '../constants/strings.dart';
@@ -11,10 +12,11 @@ import '../network/http_req.dart';
 import '../routes/app_routes.dart';
 import '../utilities/circular_loader.dart';
 import '../utilities/utilities.dart';
+import 'task_list_controller.dart';
 
 class AllTasksController extends GetxController {
-  Map<String, dynamic>? tasksCount;
-  List<Map<String, String>?>? tasksCountList = <Map<String, String>>[].obs;
+  // Map<String, dynamic>? tasksCount;
+  // List<Map<String, String>?>? tasksCountList = <Map<String, String>>[].obs;
   List<Task>? tasks = <Task>[].obs;
   List<Task> filteredTasks = <Task>[].obs;
 
@@ -25,12 +27,21 @@ class AllTasksController extends GetxController {
   void onInit() {
     initAsync();
     super.onInit();
+
+    // Listen for task deletion events
+    ever(TaskListController.taskDeleted, (deleted) {
+      if (deleted == true) {
+        getTaskCount();
+        TaskListController.taskDeleted.value = false; // Reset the flag
+      }
+    });
   }
 
   void initAsync() async {
     prefs = await SharedPreferences.getInstance();
-    tasksCount = Get.arguments;
-    tasksCountList!.assignAll(convertTaskMap(tasksCount ?? {}));
+    // tasksCount = Get.arguments;
+    // tasksCountList!.assignAll(convertTaskMap(tasksCount ?? {}));
+    await getTaskCount();
   }
 
   List<Map<String, String>?> convertTaskMap(Map<String, dynamic> taskMap) {
@@ -52,6 +63,7 @@ class AllTasksController extends GetxController {
       };
     }).toList();
   }
+
   Future<bool> getTaskCount() async {
     circularLoader.showCircularLoader();
     String token = prefs!.getString(SpString.token)!;
@@ -66,8 +78,14 @@ class AllTasksController extends GetxController {
     if (resp.statusCode == 200) {
       AdminHomeResponseModel tokenData =
           AdminHomeResponseModel.fromJson(respBody);
-      tasksCount = tokenData.data?.statistics?.toJson() ?? {};
-      tasksCountList!.assignAll(convertTaskMap(tasksCount ?? {}));
+      // tasksCount = tokenData.data?.statistics?.toJson() ?? {};
+      // tasksCountList!.assignAll(convertTaskMap(tasksCount ?? {}));
+
+      final statsJson = tokenData.data?.statistics?.toJson() ?? {};
+      globalStatistics.value = Statistics.fromJson(statsJson);
+      globalTasksCountList.assignAll(convertTaskMap(statsJson) as Iterable<Map<String, String>>);
+
+
       circularLoader.hideCircularLoader();
       return true;
       // myBotToast( respBody["message"]);

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:task_master/controllers/all_tasks_controller.dart';
 import 'package:task_master/widgets/scaffold_main.dart';
 
+import '../globals/observables.dart';
 import '../widgets/menu_tile.dart';
 
 class AllTasksPage extends StatelessWidget {
@@ -26,16 +27,16 @@ class AllTasksPage extends StatelessWidget {
               () => Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: List.generate(
-                  allTasksController.tasksCountList!.length,
+                  globalTasksCountList.length,
                   (index) {
                     return Padding(
                       padding: const EdgeInsets.only(top: 30.0),
                       child: MenuTile(
-                        title: allTasksController.tasksCountList![index]!["name"]!,
+                        title: globalTasksCountList[index]["name"]!,
                         count: int.parse(
-                            allTasksController.tasksCountList![index]!["count"]!),
+                            globalTasksCountList[index]["count"]!),
                         onTap: () {
-                          allTasksController.onTapMenuTile(allTasksController.tasksCountList![index]!["name"]!);
+                          allTasksController.onTapMenuTile(globalTasksCountList[index]["name"]!);
                         },
                       ),
                     );

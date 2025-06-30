@@ -19,12 +19,14 @@ class TaskListController extends GetxController {
   SharedPreferences? prefs;
   CircularLoader circularLoader = Get.find<CircularLoader>();
 
-  List<Task>? tasks = <Task>[].obs;
-  List<Task>? tasksList = <Task>[].obs;
+  List<Task> tasks = <Task>[];
+  RxList<Task> tasksList = <Task>[].obs;
   String? title;
   String fromPage = "";
   TextEditingController deadlineDateCont = TextEditingController();
   RxBool isLoading = false.obs;
+
+  static RxBool taskDeleted = false.obs;
 
   @override
   void onInit() {
@@ -35,7 +37,7 @@ class TaskListController extends GetxController {
   void initAsync() async {
     fromPage = Get.arguments[2];
     title = Get.arguments[1] ?? "";
-    tasksList = Get.arguments[0] ?? <Task>[];
+    tasksList.value = Get.arguments[0] ?? <Task>[];
     prefs = await SharedPreferences.getInstance();
   }
 
@@ -215,7 +217,8 @@ class TaskListController extends GetxController {
     var respBody = json.decode(resp!.body);
     if (resp.statusCode == 200) {
       // Call get API again
-      await getAllTasks();
+      await onRefresh();
+      taskDeleted.value = true;
     } else {
       circularLoader.hideCircularLoader();
       myBotToast(respBody["message"]);
@@ -224,10 +227,10 @@ class TaskListController extends GetxController {
 
   Future<void> onRefresh() async {
     if (await getAllTasks()) {
-      List<Task> filteredTasks = tasks!
+      List<Task> filteredTasks = tasks
           .where((task) => task.status.toString() == title!.toLowerCase().split(" ").first)
           .toList();
-      tasksList!.assignAll(filteredTasks);
+      tasksList.assignAll(filteredTasks);
     } else {
       myBotToast("No Task Found", duration: 2);
     }

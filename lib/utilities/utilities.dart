@@ -327,7 +327,9 @@ class AppUtility {
   void keepSomeSpValues()async{
     SharedPreferences? prefs;
     prefs = await SharedPreferences.getInstance();
+    String flavor = prefs.getString('FLAVOR')!; 
     prefs.clear();
+    prefs.setString('FLAVOR', flavor);
   }
 
   // Future<void> startMQTT() async {

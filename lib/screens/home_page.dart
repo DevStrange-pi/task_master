@@ -5,6 +5,7 @@ import 'package:task_master/controllers/home_page_controller.dart';
 import 'package:task_master/routes/app_routes.dart';
 import 'package:task_master/widgets/menu_tile.dart';
 
+import '../globals/observables.dart';
 import '../widgets/scaffold_main.dart';
 
 class HomePage extends StatelessWidget {
@@ -31,7 +32,8 @@ class HomePage extends StatelessWidget {
                   Obx(
                     () => MenuTile(
                       title: "All Task",
-                      count: homePageController.statistics.value.totalTasks,
+                      count: globalStatistics.value.totalTasks,
+                      // homePageController.statistics.value.totalTasks,
                       onTap: () {
                         Get.toNamed(AppRoutes.allTasksPage,
                             arguments:
