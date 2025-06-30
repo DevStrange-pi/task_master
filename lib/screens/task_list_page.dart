@@ -40,8 +40,8 @@ class TaskListPage extends StatelessWidget {
                       margin: const EdgeInsets.fromLTRB(50, 0, 50, 0),
                       child: MenuTile(
                         customFloatingWidget: GestureDetector(
-                                  onTap: () {
-                                    taskListController.deleteTask(
+                                  onTap: () async {
+                                    await taskListController.deleteTask(
                                         taskListController
                                             .tasksList![index].id!);
                                   },
