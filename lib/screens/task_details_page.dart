@@ -135,7 +135,8 @@ class TaskDetailsPage extends StatelessWidget {
                                   taskDetailsController
                                       .storeSelectedValues(val);
                                   debugPrint("OnSelectionChange: $val");
-                                  debugPrint("assignSelected: ${taskDetailsController.assignSelected}");
+                                  debugPrint(
+                                      "assignSelected: ${taskDetailsController.assignSelected}");
                                 },
                               ),
                             ),
@@ -185,7 +186,9 @@ class TaskDetailsPage extends StatelessWidget {
               builder: (_) => Dialog(
                 child: InteractiveViewer(
                   child: Image.memory(
-                    base64Decode(cleanedBase64),
+                    base64Decode(cleanedBase64.contains(',')
+                        ? cleanedBase64.split(',').last
+                        : cleanedBase64),
                     fit: BoxFit.contain,
                   ),
                 ),
@@ -195,7 +198,9 @@ class TaskDetailsPage extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: Image.memory(
-              base64Decode(cleanedBase64),
+              base64Decode(cleanedBase64.contains(',')
+                  ? cleanedBase64.split(',').last
+                  : cleanedBase64),
               width: 64,
               height: 64,
               fit: BoxFit.cover,
