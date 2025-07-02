@@ -10,8 +10,8 @@ import '../network/http_req.dart';
 import '../routes/app_routes.dart';
 import '../utilities/circular_loader.dart';
 import '../utilities/utilities.dart';
-import 'task_list_controller.dart';
 import '../globals/observables.dart';
+import 'reporting_page_controller.dart';
 
 class HomePageController extends GetxController {
   Rx<Statistics> statistics = Statistics().obs;
@@ -25,12 +25,12 @@ class HomePageController extends GetxController {
     super.onInit();
 
     // Listen for task deletion events
-    // ever(TaskListController.taskDeleted, (deleted) {
-    //   if (deleted == true) {
-    //     getTaskCount();
-    //     TaskListController.taskDeleted.value = false; // Reset the flag
-    //   }
-    // });
+    ever(ReportingPageController.employeeDeleted, (deleted) {
+      if (deleted == true) {
+        getTaskCount();
+        ReportingPageController.employeeDeleted.value = false; // Reset the flag
+      }
+    });
   }
   
   void initAsync() async {
@@ -88,4 +88,11 @@ class HomePageController extends GetxController {
       await getTaskCount();
     }
   }
+
+  void addEmployeeTapped() async {
+    var res = await Get.toNamed(AppRoutes.addProfilePage);
+    if (res != null && res == true) {
+      await getTaskCount();
+    }
+  } 
 }

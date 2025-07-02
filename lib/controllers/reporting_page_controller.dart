@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -16,6 +17,7 @@ class ReportingPageController extends GetxController {
   final RxList<Employee> employeeList = <Employee>[].obs;
   bool flag = false;
   RxBool isLoading = false.obs;
+  static RxBool employeeDeleted = false.obs;
   SharedPreferences? prefs;
   CircularLoader circularLoader = Get.find<CircularLoader>();
 
@@ -74,28 +76,58 @@ class ReportingPageController extends GetxController {
     );
   }
 
+  Future<void> onRefresh() async {
+    initAsync();
+  }
+
   void onBackPressed() {
     Get.back(result: flag);
   }
-  Future<void> deleteEmployee(int empId) async {
-    print("Employee id : $empId");
-    circularLoader.showCircularLoader();
-    // isLoading.value = true;
-    String token = prefs!.getString(SpString.token)!;
-    var headers = {
-      "Authorization": "Bearer $token",
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    };
-    var resp =
-        await HttpReq.deleteApi(apiUrl: AppUrl().deleteEmployee(empId), headers: headers);
-    var respBody = json.decode(resp!.body);
-    if (resp.statusCode == 200) {
-      // Call get API again
-      await getEmployees();
-    } else {
-      circularLoader.hideCircularLoader();
-      myBotToast(respBody["message"]);
+
+  Future<void> deleteEmployee(BuildContext context, int empId) async {
+    debugPrint("Employee id : $empId");
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Are you sure?'),
+        content: const Text('Do you want to delete this Employee?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back(result: false);
+            },
+            child: const Text('CANCEL'),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back(result: true);
+            },
+            child: const Text('YES'),
+          ),
+        ],
+      ),
+    );
+
+    if (result != null && result) {
+      circularLoader.showCircularLoader();
+      // isLoading.value = true;
+      String token = prefs!.getString(SpString.token)!;
+      var headers = {
+        "Authorization": "Bearer $token",
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      };
+      var resp = await HttpReq.deleteApi(
+          apiUrl: AppUrl().deleteEmployee(empId), headers: headers);
+      var respBody = json.decode(resp!.body);
+      if (resp.statusCode == 200) {
+        // Call get API again
+        await getEmployees();
+        employeeDeleted.value = true;
+      } else {
+        circularLoader.hideCircularLoader();
+        myBotToast(respBody["message"]);
+      }
     }
   }
 }

@@ -15,6 +15,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:path_provider/path_provider.dart';
 // import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 // import 'package:flutter_ringtone_player/flutter_ringtone_player.dart';
 // import 'package:get/get.dart';
@@ -49,11 +50,23 @@ import 'circular_loader.dart';
 
 myBotToast(String text, {s, duration}) =>
     BotToast.showText(text: text, duration: Duration(seconds: duration ?? 3));
-  
+
 void logToFile(String message) async {
-  final file = File('/storage/emulated/0/Download/my_app_log.txt');
-  await file.writeAsString('$message\n', mode: FileMode.append);
+  try {
+    final file = File('/storage/emulated/0/Download/my_app_log.txt');
+    await file.writeAsString('$message\n', mode: FileMode.append);
+  } catch (e) {
+    // If permission denied or any error, fallback to app's documents directory
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      final fallbackFile = File('${directory.path}/my_app_log.txt');
+      await fallbackFile.writeAsString('$message\n', mode: FileMode.append);
+    } catch (e2) {
+      // Optionally, handle/log this error as well
+    }
+  }
 }
+
 class AppUtility {
   // static bool isSipRegistered(helper) {
   //   return ((helper==null)||(helper.registerState.state != RegistrationStateEnum.REGISTERED)) ? false : true;
@@ -308,8 +321,7 @@ class AppUtility {
       "Content-Type": "application/json",
       "Accept": "application/json"
     };
-    var resp = await HttpReq.postApi(
-        apiUrl: AppUrl().logout, headers: headers);
+    var resp = await HttpReq.postApi(apiUrl: AppUrl().logout, headers: headers);
     var respBody = json.decode(resp!.body);
     if (resp.statusCode == 200) {
       stopService();
@@ -324,10 +336,11 @@ class AppUtility {
       return false;
     }
   }
-  void keepSomeSpValues()async{
+
+  void keepSomeSpValues() async {
     SharedPreferences? prefs;
     prefs = await SharedPreferences.getInstance();
-    String flavor = prefs.getString('FLAVOR')!; 
+    String flavor = prefs.getString('FLAVOR')!;
     prefs.clear();
     prefs.setString('FLAVOR', flavor);
   }

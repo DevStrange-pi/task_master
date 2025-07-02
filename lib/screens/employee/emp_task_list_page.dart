@@ -22,13 +22,15 @@ class EmpTaskListPage extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
           color: Colors.black87.withValues(alpha: 0.7),
         ),
-        padding: const EdgeInsets.fromLTRB(14, 14, 14, 0), // for tooltip container top height
+        padding: const EdgeInsets.fromLTRB(
+            14, 14, 14, 0), // for tooltip container top height
         richMessage: WidgetSpan(
           child: Column(
             children: List.generate(
                 empTaskListPageController.taskStatusColor.length, (index) {
               return Padding(
-                padding: const EdgeInsets.only(bottom: 14.0), // for tooltip container bottom height
+                padding: const EdgeInsets.only(
+                    bottom: 14.0), // for tooltip container bottom height
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -54,8 +56,8 @@ class EmpTaskListPage extends StatelessWidget {
             }),
           ),
         ),
-        margin: EdgeInsets.fromLTRB(
-            MediaQuery.of(context).size.width / 1.8, 0, 20, 0), // for tooltip container width
+        margin: EdgeInsets.fromLTRB(MediaQuery.of(context).size.width / 1.8, 0,
+            20, 0), // for tooltip container width
         child: const Icon(
           Icons.info_outline,
           size: 32,
@@ -63,69 +65,92 @@ class EmpTaskListPage extends StatelessWidget {
         ),
       ),
       title: empTaskListPageController.title!,
-      content: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 20, bottom: 40),
-          child: Obx(
-            () => Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: empTaskListPageController.tasksList!.isEmpty
-                  ? [
-                      Padding(
-                        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height / 3.2),
-                        child: Text(
-                          "No tasks found",
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: AppColors.black.withValues(alpha: 0.5),
-                          ),
-                        ),
-                      ),
-                    ]
-                  : List.generate(
-                      empTaskListPageController.tasksList!.length,
-                      (index) {
-                        return Padding(
-                          padding: const EdgeInsets.only(top: 30.0),
-                          child: Tooltip(
-                            padding: const EdgeInsets.all(12),
-                            showDuration: const Duration(minutes: 1),
-                            message:
-                                'Name: ${empTaskListPageController.tasksList![index].name!}\n\nDescription: ${empTaskListPageController.tasksList![index].description!}',
-                            textStyle: const TextStyle(
-                                fontSize: 18, color: AppColors.greyWhite),
-                            margin: const EdgeInsets.fromLTRB(50, 0, 50, 0),
-                            child: MenuTile(
-                              statusColor:
-                                  empTaskListPageController.taskStatusColor[
-                                      empTaskListPageController
-                                          .tasksList![index].status!],
-                              title: empTaskListPageController
-                                  .tasksList![index].name!,
-                              onTap: () {
-                                Get.toNamed(AppRoutes.employeeTaskDetailsPage,
-                                    arguments: empTaskListPageController
-                                        .tasksList![index]
-                                    // {
-                                    //   "taskId": empTaskListPageController
-                                    //       .tasksList![index].id!
-                                    //       .toString(),
-                                    //   "taskName":
-                                    //       empTaskListPageController.tasksList![index].name!,
-                                    //   "taskDescription": empTaskListPageController
-                                    //       .tasksList![index].description!,
-                                    //   "taskType":
-                                    //       empTaskListPageController.tasksList![index].type!,
-                                    //   "taskStatus": empTaskListPageController
-                                    //       .tasksList![index].status!,
-                                    // }
-                                    );
-                              },
+      content: RefreshIndicator(
+        onRefresh: () async {
+          await empTaskListPageController.onRefresh();
+        },
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.only(top: 20, bottom: 40),
+            child: Obx(
+              () => Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: empTaskListPageController.tasksList!.isEmpty
+                    ? [
+                        Padding(
+                          padding: EdgeInsets.only(
+                              top: MediaQuery.of(context).size.height / 3.2),
+                          child: Text(
+                            "No tasks found",
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: AppColors.black.withValues(alpha: 0.5),
                             ),
                           ),
-                        );
-                      },
-                    ),
+                        ),
+                      ]
+                    : List.generate(
+                        empTaskListPageController.tasksList!.length,
+                        (index) {
+                          return Padding(
+                            padding: const EdgeInsets.only(top: 30.0),
+                            child: Tooltip(
+                              padding: const EdgeInsets.all(12),
+                              showDuration: const Duration(minutes: 1),
+                              message:
+                                  'Name: ${empTaskListPageController.tasksList![index].name!}\n\nDescription: ${empTaskListPageController.tasksList![index].description!}',
+                              textStyle: const TextStyle(
+                                  fontSize: 18, color: AppColors.greyWhite),
+                              margin: const EdgeInsets.fromLTRB(50, 0, 50, 0),
+                              child: Obx(
+                                () => MenuTile(
+                                  deadlineTimer: empTaskListPageController
+                                              .tasksList![index].status ==
+                                          "pending"
+                                      ? empTaskListPageController
+                                                  .countdowns.length >
+                                              index
+                                          ? (empTaskListPageController
+                                                  .countdowns[index].isNotEmpty
+                                              ? empTaskListPageController
+                                                  .countdowns[index]
+                                              : null)
+                                          : null
+                                      : null,
+                                  statusColor:
+                                      empTaskListPageController.taskStatusColor[
+                                          empTaskListPageController
+                                              .tasksList![index].status!],
+                                  title: empTaskListPageController
+                                      .tasksList![index].name!,
+                                  onTap: () {
+                                    Get.toNamed(
+                                        AppRoutes.employeeTaskDetailsPage,
+                                        arguments: empTaskListPageController
+                                            .tasksList![index]
+                                        // {
+                                        //   "taskId": empTaskListPageController
+                                        //       .tasksList![index].id!
+                                        //       .toString(),
+                                        //   "taskName":
+                                        //       empTaskListPageController.tasksList![index].name!,
+                                        //   "taskDescription": empTaskListPageController
+                                        //       .tasksList![index].description!,
+                                        //   "taskType":
+                                        //       empTaskListPageController.tasksList![index].type!,
+                                        //   "taskStatus": empTaskListPageController
+                                        //       .tasksList![index].status!,
+                                        // }
+                                        );
+                                  },
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+              ),
             ),
           ),
         ),

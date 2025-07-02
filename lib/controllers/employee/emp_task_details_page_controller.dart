@@ -138,6 +138,9 @@ class EmpTaskDetailsPageController extends GetxController {
   }
 
   void createDropdownOptions() {
+    multiSelectController.clearAll();
+    multiSelectController.items.clear();
+    assignDropdownOptions.clear();
     createAssignSelected();
     for (var employee in employeeList) {
       int indx = assignSelected
@@ -340,6 +343,10 @@ class EmpTaskDetailsPageController extends GetxController {
         disabledItems.addAll(["Requested", "Expired"]);
       }
     }
+  }
+  
+  Future<void> onRefresh()async{
+    initAsync();
   }
 
   void onUpdatePressed() async {

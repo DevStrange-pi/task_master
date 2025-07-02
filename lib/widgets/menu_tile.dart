@@ -9,6 +9,7 @@ class MenuTile extends StatelessWidget {
       this.count,
       this.statusColor,
       this.expiredCount,
+      this.deadlineTimer,
       this.needReassign,
       this.reassignCallback,
       this.customFloatingWidget});
@@ -16,6 +17,7 @@ class MenuTile extends StatelessWidget {
   final void Function()? onTap;
   final int? count;
   final int? expiredCount;
+  final String? deadlineTimer;
   final bool? needReassign;
   final void Function()? reassignCallback;
   final Color? statusColor;
@@ -29,11 +31,11 @@ class MenuTile extends StatelessWidget {
         children: [
           expiredCount != null
               ? Positioned(
-                  right: 70,
+                  right: 75,
                   top: 0,
                   child: Container(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
                     decoration: const BoxDecoration(
                         borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(10),
@@ -49,10 +51,32 @@ class MenuTile extends StatelessWidget {
                   ),
                 )
               : const SizedBox(),
+          deadlineTimer != null
+              ? Positioned(
+                  left: 60,
+                  top: 0,
+                  child: Container(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                    decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(10),
+                            topRight: Radius.circular(10)),
+                        color: AppColors.lightRed),
+                    child: Text(
+                      deadlineTimer!,
+                      style: const TextStyle(
+                          fontSize: 10,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.white),
+                    ),
+                  ),
+                )
+              : const SizedBox(),
           Container(
             width: double.infinity,
             margin:
-                EdgeInsets.fromLTRB(56, expiredCount != null ? 22 : 16, 56, 8),
+                EdgeInsets.fromLTRB(56, expiredCount != null || deadlineTimer != null ? 24 : 16, 56, 8),
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
@@ -162,13 +186,12 @@ class MenuTile extends StatelessWidget {
                       right: 36,
                       top: 0,
                       child: customFloatingWidget!,
-                        // Text(
-                        //   count.toString(),
-                        //   style: const TextStyle(
-                        //       color: AppColors.white,
-                        //       fontWeight: FontWeight.bold),
-                        // ),
-                      
+                      // Text(
+                      //   count.toString(),
+                      //   style: const TextStyle(
+                      //       color: AppColors.white,
+                      //       fontWeight: FontWeight.bold),
+                      // ),
                     )
                   : const SizedBox(),
         ],

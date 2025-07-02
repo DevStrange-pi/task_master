@@ -300,22 +300,34 @@ class ReportingEmpDetailsController extends GetxController {
           .where((task) => task.status.toString() == newTitle.toLowerCase())
           .toList();
       if (filteredTasks.isNotEmpty) {
-        flag = await Get.toNamed(
+        final result = await Get.toNamed(
           AppRoutes.taskListPage,
-          arguments: [filteredTasks, title, "fromReporting"],
+          arguments: [
+            filteredTasks,
+            title,
+            "fromReporting",
+            fromDateCont.text,
+            toDateCont.text,
+            employeeId!
+          ],
         );
+        flag = result ?? false;
         if (flag) {
           await getEmployeeReport(
               fromDate: fromDateCont.text,
               toDate: toDateCont.text,
               employeeId: employeeId!);
-        } else {}
+        }
       } else {
         myBotToast("No Task Found", duration: 2);
       }
     } else {
       myBotToast("No Task Found", duration: 2);
     }
+  }
+
+  Future<void> onRefresh() async {
+    initAsync();
   }
 
   Future<void> showFromDateTimePicker() async {

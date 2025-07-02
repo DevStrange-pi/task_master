@@ -43,52 +43,58 @@ class ReportingPage extends StatelessWidget {
                     ),
                   ),
                 )
-              : SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 15, bottom: 70),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: List.generate(
-                        reportingPageController.employeeList.length,
-                        (index) {
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 30.0),
-                            child: MenuTile(
-                              customFloatingWidget: GestureDetector(
-                                onTap: () async {
-                                  await reportingPageController.deleteEmployee(
-                                      reportingPageController
-                                          .employeeList[index].id!);
-                                },
-                                child: const CircleAvatar(
-                                  backgroundColor: AppColors.darkGrey,
-                                  radius: 19,
-                                  child: Icon(Icons.delete,
-                                      color: AppColors.red),
+              : RefreshIndicator(
+                onRefresh: () async{
+                  await reportingPageController.onRefresh();
+                },
+                child: SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                    child: Padding(
+                      padding: const EdgeInsets.only(top: 15, bottom: 70),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: List.generate(
+                          reportingPageController.employeeList.length,
+                          (index) {
+                            return Padding(
+                              padding: const EdgeInsets.only(top: 30.0),
+                              child: MenuTile(
+                                customFloatingWidget: GestureDetector(
+                                  onTap: () async {
+                                    await reportingPageController.deleteEmployee(context,
+                                        reportingPageController
+                                            .employeeList[index].id!);
+                                  },
+                                  child: const CircleAvatar(
+                                    backgroundColor: AppColors.darkGrey,
+                                    radius: 19,
+                                    child: Icon(Icons.delete,
+                                        color: AppColors.red),
+                                  ),
                                 ),
+                                title: reportingPageController
+                                        .employeeList[index].name ??
+                                    "",
+                                // count: int.parse(
+                                //     reportingPageController.tasksCountList![index]!["count"]!),
+                                onTap: () {
+                                  reportingPageController.onTapMenuTile(
+                                      reportingPageController
+                                              .employeeList[index].name ??
+                                          "",
+                                      reportingPageController
+                                          .employeeList[index].id!,
+                                      reportingPageController
+                                          .employeeList[index].latestLocation);
+                                },
                               ),
-                              title: reportingPageController
-                                      .employeeList[index].name ??
-                                  "",
-                              // count: int.parse(
-                              //     reportingPageController.tasksCountList![index]!["count"]!),
-                              onTap: () {
-                                reportingPageController.onTapMenuTile(
-                                    reportingPageController
-                                            .employeeList[index].name ??
-                                        "",
-                                    reportingPageController
-                                        .employeeList[index].id!,
-                                    reportingPageController
-                                        .employeeList[index].latestLocation);
-                              },
-                            ),
-                          );
-                        },
+                            );
+                          },
+                        ),
                       ),
                     ),
                   ),
-                ),
+              ),
         ),
       ),
     );

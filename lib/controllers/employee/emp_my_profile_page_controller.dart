@@ -41,7 +41,7 @@ class EmpMyProfilePageController extends GetxController {
   void initAsync() async {
     prefs = await SharedPreferences.getInstance();
     await getProfile();
-    // 
+    //
     DateTime today = DateTime.now();
     originalToDate = DateFormat('dd MMMM yyyy').format(today);
     toDateCont.text = originalToDate;
@@ -57,6 +57,7 @@ class EmpMyProfilePageController extends GetxController {
   void onTapCalendarIcon() {
     isDatePickerVisible.value = !isDatePickerVisible.value;
   }
+
   List<Map<String, String>?> convertTaskMap(Map<String, dynamic> taskMap) {
     if (taskMap.isEmpty) {
       return [];
@@ -124,8 +125,7 @@ class EmpMyProfilePageController extends GetxController {
 
   void onTapDone() async {
     await getEmployeeReport(
-        fromDate: fromDateCont.text,
-        toDate: toDateCont.text);
+        fromDate: fromDateCont.text, toDate: toDateCont.text);
   }
 
   void onTapMenuTile(String title) async {
@@ -135,15 +135,17 @@ class EmpMyProfilePageController extends GetxController {
           .where((task) => task.status.toString() == newTitle.toLowerCase())
           .toList();
       if (filteredTasks.isNotEmpty) {
-        flag = await Get.toNamed(
+        final result = await Get.toNamed(
           AppRoutes.employeeTaskListPage,
           arguments: [filteredTasks, title, "fromReporting"],
         );
+        flag = result ?? false;
         if (flag) {
           await getEmployeeReport(
-              fromDate: fromDateCont.text,
-              toDate: toDateCont.text);
-        } else {}
+            fromDate: fromDateCont.text,
+            toDate: toDateCont.text,
+          );
+        }
       } else {
         myBotToast("No Task Found", duration: 2);
       }
@@ -228,7 +230,7 @@ class EmpMyProfilePageController extends GetxController {
       GetProfileResponseModel profileResponseModel =
           GetProfileResponseModel.fromJson(respBody);
       profileDetails = profileResponseModel.data?.employee ?? Employee();
-      createProfilData();
+      createProfileData();
       circularLoader.hideCircularLoader();
       return true;
     } else {
@@ -238,11 +240,14 @@ class EmpMyProfilePageController extends GetxController {
     }
   }
 
-  void createProfilData() {
+  void createProfileData() {
     profileData.value = profileDetails
         .toJson()
         .entries
-        .where((entry) => entry.key != "image_path" && entry.key != "pivot"&& entry.key != "device_token")
+        .where((entry) =>
+            entry.key != "image_path" &&
+            entry.key != "pivot" &&
+            entry.key != "device_token")
         .map((entry) {
       final value = entry.value;
       final valueStr = value?.toString() ?? '';
@@ -285,5 +290,9 @@ class EmpMyProfilePageController extends GetxController {
     Get.back(result: true
         // flag
         );
+  }
+
+  Future<void> onRefresh() async {
+    initAsync();
   }
 }

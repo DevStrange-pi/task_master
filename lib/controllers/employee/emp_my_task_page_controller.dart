@@ -5,7 +5,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../constants/app_url.dart';
 import '../../constants/strings.dart';
+import '../../globals/observables.dart';
 import '../../models/all_tasks_response_model.dart';
+import '../../models/employee/emp_dashboard_response_model.dart';
 import '../../network/http_req.dart';
 import '../../routes/app_routes.dart';
 import '../../utilities/circular_loader.dart';
@@ -28,8 +30,9 @@ class EmpMyTaskPageController extends GetxController {
 
   void initAsync() async {
     prefs = await SharedPreferences.getInstance();
-    tasksCount = Get.arguments;
-    tasksCountList!.assignAll(convertTaskMap(tasksCount ?? {}));
+    // tasksCount = Get.arguments;
+    // tasksCountList!.assignAll(convertTaskMap(tasksCount ?? {}));
+    await getTaskCount();
   }
 
   List<Map<String, String>?> convertTaskMap(Map<String, dynamic> taskMap) {
@@ -78,7 +81,34 @@ class EmpMyTaskPageController extends GetxController {
       return false;
     }
   }
-
+  Future<bool> getTaskCount() async {
+    circularLoader.showCircularLoader();
+    String token = prefs!.getString(SpString.token)!;
+    var headers = {
+      "Authorization": "Bearer $token",
+      "Content-Type": "application/json",
+      "Accept": "application/json"
+    };
+    var resp =
+        await HttpReq.getApi(apiUrl: AppUrl().employeeHome, headers: headers);
+    var respBody = json.decode(resp!.body);
+    if (resp.statusCode == 200) {
+      EmpDashboardResponseModel tokenData =
+          EmpDashboardResponseModel.fromJson(respBody);
+      // statistics.value = tokenData.data?.statistics ?? EmpStatistics();
+      final statsJson = tokenData.data?.statistics?.toJson() ?? {};
+      globalEmpStatistics.value = EmpStatistics.fromJson(statsJson);
+      globalTasksCountList.assignAll(convertTaskMap(statsJson) as Iterable<Map<String, String>>);
+      circularLoader.hideCircularLoader();
+      // myBotToast(respBody["message"]);
+      return true;
+    } else {
+      circularLoader.hideCircularLoader();
+      myBotToast(respBody["message"]);
+      // syllabusModelList.value = syllabusData.data!;
+      return false;
+    }
+  }
   void onTapMenuTile(String title) async {
     String newTitle = title.split(" ").first;
     if (await getEmployeeMyTasks()) {

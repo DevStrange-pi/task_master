@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -9,6 +10,7 @@ import '../constants/app_url.dart';
 import '../constants/strings.dart';
 import '../models/all_tasks_response_model.dart';
 import '../models/employee/emp_task_updated_response_model.dart';
+import '../models/get_employee_report_response_model.dart';
 import '../network/http_req.dart';
 import '../routes/app_routes.dart';
 import '../utilities/circular_loader.dart';
@@ -25,8 +27,16 @@ class TaskListController extends GetxController {
   String fromPage = "";
   TextEditingController deadlineDateCont = TextEditingController();
   RxBool isLoading = false.obs;
+  Rx<EmployeeReportData> reportData = EmployeeReportData().obs;
+  RxList<Map<String, String>?>? tasksCountList = <Map<String, String>>[].obs;
 
   static RxBool taskDeleted = false.obs;
+  RxList<String> countdowns = <String>[].obs;
+  Timer? _timer;
+
+  String fromDate = "";
+  String toDate = "";
+  int employeeId = 0;
 
   @override
   void onInit() {
@@ -38,7 +48,50 @@ class TaskListController extends GetxController {
     fromPage = Get.arguments[2];
     title = Get.arguments[1] ?? "";
     tasksList.value = Get.arguments[0] ?? <Task>[];
+    if (fromPage == "fromReporting") {
+      fromDate = Get.arguments[3] ?? "";
+      toDate = Get.arguments[4] ?? "";
+      employeeId = Get.arguments[5] ?? 0;
+    }
     prefs = await SharedPreferences.getInstance();
+    startCountdowns();
+    if (fromPage == "fromReporting") {
+      fromReportingRefreshCall();
+    }
+  }
+
+  @override
+  void onClose() {
+    _timer?.cancel();
+    super.onClose();
+  }
+
+  void startCountdowns() {
+    updateCountdowns();
+    _timer?.cancel();
+    _timer =
+        Timer.periodic(const Duration(seconds: 1), (_) => updateCountdowns());
+  }
+
+  void updateCountdowns() {
+    if (tasksList.isEmpty) return;
+    final now = DateTime.now().toUtc();
+    final List<String> updated = [];
+    for (var task in tasksList) {
+      if (task.status == "pending" && task.deadline != null) {
+        final deadline = task.deadline!.toUtc();
+        Duration diff = deadline.difference(now);
+        if (diff.isNegative) diff = Duration.zero;
+        int days = diff.inDays;
+        int hours = diff.inHours % 24;
+        int minutes = diff.inMinutes % 60;
+        int seconds = diff.inSeconds % 60;
+        updated.add("${days}D ${hours}h ${minutes}m ${seconds}s");
+      } else {
+        updated.add("");
+      }
+    }
+    countdowns.value = updated;
   }
 
   void reassignCallback(BuildContext context, int taskId) async {
@@ -203,37 +256,155 @@ class TaskListController extends GetxController {
     }
   }
 
-  Future<void> deleteTask(int taskId) async {
-    print("Task id : $taskId");
+  Future<void> deleteTask(BuildContext context, int taskId) async {
+    debugPrint("Task id : $taskId");
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Are you sure?'),
+        content: const Text('Do you want to delete this task?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back(result: false);
+            },
+            child: const Text('CANCEL'),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back(result: true);
+            },
+            child: const Text('YES'),
+          ),
+        ],
+      ),
+    );
+
+    if (result != null && result) {
+      circularLoader.showCircularLoader();
+      String token = prefs!.getString(SpString.token)!;
+      var headers = {
+        "Authorization": "Bearer $token",
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      };
+      var resp = await HttpReq.deleteApi(
+          apiUrl: AppUrl().deleteTask(taskId), headers: headers);
+      var respBody = json.decode(resp!.body);
+      if (resp.statusCode == 200) {
+        // Call get API again
+        await onRefresh();
+        taskDeleted.value = true;
+      } else {
+        circularLoader.hideCircularLoader();
+        myBotToast(respBody["message"]);
+      }
+    }
+  }
+
+  Future<void> onRefresh() async {
+    if (fromPage == "fromReporting") {
+      fromReportingRefreshCall();
+    } else {
+      String titleToCompare = title!.toLowerCase().split(" ").first;
+      if (await getAllTasks()) {
+        List<Task> filteredTasks = tasks
+            .where((task) => task.status.toString() == titleToCompare)
+            .toList();
+        tasksList.assignAll(filteredTasks);
+        updateCountdowns();
+      } else {
+        myBotToast("No Task Found", duration: 2);
+      }
+    }
+  }
+
+  void fromReportingRefreshCall() async {
+    String titleToCompare = title!.toLowerCase().split(" ").first;
+    if (await getEmployeeReport(
+        fromDate: fromDate, toDate: toDate, employeeId: employeeId)) {
+      List<Task> filteredTasks = reportData.value.tasks!
+          .where((task) => task.status.toString() == titleToCompare)
+          .toList();
+      tasksList.assignAll(filteredTasks);
+      updateCountdowns();
+    } else {
+      myBotToast("No Task Found", duration: 2);
+    }
+  }
+
+  Future<bool> getEmployeeReport({
+    required String fromDate,
+    required String toDate,
+    required int employeeId,
+  }) async {
+    CircularLoader circularLoader = Get.find<CircularLoader>();
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     circularLoader.showCircularLoader();
-    String token = prefs!.getString(SpString.token)!;
+
+    String token = prefs.getString(SpString.token)!;
     var headers = {
       "Authorization": "Bearer $token",
       "Content-Type": "application/json",
       "Accept": "application/json"
     };
-    var resp =
-        await HttpReq.deleteApi(apiUrl: AppUrl().deleteTask(taskId), headers: headers);
+    String parsedFromDate = "";
+    String parsedToDate = "";
+    try {
+      parsedFromDate = DateFormat('dd MMMM yyyy')
+          .parse(fromDate)
+          .toIso8601String()
+          .split('T')
+          .first;
+    } catch (_) {}
+    try {
+      parsedToDate = DateFormat('dd MMMM yyyy')
+          .parse(toDate)
+          .toIso8601String()
+          .split('T')
+          .first;
+    } catch (_) {}
+
+    final url = AppUrl().getEmployeeReportUrl(
+      fromDate: parsedFromDate,
+      toDate: parsedToDate,
+      employeeId: employeeId,
+    );
+
+    var resp = await HttpReq.getApi(apiUrl: url, headers: headers);
     var respBody = json.decode(resp!.body);
+
     if (resp.statusCode == 200) {
-      // Call get API again
-      await onRefresh();
-      taskDeleted.value = true;
+      GettEmployeeReportResponseModel employeeReportResp =
+          GettEmployeeReportResponseModel.fromJson(respBody);
+      reportData.value = employeeReportResp.data ?? EmployeeReportData();
+      tasksCountList!.assignAll(convertTaskMap(reportData.value.toJson()));
+      circularLoader.hideCircularLoader();
+      return true;
     } else {
       circularLoader.hideCircularLoader();
-      myBotToast(respBody["message"]);
+      myBotToast("Something went wrong");
+      return false;
     }
   }
 
-  Future<void> onRefresh() async {
-    if (await getAllTasks()) {
-      List<Task> filteredTasks = tasks
-          .where((task) => task.status.toString() == title!.toLowerCase().split(" ").first)
-          .toList();
-      tasksList.assignAll(filteredTasks);
-    } else {
-      myBotToast("No Task Found", duration: 2);
+  List<Map<String, String>?> convertTaskMap(Map<String, dynamic> taskMap) {
+    if (taskMap.isEmpty) {
+      return [];
     }
+    return taskMap.entries
+        .where((entry) => entry.key.contains("_tasks"))
+        .map((entry) {
+      final name = entry.key
+          .split('_')
+          .map((word) => word[0].toUpperCase() + word.substring(1))
+          .join(' ');
+
+      return {
+        "name": name,
+        "count": entry.value.toString(),
+      };
+    }).toList();
   }
 
   Future<bool> getAllTasks() async {

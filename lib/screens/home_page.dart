@@ -25,7 +25,7 @@ class HomePage extends StatelessWidget {
           child: SingleChildScrollView(
             physics: const AlwaysScrollableScrollPhysics(),
             child: Padding(
-              padding: const EdgeInsets.only(top: 40,bottom: 40),
+              padding: const EdgeInsets.only(top: 40, bottom: 40),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -56,17 +56,20 @@ class HomePage extends StatelessWidget {
                   MenuTile(
                     title: "Add Employee",
                     onTap: () {
-                      Get.toNamed(AppRoutes.addProfilePage);
+                      homePageController.addEmployeeTapped();
                     },
                   ),
                   const SizedBox(
                     height: 30,
                   ),
-                  MenuTile(
-                    title: "Reporting",
-                    onTap: () {
-                      homePageController.goToReporting();
-                    },
+                  Obx(
+                    () => MenuTile(
+                      count: globalStatistics.value.totalEmployees,
+                      title: "Reporting",
+                      onTap: () {
+                        homePageController.goToReporting();
+                      },
+                    ),
                   ),
                 ],
               ),

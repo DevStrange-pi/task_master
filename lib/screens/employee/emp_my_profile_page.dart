@@ -39,13 +39,15 @@ class EmpMyProfilePage extends StatelessWidget {
                       Tab(
                         child: Text(
                           "Profile",
-                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
                         ),
                       ),
                       Tab(
                         child: Text(
                           "Tasks",
-                          style: TextStyle(fontWeight: FontWeight.bold,fontSize: 16),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 16),
                         ),
                       ),
                     ],
@@ -57,51 +59,62 @@ class EmpMyProfilePage extends StatelessWidget {
                     children: [
                       Padding(
                         padding: const EdgeInsets.all(24.0),
-                        child: SingleChildScrollView(
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(16),
-                            child: Obx(
-                              () => Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: List.generate(
-                                    empMyProfilePageController.profileData.length,
-                                    (index) {
-                                  final isBlue = index % 2 == 0;
-                                  return Container(
-                                    color: isBlue ? Colors.blue[50] : Colors.white,
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 16, horizontal: 12),
-                                    width: double.infinity,
-                                    child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Expanded(
-                                          flex: 2,
-                                          child: Text(
-                                            empMyProfilePageController
-                                                    .profileData[index]['label'] ??
-                                                '',
-                                            style: const TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16,
+                        child: RefreshIndicator(
+                          onRefresh: () async {
+                            await empMyProfilePageController.onRefresh();
+                          },
+                          child: SingleChildScrollView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Obx(
+                                () => Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: List.generate(
+                                      empMyProfilePageController
+                                          .profileData.length, (index) {
+                                    final isBlue = index % 2 == 0;
+                                    return Container(
+                                      color: isBlue
+                                          ? Colors.blue[50]
+                                          : Colors.white,
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 16, horizontal: 12),
+                                      width: double.infinity,
+                                      child: Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            flex: 2,
+                                            child: Text(
+                                              empMyProfilePageController
+                                                          .profileData[index]
+                                                      ['label'] ??
+                                                  '',
+                                              style: const TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 16,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        Expanded(
-                                          flex: 3,
-                                          child: Text(
-                                            empMyProfilePageController
-                                                    .profileData[index]['value'] ??
-                                                '',
-                                            style: const TextStyle(
-                                              fontSize: 16,
+                                          Expanded(
+                                            flex: 3,
+                                            child: Text(
+                                              empMyProfilePageController
+                                                          .profileData[index]
+                                                      ['value'] ??
+                                                  '',
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }),
+                                        ],
+                                      ),
+                                    );
+                                  }),
+                                ),
                               ),
                             ),
                           ),
