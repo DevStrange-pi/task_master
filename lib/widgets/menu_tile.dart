@@ -12,7 +12,8 @@ class MenuTile extends StatelessWidget {
       this.deadlineTimer,
       this.needReassign,
       this.reassignCallback,
-      this.customFloatingWidget});
+      this.customFloatingWidget,
+      this.userList});
   final String title;
   final void Function()? onTap;
   final int? count;
@@ -22,6 +23,7 @@ class MenuTile extends StatelessWidget {
   final void Function()? reassignCallback;
   final Color? statusColor;
   final Widget? customFloatingWidget;
+  final List<String>? userList;
 
   @override
   Widget build(BuildContext context) {
@@ -73,10 +75,53 @@ class MenuTile extends StatelessWidget {
                   ),
                 )
               : const SizedBox(),
+          userList != null && userList!.isNotEmpty
+    ? Positioned(
+        left: 60,
+        right: 60,
+        bottom: 0,
+        top: 30,
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(14),
+              bottomRight: Radius.circular(14),
+            ),
+            color: AppColors.lightestBlue,
+          ),
+          child: Wrap(
+            spacing: 8,
+            runSpacing: 4,
+            children: userList!
+                .map((user) => Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color: AppColors.lightGrey,
+                        borderRadius: BorderRadius.circular(14),
+                      ),
+                      child: Text(
+                        user,
+                        style: TextStyle(
+                          color: AppColors.black.withAlpha(179), // 0.7 alpha
+                          fontWeight: FontWeight.w500,
+                          fontSize: 12,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ))
+                .toList(),
+          ),
+        ),
+      )
+    : const SizedBox(),
           Container(
             width: double.infinity,
-            margin:
-                EdgeInsets.fromLTRB(56, expiredCount != null || deadlineTimer != null ? 24 : 16, 56, 8),
+            margin: EdgeInsets.fromLTRB(
+                56,
+                expiredCount != null || deadlineTimer != null ? 24 : 16,
+                56,
+                userList != null && userList!.isNotEmpty ? 36 : 8),
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
