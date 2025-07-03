@@ -66,20 +66,20 @@ class EmpStatistics {
     });
 
     factory EmpStatistics.fromJson(Map<String, dynamic> json) => EmpStatistics(
+        onceTasks: json["once_tasks"],
         dailyTasks: json["daily_tasks"],
         weeklyTasks: json["weekly_tasks"],
         monthlyTasks: json["monthly_tasks"],
         yearlyTasks: json["yearly_tasks"],
-        onceTasks: json["once_tasks"],
         requestedTasks: json["requested_tasks"],
     );
 
     Map<String, dynamic> toJson() => {
+        "once_tasks": onceTasks,
         "daily_tasks": dailyTasks,
         "weekly_tasks": weeklyTasks,
         "monthly_tasks": monthlyTasks,
         "yearly_tasks": yearlyTasks,
-        "once_tasks": onceTasks,
         "requested_tasks": requestedTasks,
     };
 }

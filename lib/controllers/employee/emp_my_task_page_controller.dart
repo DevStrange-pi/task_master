@@ -35,7 +35,7 @@ class EmpMyTaskPageController extends GetxController {
     await getTaskCount();
   }
 
-  List<Map<String, String>?> convertTaskMap(Map<String, dynamic> taskMap) {
+  List<Map<String, String>> convertTaskMap(Map<String, dynamic> taskMap) {
     if (taskMap.isEmpty) {
       return [];
     }
@@ -81,6 +81,7 @@ class EmpMyTaskPageController extends GetxController {
       return false;
     }
   }
+
   Future<bool> getTaskCount() async {
     circularLoader.showCircularLoader();
     String token = prefs!.getString(SpString.token)!;
@@ -97,8 +98,10 @@ class EmpMyTaskPageController extends GetxController {
           EmpDashboardResponseModel.fromJson(respBody);
       // statistics.value = tokenData.data?.statistics ?? EmpStatistics();
       final statsJson = tokenData.data?.statistics?.toJson() ?? {};
+      // final statsJson = respBody['data']?['statistics'] ?? {};
       globalEmpStatistics.value = EmpStatistics.fromJson(statsJson);
-      globalTasksCountList.assignAll(convertTaskMap(statsJson) as Iterable<Map<String, String>>);
+      globalTasksCountList.assignAll(
+          convertTaskMap(statsJson));
       circularLoader.hideCircularLoader();
       // myBotToast(respBody["message"]);
       return true;
@@ -109,6 +112,7 @@ class EmpMyTaskPageController extends GetxController {
       return false;
     }
   }
+
   void onTapMenuTile(String title) async {
     String newTitle = title.split(" ").first;
     if (await getEmployeeMyTasks()) {

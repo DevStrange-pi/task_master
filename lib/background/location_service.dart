@@ -55,7 +55,7 @@ void backgroundServiceOnStart(ServiceInstance service) async {
       await trackLocation(baseUrl, token, empId, body);
       logToFile(
           "Location Service Started: ${DateTime.now()}");
-      Timer.periodic(const Duration(seconds: 15), (timer) async {
+      Timer.periodic(const Duration(minutes: 15), (timer) async {
         await trackLocation(baseUrl, token, empId, body);
       });
     }
