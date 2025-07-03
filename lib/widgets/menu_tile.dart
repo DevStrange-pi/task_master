@@ -27,101 +27,160 @@ class MenuTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Stack(
-        children: [
-          expiredCount != null
-              ? Positioned(
-                  right: 75,
-                  top: 0,
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                    decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10)),
-                        color: AppColors.black),
-                    child: Text(
-                      "Expired $expiredCount times",
-                      style: const TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.white),
+    return Stack(
+      children: [
+        expiredCount != null
+            ? Positioned(
+                right: 75,
+                top: 0,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10)),
+                      color: AppColors.black),
+                  child: Text(
+                    "Expired $expiredCount times",
+                    style: const TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.white),
+                  ),
+                ),
+              )
+            : const SizedBox(),
+        deadlineTimer != null
+            ? Positioned(
+                left: 63,
+                top: 0,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10),
+                          topRight: Radius.circular(10)),
+                      color: AppColors.lightRed),
+                  child: Text(
+                    deadlineTimer!,
+                    style: const TextStyle(
+                        fontSize: 10,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.white),
+                  ),
+                ),
+              )
+            : const SizedBox(),
+        userList != null && userList!.isNotEmpty
+            ? Positioned(
+                left: 60,
+                // right: 60,
+                bottom: (userList!.length / 2).ceil() > 2
+                    ? (0.7 * (userList!.length / 2).floor()) *
+                        (userList!.length / 2).ceil()
+                    : 0,
+                // top: 0,
+                child: Container(
+                  constraints: BoxConstraints(
+                      maxWidth: MediaQuery.of(context).size.width - 120),
+                  padding: const EdgeInsets.fromLTRB(8, 12, 8, 6),
+                  decoration: const BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(14),
+                      bottomRight: Radius.circular(14),
+                    ),
+                    color: AppColors.lightestBlue,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: List.generate(
+                      (userList!.length / 2).ceil(),
+                      (rowIndex) {
+                        final start = rowIndex * 2;
+                        final end = (start + 2 < userList!.length)
+                            ? start + 2
+                            : userList!.length;
+                        final rowUsers = userList!.sublist(start, end);
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisSize: MainAxisSize.min,
+                          children: rowUsers
+                              .map((user) => Flexible(
+                                fit: FlexFit.loose,
+                                child: Container(
+                                  margin: const EdgeInsets.only(
+                                      right: 8, bottom: 5),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: AppColors.lightGrey,
+                                    borderRadius: BorderRadius.circular(14),
+                                  ),
+                                  child: Tooltip(
+                                    message: user,
+                                    waitDuration:
+                                        const Duration(milliseconds: 100),
+                                    showDuration:
+                                        const Duration(seconds: 1),
+                                    child: Text(
+                                      user,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color: AppColors.black
+                                            .withValues(alpha: 0.5),
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 12,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ))
+                              .toList(),
+                        );
+                      },
                     ),
                   ),
-                )
-              : const SizedBox(),
-          deadlineTimer != null
-              ? Positioned(
-                  left: 60,
-                  top: 0,
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-                    decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10)),
-                        color: AppColors.lightRed),
-                    child: Text(
-                      deadlineTimer!,
-                      style: const TextStyle(
-                          fontSize: 10,
-                          fontWeight: FontWeight.bold,
-                          color: AppColors.white),
-                    ),
-                  ),
-                )
-              : const SizedBox(),
-          userList != null && userList!.isNotEmpty
-    ? Positioned(
-        left: 60,
-        right: 60,
-        bottom: 0,
-        top: 30,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-          decoration: const BoxDecoration(
-            borderRadius: BorderRadius.only(
-              bottomLeft: Radius.circular(14),
-              bottomRight: Radius.circular(14),
-            ),
-            color: AppColors.lightestBlue,
-          ),
-          child: Wrap(
-            spacing: 8,
-            runSpacing: 4,
-            children: userList!
-                .map((user) => Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: AppColors.lightGrey,
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      child: Text(
-                        user,
-                        style: TextStyle(
-                          color: AppColors.black.withAlpha(179), // 0.7 alpha
-                          fontWeight: FontWeight.w500,
-                          fontSize: 12,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ))
-                .toList(),
-          ),
-        ),
-      )
-    : const SizedBox(),
-          Container(
+                  // Wrap(
+                  //   spacing: 8,
+                  //   runSpacing: 4,
+                  //   children: userList!
+                  //       .map((user) => Container(
+                  //             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  //             decoration: BoxDecoration(
+                  //               color: AppColors.lightGrey,
+                  //               borderRadius: BorderRadius.circular(14),
+                  //             ),
+                  //             child: Text(
+                  //               user,
+                  //               style: TextStyle(
+                  //                 color: AppColors.black.withValues(alpha: 0.7), // 0.7 alpha
+                  //                 fontWeight: FontWeight.w500,
+                  //                 fontSize: 12,
+                  //               ),
+                  //               // overflow: TextOverflow.ellipsis,
+                  //             ),
+                  //           ))
+                  //       .toList(),
+                  // ),
+                ),
+              )
+            : const SizedBox(),
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
             width: double.infinity,
             margin: EdgeInsets.fromLTRB(
-                56,
-                expiredCount != null || deadlineTimer != null ? 24 : 16,
-                56,
-                userList != null && userList!.isNotEmpty ? 36 : 8),
+              56,
+              expiredCount != null || deadlineTimer != null ? 24 : 16,
+              56,
+              userList != null && userList!.isNotEmpty
+                  ? (userList!.length / 2).ceil() >= 2
+                      ? 34.0 * (userList!.length / 2).ceil()
+                      : 42.0
+                  : 8,
+            ),
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
@@ -189,58 +248,57 @@ class MenuTile extends StatelessWidget {
               ],
             ),
           ),
-          needReassign != null
-              ? Positioned(
-                  right: 36,
-                  top: 34,
-                  child: IconButton(
-                    style: const ButtonStyle(
-                        backgroundColor:
-                            WidgetStatePropertyAll(AppColors.white),
-                        shape: WidgetStatePropertyAll(
-                          CircleBorder(
-                            side: BorderSide(color: AppColors.grey),
-                          ),
-                        )),
-                    padding: EdgeInsets.zero,
-                    visualDensity:
-                        const VisualDensity(horizontal: -2, vertical: -2),
-                    onPressed: reassignCallback,
-                    icon: const Icon(
-                      Icons.restart_alt_rounded,
-                    ),
+        ),
+        needReassign != null
+            ? Positioned(
+                right: 36,
+                top: 34,
+                child: IconButton(
+                  style: const ButtonStyle(
+                      backgroundColor: WidgetStatePropertyAll(AppColors.white),
+                      shape: WidgetStatePropertyAll(
+                        CircleBorder(
+                          side: BorderSide(color: AppColors.grey),
+                        ),
+                      )),
+                  padding: EdgeInsets.zero,
+                  visualDensity:
+                      const VisualDensity(horizontal: -2, vertical: -2),
+                  onPressed: reassignCallback,
+                  icon: const Icon(
+                    Icons.restart_alt_rounded,
                   ),
-                )
-              : const SizedBox(),
-          count != null
-              ? Positioned(
-                  right: 36,
-                  top: 0,
-                  child: CircleAvatar(
-                    backgroundColor: AppColors.black,
-                    radius: 19,
-                    child: Text(
-                      count.toString(),
-                      style: const TextStyle(
-                          color: AppColors.white, fontWeight: FontWeight.bold),
-                    ),
+                ),
+              )
+            : const SizedBox(),
+        count != null
+            ? Positioned(
+                right: 36,
+                top: 0,
+                child: CircleAvatar(
+                  backgroundColor: AppColors.black,
+                  radius: 19,
+                  child: Text(
+                    count.toString(),
+                    style: const TextStyle(
+                        color: AppColors.white, fontWeight: FontWeight.bold),
                   ),
-                )
-              : customFloatingWidget != null
-                  ? Positioned(
-                      right: 36,
-                      top: 0,
-                      child: customFloatingWidget!,
-                      // Text(
-                      //   count.toString(),
-                      //   style: const TextStyle(
-                      //       color: AppColors.white,
-                      //       fontWeight: FontWeight.bold),
-                      // ),
-                    )
-                  : const SizedBox(),
-        ],
-      ),
+                ),
+              )
+            : customFloatingWidget != null
+                ? Positioned(
+                    right: 36,
+                    top: 0,
+                    child: customFloatingWidget!,
+                    // Text(
+                    //   count.toString(),
+                    //   style: const TextStyle(
+                    //       color: AppColors.white,
+                    //       fontWeight: FontWeight.bold),
+                    // ),
+                  )
+                : const SizedBox(),
+      ],
     );
   }
 }

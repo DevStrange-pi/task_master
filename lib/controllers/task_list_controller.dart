@@ -23,6 +23,7 @@ class TaskListController extends GetxController {
 
   List<Task> tasks = <Task>[];
   RxList<Task> tasksList = <Task>[].obs;
+  RxList<List<String>> employeeNameList = <List<String>>[].obs;
   String? title;
   String fromPage = "";
   TextEditingController deadlineDateCont = TextEditingController();
@@ -48,6 +49,7 @@ class TaskListController extends GetxController {
     fromPage = Get.arguments[2];
     title = Get.arguments[1] ?? "";
     tasksList.value = Get.arguments[0] ?? <Task>[];
+    createEmployeeNameList();
     if (fromPage == "fromReporting") {
       fromDate = Get.arguments[3] ?? "";
       toDate = Get.arguments[4] ?? "";
@@ -313,6 +315,7 @@ class TaskListController extends GetxController {
             .toList();
         tasksList.assignAll(filteredTasks);
         updateCountdowns();
+        createEmployeeNameList();
       } else {
         myBotToast("No Task Found", duration: 2);
       }
@@ -328,6 +331,7 @@ class TaskListController extends GetxController {
           .toList();
       tasksList.assignAll(filteredTasks);
       updateCountdowns();
+      createEmployeeNameList();
     } else {
       myBotToast("No Task Found", duration: 2);
     }
@@ -431,5 +435,16 @@ class TaskListController extends GetxController {
       // syllabusModelList.value = syllabusData.data!;
       return false;
     }
+  }
+
+  void createEmployeeNameList() {
+    employeeNameList.value = tasksList.map((task) {
+      // If employees is not null and not empty, extract their names
+      if (task.employees != null && task.employees!.isNotEmpty) {
+        return task.employees!.map((e) => e.name ?? '').toList();
+      } else {
+        return <String>[]; // Empty list if no employees
+      }
+    }).toList();
   }
 }

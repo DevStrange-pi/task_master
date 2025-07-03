@@ -40,8 +40,16 @@ class TaskListPage extends StatelessWidget {
                             fontSize: 18, color: AppColors.greyWhite),
                         margin: const EdgeInsets.fromLTRB(50, 0, 50, 0),
                         child: MenuTile(
-                          userList: const ["John Doe", "Jane Smith", "Akshay Kadam","Swapnal Narkar"],
-                          // taskListController.tasksList[index].userList,
+                          userList:
+                              taskListController.fromPage == "fromReporting"
+                                  ? []
+                                  : taskListController.employeeNameList[index],
+                          // const [
+                          //   "John Doe",
+                          //   "Jane Smith",
+                          //   "Vrushali Pandarpatte",
+                          //   "Siddhartha Venugopalan"
+                          // ],
                           deadlineTimer:
                               taskListController.tasksList[index].status ==
                                       "pending"
@@ -58,9 +66,11 @@ class TaskListPage extends StatelessWidget {
                                   taskListController.tasksList[index].id!);
                             },
                             child: CircleAvatar(
-                              backgroundColor: AppColors.darkGrey.withValues(alpha: 0.8),
+                              backgroundColor:
+                                  AppColors.darkGrey.withValues(alpha: 0.8),
                               radius: 19,
-                              child: const Icon(Icons.delete, color: AppColors.red),
+                              child: const Icon(Icons.delete,
+                                  color: AppColors.red),
                             ),
                           ),
                           title: taskListController.tasksList[index].name!,
