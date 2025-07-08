@@ -43,27 +43,27 @@ class _SplashScreenState extends State<SplashScreen>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     if (openedSettings && state == AppLifecycleState.resumed) {
       openedSettings = false;
-      ensureLocationPermission();
+      initAsync();
     }
   }
 
   void initAsync() async {
     await Future.delayed(Duration(seconds: splashTime));
     await requestPermissions();
-    await ensureLocationPermission();
     prefs = await SharedPreferences.getInstance();
     token = prefs!.getString(SpString.token) ?? "";
     role = prefs!.getString(SpString.role) ?? "";
-    // Navigate after 2 seconds (customize as needed)
-    // Timer(Duration(seconds: splashTime), () {
-    token != null && token!.isNotEmpty
-        ? role != null && role!.isNotEmpty
-            ? role == "admin"
-                ? Get.offAllNamed(AppRoutes.homePage)
-                : Get.offAllNamed(AppRoutes.employeeHomePage)
-            : Get.offAllNamed(AppRoutes.introPage)
-        : Get.offAllNamed(AppRoutes.introPage);
-    // });
+
+    // Only navigate if permission is granted
+    if (await ensureLocationPermission()) {
+      token != null && token!.isNotEmpty
+          ? role != null && role!.isNotEmpty
+              ? role == "admin"
+                  ? Get.offAllNamed(AppRoutes.homePage)
+                  : Get.offAllNamed(AppRoutes.employeeHomePage)
+              : Get.offAllNamed(AppRoutes.introPage)
+          : Get.offAllNamed(AppRoutes.introPage);
+    }
   }
 
   Future<void> requestPermissions() async {
@@ -77,45 +77,71 @@ class _SplashScreenState extends State<SplashScreen>
     // debugPrint("Location Permission Granted: ${status.isGranted}");
   }
 
-  Future<void> ensureLocationPermission() async {
-    while (true) {
-      var status = await Permission.locationAlways.status;
-      if (status.isGranted) break;
+  Future<bool> ensureLocationPermission() async {
+    var status = await Permission.locationAlways.status;
 
-      // Request permission
-      status = await Permission.locationAlways.request();
-      if (status.isGranted) break;
+    bool isAllTime = false;
+    if (GetPlatform.isAndroid) {
+      isAllTime = status.isGranted &&
+          (await Permission.locationWhenInUse.status).isGranted &&
+          (await Permission.location.status).isGranted;
+    } else if (GetPlatform.isIOS) {
+      isAllTime = status.isGranted &&
+          (await Permission.locationWhenInUse.status).isGranted;
+    } else {
+      isAllTime = status.isGranted;
+    }
 
-      // Show dialog and redirect to settings or close app
-      bool openSettings = await showDialog(
-        barrierDismissible: false,
-        context: Get.context!,
-        builder: (context) => WillPopScope(
-          onWillPop: () async => false,
-          child: AlertDialog(
-            title: const Text('Location Permission Required'),
-            content: const Text(
-                'This app requires location permission all the time to function.'),
-            actions: [
-              TextButton(
-                onPressed: () => Get.back(result: true),
-                child: const Text('Open Settings'),
-              ),
-              TextButton(
-                onPressed: () => Get.back(result: false),
-                child: const Text('Exit'),
-              ),
-            ],
-          ),
+    if (isAllTime) return true;
+
+    // Request permission
+    status = await Permission.locationAlways.request();
+
+    // Re-check after request
+    if (GetPlatform.isAndroid) {
+      isAllTime = status.isGranted &&
+          (await Permission.locationWhenInUse.status).isGranted &&
+          (await Permission.location.status).isGranted;
+    } else if (GetPlatform.isIOS) {
+      isAllTime = status.isGranted &&
+          (await Permission.locationWhenInUse.status).isGranted;
+    } else {
+      isAllTime = status.isGranted;
+    }
+
+    if (isAllTime) return true;
+
+    // Show dialog and redirect to settings or close app
+    bool openSettings = await showDialog(
+      barrierDismissible: false,
+      context: Get.context!,
+      builder: (context) => WillPopScope(
+        onWillPop: () async => false,
+        child: AlertDialog(
+          title: const Text('Location Permission Required'),
+          content: const Text(
+              'This app requires location permission "Allow all the time" to function.\n\n'
+              'Please select "Allow all the time" in app settings.'),
+          actions: [
+            TextButton(
+              onPressed: () => Get.back(result: true),
+              child: const Text('Open Settings'),
+            ),
+            TextButton(
+              onPressed: () => Get.back(result: false),
+              child: const Text('Exit'),
+            ),
+          ],
         ),
-      );
-      if (openSettings == true) {
-        openedSettings = true;
-        await openAppSettings();
-        break;
-      } else {
-        exit(0);
-      }
+      ),
+    );
+    if (openSettings == true) {
+      openedSettings = true;
+      await openAppSettings();
+      // Do not return true yet, wait for app to resume and check again
+      return false;
+    } else {
+      exit(0);
     }
   }
 
