@@ -12,6 +12,7 @@ import '../../network/http_req.dart';
 import '../../routes/app_routes.dart';
 import '../../utilities/circular_loader.dart';
 import '../../utilities/utilities.dart';
+import 'emp_task_list_page_controller.dart';
 
 class EmpMyTaskPageController extends GetxController {
   Map<String, dynamic>? tasksCount;
@@ -26,6 +27,13 @@ class EmpMyTaskPageController extends GetxController {
   void onInit() {
     initAsync();
     super.onInit();
+    // Listen for task deletion events
+    ever(EmpTaskListPageController.taskDeleted, (deleted) {
+      if (deleted == true) {
+        getTaskCount();
+        EmpTaskListPageController.taskDeleted.value = false; // Reset the flag
+      }
+    });
   }
 
   void initAsync() async {
@@ -100,8 +108,7 @@ class EmpMyTaskPageController extends GetxController {
       final statsJson = tokenData.data?.statistics?.toJson() ?? {};
       // final statsJson = respBody['data']?['statistics'] ?? {};
       globalEmpStatistics.value = EmpStatistics.fromJson(statsJson);
-      globalTasksCountList.assignAll(
-          convertTaskMap(statsJson));
+      globalTasksCountList.assignAll(convertTaskMap(statsJson));
       circularLoader.hideCircularLoader();
       // myBotToast(respBody["message"]);
       return true;

@@ -106,10 +106,10 @@ class EmpHomePageController extends GetxController {
     }
   }
 
-  // void addTaskTapped()async{
-  //   bool res = await Get.toNamed(AppRoutes.addTaskPage);
-  //   if (res) {
-  //     await getTaskCount();
-  //   }
-  // }
+  void addTaskTapped()async{
+    bool res = await Get.toNamed(AppRoutes.employeeAddTaskPage);
+    if (res) {
+      await getTaskCount();
+    }
+  }
 }

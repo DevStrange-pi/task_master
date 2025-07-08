@@ -17,6 +17,7 @@ import 'package:task_master/screens/task_list_page.dart';
 
 import '../bindings/add_task_binding.dart';
 import '../bindings/all_tasks_binding.dart';
+import '../bindings/emp_add_task_binding.dart';
 import '../bindings/emp_home_binding.dart';
 import '../bindings/emp_my_profile_binding.dart';
 import '../bindings/emp_my_task_binding.dart';
@@ -28,6 +29,7 @@ import '../bindings/reporting_binding.dart';
 import '../bindings/reporting_emp_details_binding.dart';
 import '../bindings/task_details_binding.dart';
 import '../bindings/task_list_binding.dart';
+import '../screens/employee/emp_add_task_page.dart';
 import '../screens/employee/emp_home_page.dart';
 import '../screens/employee/emp_my_task_page.dart';
 import '../screens/intro_page.dart';
@@ -99,10 +101,11 @@ class AppPages {
         name: AppRoutes.employeeTaskDetailsPage,
         page: () => EmpTaskDetailsPage(),
         binding: EmpTaskDetailsBinding()),
-    // GetPage(
-    //   name: AppRoutes.employeeRequestTaskPage,
-    //   page: () => EmpRequestTaskPage(),
-    // ),
+    GetPage(
+      name: AppRoutes.employeeAddTaskPage,
+      page: () => EmpAddTaskPage(),
+      binding: EmpAddTaskBinding(),
+    ),
     GetPage(
         name: AppRoutes.employeeMyProfilePage,
         page: () => EmpMyProfilePage(),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 import 'package:task_master/controllers/all_tasks_controller.dart';
 import 'package:task_master/widgets/scaffold_main.dart';

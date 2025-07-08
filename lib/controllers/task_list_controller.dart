@@ -81,8 +81,17 @@ class TaskListController extends GetxController {
     final List<String> updated = [];
     for (var task in tasksList) {
       if (task.status == "pending" && task.deadline != null) {
-        final deadline = task.deadline!.toUtc();
-        Duration diff = deadline.difference(now);
+        Duration diff;
+        if (task.type!.toLowerCase() == "daily") {
+          // Set deadline to today at 23:59:59
+          final nowLocal = DateTime.now();
+          final todayEnd =
+              DateTime(nowLocal.year, nowLocal.month, nowLocal.day, 23, 59, 59);
+          diff = todayEnd.difference(nowLocal);
+        } else {
+          final deadline = task.deadline!.toUtc();
+          diff = deadline.difference(now);
+        }
         if (diff.isNegative) diff = Duration.zero;
         int days = diff.inDays;
         int hours = diff.inHours % 24;

@@ -20,6 +20,7 @@ class EmpTaskListPageController extends GetxController {
   String fromPage = "";
 
   RxList<String> countdowns = <String>[].obs;
+  static RxBool taskDeleted = false.obs;
   Timer? _timer;
 
   Map<String, Color> taskStatusColor = {
@@ -64,8 +65,17 @@ class EmpTaskListPageController extends GetxController {
     final List<String> updated = [];
     for (var task in tasksList!) {
       if (task.status == "pending" && task.deadline != null) {
-        final deadline = task.deadline!.toUtc();
-        Duration diff = deadline.difference(now);
+        Duration diff;
+        if (task.type!.toLowerCase() == "daily") {
+          // Set deadline to today at 23:59:59
+          final nowLocal = DateTime.now();
+          final todayEnd =
+              DateTime(nowLocal.year, nowLocal.month, nowLocal.day, 23, 59, 59);
+          diff = todayEnd.difference(nowLocal);
+        } else {
+          final deadline = task.deadline!.toUtc();
+          diff = deadline.difference(now);
+        }
         if (diff.isNegative) diff = Duration.zero;
         int days = diff.inDays;
         int hours = diff.inHours % 24;
@@ -108,6 +118,52 @@ class EmpTaskListPageController extends GetxController {
       myBotToast(respBody["message"]);
       // syllabusModelList.value = syllabusData.data!;
       return false;
+    }
+  }
+
+  Future<void> deleteTask(BuildContext context, int taskId) async {
+    debugPrint("Task id : $taskId");
+    final result = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Are you sure?'),
+        content: const Text('Do you want to delete this task?'),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back(result: false);
+            },
+            child: const Text('CANCEL'),
+          ),
+          TextButton(
+            onPressed: () {
+              Get.back(result: true);
+            },
+            child: const Text('YES'),
+          ),
+        ],
+      ),
+    );
+
+    if (result != null && result) {
+      circularLoader.showCircularLoader();
+      String token = prefs!.getString(SpString.token)!;
+      var headers = {
+        "Authorization": "Bearer $token",
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      };
+      var resp = await HttpReq.deleteApi(
+          apiUrl: AppUrl().deleteEmployeeTask(taskId), headers: headers);
+      var respBody = json.decode(resp!.body);
+      if (resp.statusCode == 200) {
+        // Call get API again
+        await onRefresh();
+        taskDeleted.value = true;
+      } else {
+        circularLoader.hideCircularLoader();
+        myBotToast(respBody["message"]);
+      }
     }
   }
 

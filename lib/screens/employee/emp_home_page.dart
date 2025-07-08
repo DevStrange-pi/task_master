@@ -47,15 +47,15 @@ class EmpHomePage extends StatelessWidget {
               const SizedBox(
                 height: 30,
               ),
-              // MenuTile(
-              //   title: "Request Task",
-              //   onTap: () {
-              //     empHomePageController.addTaskTapped();
-              //   },
-              // ),
-              // const SizedBox(
-              //   height: 30,
-              // ),
+              MenuTile(
+                title: "Add Task",
+                onTap: () {
+                  empHomePageController.addTaskTapped();
+                },
+              ),
+              const SizedBox(
+                height: 30,
+              ),
             ],
           ),
         ),

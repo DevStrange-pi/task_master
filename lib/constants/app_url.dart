@@ -58,6 +58,9 @@ class AppUrl {
   String employeeUpdateTask(int taskId) {
     return "$baseUrl/employee/tasks/$taskId/status";
   }
+  String deleteEmployeeTask(int taskId) {
+    return "$baseUrl/employee/tasks/$taskId";
+  }
 
   final String empGetEmployees = "$baseUrl/employee/employees";
   String getEmployeeReportUrlForEmployee({
