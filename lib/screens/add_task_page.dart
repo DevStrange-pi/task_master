@@ -69,6 +69,9 @@ class AddTaskPage extends StatelessWidget {
                       selectedValue: addTaskController.taskTypeSelected,
                       onChanged: (val) {
                         addTaskController.taskTypeSelected = val;
+                        if (val == "Daily") {
+                          addTaskController.setDeadlineToTodayMidnight();
+                        }
                       },
                     ),
                     const SizedBox(

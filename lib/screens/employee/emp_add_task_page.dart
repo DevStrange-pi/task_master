@@ -59,17 +59,22 @@ class EmpAddTaskPage extends StatelessWidget {
                       isTextArea: true,
                       labelText: "Description",
                       hintText: "Type here...",
-                      textEditingController: empAddTaskPageController.descController,
+                      textEditingController:
+                          empAddTaskPageController.descController,
                     ),
                     const SizedBox(
                       height: 16,
                     ),
                     SpeedDropdown(
                       labelText: "Task Type",
-                      dropdownItems: empAddTaskPageController.taskTypeDropdownOptions,
+                      dropdownItems:
+                          empAddTaskPageController.taskTypeDropdownOptions,
                       selectedValue: empAddTaskPageController.taskTypeSelected,
                       onChanged: (val) {
                         empAddTaskPageController.taskTypeSelected = val;
+                        if (val == "Daily") {
+                          empAddTaskPageController.setDeadlineToTodayMidnight();
+                        }
                       },
                     ),
                     const SizedBox(
@@ -101,7 +106,8 @@ class EmpAddTaskPage extends StatelessWidget {
                         selectedValues: empAddTaskPageController.assignSelected,
                         onChanged: (val) {
                           debugPrint("OnSelectionChange: $val");
-                          empAddTaskPageController.createSelectedDropdownOptions(val);
+                          empAddTaskPageController
+                              .createSelectedDropdownOptions(val);
                         },
                       ),
                     ),

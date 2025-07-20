@@ -15,8 +15,7 @@ import '../../network/http_req.dart';
 import '../../utilities/circular_loader.dart';
 import '../../utilities/utilities.dart';
 
-class EmpAddTaskPageController extends GetxController{
-
+class EmpAddTaskPageController extends GetxController {
   SharedPreferences? prefs;
   CircularLoader circularLoader = Get.find<CircularLoader>();
 
@@ -31,7 +30,7 @@ class EmpAddTaskPageController extends GetxController{
     "Yearly",
     "Once"
   ];
-  String taskTypeSelected = "Daily";
+  String taskTypeSelected = "Weekly";
   final RxList<DropdownItem<String>> assignDropdownOptions =
       <DropdownItem<String>>[].obs;
   List<DropdownItem<String>> assignSelected = [];
@@ -42,21 +41,22 @@ class EmpAddTaskPageController extends GetxController{
 
   @override
   void onInit() {
-      initAsync();
+    initAsync();
     super.onInit();
   }
 
-void initAsync() async {
-  prefs = await SharedPreferences.getInstance();
-  await getEmployees();
-  multiSelectController.addListener(() {
-    if (multiSelectController.isOpen) {
-      canPop.value = false;
-    } else {
-      canPop.value = true;
-    }
-  });
-}
+  void initAsync() async {
+    prefs = await SharedPreferences.getInstance();
+    await getEmployees();
+    multiSelectController.addListener(() {
+      if (multiSelectController.isOpen) {
+        canPop.value = false;
+      } else {
+        canPop.value = true;
+      }
+    });
+  }
+
   @override
   void onClose() {
     assignDropdownOptions.clear();
@@ -95,8 +95,8 @@ void initAsync() async {
       "Content-Type": "application/json",
       "Accept": "application/json"
     };
-    var resp =
-        await HttpReq.getApi(apiUrl: AppUrl().getEmployees, headers: headers);
+    var resp = await HttpReq.getApi(
+        apiUrl: AppUrl().empGetEmployees, headers: headers);
     var respBody = json.decode(resp!.body);
     if (resp.statusCode == 200) {
       GetEmployeesResponseModel employeeListResp =
@@ -149,6 +149,12 @@ void initAsync() async {
       circularLoader.hideCircularLoader();
       return false;
     }
+  }
+
+  void setDeadlineToTodayMidnight() {
+    final now = DateTime.now();
+    final midnight = DateTime(now.year, now.month, now.day, 0, 0);
+    dateCont.text = DateFormat('dd MMMM yyyy, hh:mm a').format(midnight);
   }
 
   Future<void> showDateTimePicker() async {

@@ -32,7 +32,7 @@ class AddTaskController extends GetxController {
     "Yearly",
     "Once"
   ];
-  String taskTypeSelected = "Daily";
+  String taskTypeSelected = "Weekly";
   final RxList<DropdownItem<String>> assignDropdownOptions =
       <DropdownItem<String>>[].obs;
   List<DropdownItem<String>> assignSelected = [];
@@ -42,7 +42,7 @@ class AddTaskController extends GetxController {
   final RxBool canPop = true.obs;
 
   @override
-  void onInit(){
+  void onInit() {
     initAsync();
     super.onInit();
   }
@@ -151,6 +151,12 @@ class AddTaskController extends GetxController {
       circularLoader.hideCircularLoader();
       return false;
     }
+  }
+
+  void setDeadlineToTodayMidnight() {
+    final now = DateTime.now();
+    final midnight = DateTime(now.year, now.month, now.day, 0, 0);
+    dateCont.text = DateFormat('dd MMMM yyyy, hh:mm a').format(midnight);
   }
 
   Future<void> showDateTimePicker() async {

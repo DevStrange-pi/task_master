@@ -107,8 +107,8 @@ class EmpHomePageController extends GetxController {
   }
 
   void addTaskTapped()async{
-    bool res = await Get.toNamed(AppRoutes.employeeAddTaskPage);
-    if (res) {
+    var res = await Get.toNamed(AppRoutes.employeeAddTaskPage);
+    if (res != null && res == true) {
       await getTaskCount();
     }
   }
