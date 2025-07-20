@@ -96,7 +96,7 @@ void initAsync() async {
       "Accept": "application/json"
     };
     var resp =
-        await HttpReq.getApi(apiUrl: AppUrl().getEmployees, headers: headers);
+        await HttpReq.getApi(apiUrl: AppUrl().empGetEmployees, headers: headers);
     var respBody = json.decode(resp!.body);
     if (resp.statusCode == 200) {
       GetEmployeesResponseModel employeeListResp =
