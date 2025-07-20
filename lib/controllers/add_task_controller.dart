@@ -155,7 +155,9 @@ class AddTaskController extends GetxController {
 
   void setDeadlineToTodayMidnight() {
     final now = DateTime.now();
-    final midnight = DateTime(now.year, now.month, now.day, 0, 0);
+    final tomorrow = now.add(const Duration(days: 1));
+    final midnight =
+        DateTime(tomorrow.year, tomorrow.month, tomorrow.day, 0, 0);
     dateCont.text = DateFormat('dd MMMM yyyy, hh:mm a').format(midnight);
   }
 
