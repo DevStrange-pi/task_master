@@ -92,12 +92,16 @@ class TaskListController extends GetxController {
           final deadline = task.deadline!.toUtc();
           diff = deadline.difference(now);
         }
-        if (diff.isNegative) diff = Duration.zero;
-        int days = diff.inDays;
-        int hours = diff.inHours % 24;
-        int minutes = diff.inMinutes % 60;
-        int seconds = diff.inSeconds % 60;
-        updated.add("${days}D ${hours}h ${minutes}m ${seconds}s");
+        if (diff.isNegative) {
+          diff = Duration.zero;
+          updated.add("");
+        } else {
+          int days = diff.inDays;
+          int hours = diff.inHours % 24;
+          int minutes = diff.inMinutes % 60;
+          int seconds = diff.inSeconds % 60;
+          updated.add("${days}D ${hours}h ${minutes}m ${seconds}s");
+        }
       } else {
         updated.add("");
       }
