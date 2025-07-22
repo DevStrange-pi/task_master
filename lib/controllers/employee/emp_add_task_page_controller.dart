@@ -38,6 +38,7 @@ class EmpAddTaskPageController extends GetxController {
   final multiSelectController = MultiSelectController<String>();
   final RxList<Employee> employeeList = <Employee>[].obs;
   final RxBool canPop = true.obs;
+  final RxBool isDeadlineDisabled = false.obs;
 
   @override
   void onInit() {
@@ -157,6 +158,11 @@ class EmpAddTaskPageController extends GetxController {
     final midnight =
         DateTime(tomorrow.year, tomorrow.month, tomorrow.day, 0, 0);
     dateCont.text = DateFormat('dd MMMM yyyy, hh:mm a').format(midnight);
+    isDeadlineDisabled.value = true;
+  }
+
+  void enableDeadlineField() {
+    isDeadlineDisabled.value = false;
   }
 
   Future<void> showDateTimePicker() async {

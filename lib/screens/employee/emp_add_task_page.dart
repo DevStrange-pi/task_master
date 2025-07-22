@@ -74,6 +74,8 @@ class EmpAddTaskPage extends StatelessWidget {
                         empAddTaskPageController.taskTypeSelected = val;
                         if (val == "Daily") {
                           empAddTaskPageController.setDeadlineToTodayMidnight();
+                        }else {
+                          empAddTaskPageController.enableDeadlineField();
                         }
                       },
                     ),
@@ -88,9 +90,12 @@ class EmpAddTaskPage extends StatelessWidget {
                       hintText: "Select here...",
                       textEditingController: empAddTaskPageController.dateCont,
                       isDateTimePicker: true,
-                      fieldOnTap: () {
-                        empAddTaskPageController.showDateTimePicker();
-                      },
+                      isEnabled: !empAddTaskPageController.isDeadlineDisabled.value,
+                      fieldOnTap: empAddTaskPageController.isDeadlineDisabled.value
+                          ? null
+                          : () {
+                              empAddTaskPageController.showDateTimePicker();
+                            },
                     ),
                     const SizedBox(
                       height: 16,

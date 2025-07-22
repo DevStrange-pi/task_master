@@ -71,23 +71,30 @@ class AddTaskPage extends StatelessWidget {
                         addTaskController.taskTypeSelected = val;
                         if (val == "Daily") {
                           addTaskController.setDeadlineToTodayMidnight();
+                        }else{
+                          addTaskController.enableDeadlineField();
                         }
                       },
                     ),
                     const SizedBox(
                       height: 16,
                     ),
-                    SpeedTextfield(
-                      isPasswordHidden: false,
-                      needSuffixIcon: true,
-                      suffixIconData: Icons.calendar_month_sharp,
-                      labelText: "Deadline Date Time",
-                      hintText: "Select here...",
-                      textEditingController: addTaskController.dateCont,
-                      isDateTimePicker: true,
-                      fieldOnTap: () {
-                        addTaskController.showDateTimePicker();
-                      },
+                    Obx(
+                      () => SpeedTextfield(
+                        isPasswordHidden: false,
+                        needSuffixIcon: true,
+                        suffixIconData: Icons.calendar_month_sharp,
+                        labelText: "Deadline Date Time",
+                        hintText: "Select here...",
+                        textEditingController: addTaskController.dateCont,
+                        isDateTimePicker: true,
+                        isEnabled: !addTaskController.isDeadlineDisabled.value,
+                        fieldOnTap: addTaskController.isDeadlineDisabled.value 
+                        ? null 
+                        : () {
+                          addTaskController.showDateTimePicker();
+                        },
+                      ),
                     ),
                     const SizedBox(
                       height: 16,

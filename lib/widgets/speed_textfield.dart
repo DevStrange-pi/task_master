@@ -90,8 +90,18 @@ class SpeedTextfield extends StatelessWidget {
                       ? Padding(
                           padding: const EdgeInsets.only(right: 14.0),
                           child: IconButton(
-                            icon: Icon(suffixIconData,color: isDateTimePicker ? AppColors.blue:AppColors.darkGrey,),
-                            color: isDateTimePicker ? AppColors.blue:AppColors.darkGrey,
+                            icon: Icon(
+                              suffixIconData,
+                              color: isDateTimePicker
+                                  ? isEnabled
+                                      ? AppColors.blue
+                                      : AppColors.lightBlue
+                                          .withValues(alpha: 0.55)
+                                  : AppColors.darkGrey,
+                            ),
+                            color: isDateTimePicker
+                                ? AppColors.blue
+                                : AppColors.darkGrey,
                             onPressed: suffixIconOnPressed,
                           ),
                         )
