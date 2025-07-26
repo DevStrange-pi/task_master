@@ -59,32 +59,71 @@ class EmpTaskListPageController extends GetxController {
         Timer.periodic(const Duration(seconds: 1), (_) => updateCountdowns());
   }
 
+  String formatDateTime(DateTime dt) {
+    // Remove trailing 'Z' if present, ensure 6 digits for microseconds
+    String s = dt.toString();
+    if (s.endsWith('Z')) {
+      s = s.substring(0, s.length - 1);
+    }
+    // Ensure microseconds are 6 digits
+    if (dt.microsecond == 0 && !s.contains('.')) {
+      s += '.000000';
+    } else if (dt.microsecond != 0 && s.split('.').last.length < 6) {
+      var parts = s.split('.');
+      s = '${parts[0]}.${parts[1].padRight(6, '0')}';
+    } else {
+      String main = "${dt.year.toString().padLeft(4, '0')}-"
+          "${dt.month.toString().padLeft(2, '0')}-"
+          "${dt.day.toString().padLeft(2, '0')} "
+          "${dt.hour.toString().padLeft(2, '0')}:"
+          "${dt.minute.toString().padLeft(2, '0')}:"
+          "${dt.second.toString().padLeft(2, '0')}";
+
+      // Get microseconds as 6 digits
+      String micro = dt.microsecond.toString().padLeft(6, '0');
+      return "$main.$micro";
+    }
+    return s;
+  }
+
   void updateCountdowns() {
     if (tasksList == null) return;
-    final now = DateTime.now().toUtc();
+    final now = DateTime.now();
+    // final now = DateTime.now();
     final List<String> updated = [];
     for (var task in tasksList!) {
       if (task.status == "pending" && task.deadline != null) {
-        Duration diff;
+        // Duration diff;
+        int diffSeconds;
         if (task.type!.toLowerCase() == "daily") {
           // Set deadline to today at 23:59:59
           final nowLocal = DateTime.now();
           final todayEnd =
               DateTime(nowLocal.year, nowLocal.month, nowLocal.day, 23, 59, 59);
-          diff = todayEnd.difference(nowLocal);
+          diffSeconds = todayEnd.millisecondsSinceEpoch ~/ 1000 -
+              nowLocal.millisecondsSinceEpoch ~/ 1000;
         } else {
-          final deadline = task.deadline!.toUtc();
-          diff = deadline.difference(now);
+          final deadline = task.deadline!;
+          // Format deadline for display
+          String formattedDeadline = formatDateTime(deadline);
+          final newDeadline = DateTime.parse(formattedDeadline);
+          // print("\n\n");
+          // print('Deadline (formatted): $formattedDeadline');
+          diffSeconds = newDeadline.millisecondsSinceEpoch ~/ 1000 -
+              now.millisecondsSinceEpoch ~/ 1000;
         }
-        if (diff.isNegative) {
-          diff = Duration.zero;
+        if (diffSeconds < 0) {
+          diffSeconds = 0;
           updated.add("");
         } else {
-          int days = diff.inDays;
-          int hours = diff.inHours % 24;
-          int minutes = diff.inMinutes % 60;
-          int seconds = diff.inSeconds % 60;
+          int days = diffSeconds ~/ (24 * 3600);
+          int hours = (diffSeconds % (24 * 3600)) ~/ 3600;
+          int minutes = (diffSeconds % 3600) ~/ 60;
+          int seconds = diffSeconds % 60;
           updated.add("${days}D ${hours}h ${minutes}m ${seconds}s");
+          // print('Now: $now');
+          // print('diffSeconds: $diffSeconds');
+          // print('days: $days, hours: $hours, minutes: $minutes, seconds: $seconds');
         }
       } else {
         updated.add("");
