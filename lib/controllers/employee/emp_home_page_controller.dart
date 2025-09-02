@@ -112,4 +112,8 @@ class EmpHomePageController extends GetxController {
       await getTaskCount();
     }
   }
+
+  void createdAndAssignedTapped() {
+    Get.toNamed(AppRoutes.employeeCreatedAndAssignedPage);
+  }
 }

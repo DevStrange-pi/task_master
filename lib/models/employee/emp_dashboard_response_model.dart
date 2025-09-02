@@ -4,6 +4,8 @@
 
 import 'dart:convert';
 
+import '../all_tasks_response_model.dart';
+
 EmpDashboardResponseModel empDashboardResponseModelFromJson(String str) => EmpDashboardResponseModel.fromJson(json.decode(str));
 
 String empDashboardResponseModelToJson(EmpDashboardResponseModel data) => json.encode(data.toJson());
@@ -31,20 +33,24 @@ class EmpDashboardResponseModel {
 class EmpData {
     EmpStatistics? statistics;
     List<EmpTask>? tasks;
+    List<Task>? createdAndAssigned;
 
     EmpData({
         this.statistics,
         this.tasks,
+        this.createdAndAssigned,
     });
 
     factory EmpData.fromJson(Map<String, dynamic> json) => EmpData(
         statistics: json["statistics"] == null ? null : EmpStatistics.fromJson(json["statistics"]),
         tasks: json["tasks"] == null ? [] : List<EmpTask>.from(json["tasks"]!.map((x) => EmpTask.fromJson(x))),
+        createdAndAssigned: json["created_and_assigned"] == null ? [] : List<Task>.from(json["created_and_assigned"]!.map((x) => Task.fromJson(x))),
     );
 
     Map<String, dynamic> toJson() => {
         "statistics": statistics?.toJson(),
         "tasks": tasks == null ? [] : List<dynamic>.from(tasks!.map((x) => x.toJson())),
+        "created_and_assigned": createdAndAssigned == null ? [] : List<dynamic>.from(createdAndAssigned!.map((x) => x.toJson())),
     };
 }
 
@@ -92,6 +98,7 @@ class EmpTask {
     DateTime? deadline;
     String? status;
     String? type;
+    List<String>? assignedTo;
 
     EmpTask({
         this.taskNo,
@@ -101,6 +108,7 @@ class EmpTask {
         this.deadline,
         this.status,
         this.type,
+        this.assignedTo,
     });
 
     factory EmpTask.fromJson(Map<String, dynamic> json) => EmpTask(
@@ -111,6 +119,7 @@ class EmpTask {
         deadline: json["deadline"] == null ? null : DateTime.parse(json["deadline"]),
         status: json["status"],
         type: json["type"],
+        assignedTo: json["assigned_to"] == null ? [] : List<String>.from(json["assigned_to"]!),
     );
 
     Map<String, dynamic> toJson() => {
@@ -121,6 +130,7 @@ class EmpTask {
         "deadline": deadline?.toIso8601String(),
         "status": status,
         "type": type,
+        "assigned_to": assignedTo,
     };
 }
 

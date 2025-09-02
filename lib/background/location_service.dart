@@ -7,10 +7,20 @@ import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_master/utilities/utilities.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../constants/strings.dart';
 import '../models/employee/emp_location_track_response_model.dart';
 import '../network/http_req.dart';
+
+// Notification plugin and channel for foreground service
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+const AndroidNotificationChannel locationServiceChannel = AndroidNotificationChannel(
+  'location_service_channel',
+  'Location Service',
+  description: 'This channel is used for location service notifications.',
+  importance: Importance.low,
+);
 
 @pragma('vm:entry-point')
 void backgroundServiceOnStart(ServiceInstance service) async {
@@ -19,10 +29,14 @@ void backgroundServiceOnStart(ServiceInstance service) async {
   final String baseUrl = prefs.getString('BASE_URL') ?? '';
   String token = prefs.getString(SpString.token)!;
   if (service is AndroidServiceInstance) {
+    // Always start as foreground service with notification
+    service.setAsForegroundService();
+    // Setup notification for foreground service using flutter_local_notifications
+    // Ensure notification channel is created
+    await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(locationServiceChannel);
     service.on('setAsForeground').listen((event) {
       service.setAsForegroundService();
     });
-
     service.on('setAsBackground').listen((event) {
       service.setAsBackgroundService();
     });
@@ -56,6 +70,23 @@ void backgroundServiceOnStart(ServiceInstance service) async {
       logToFile(
           "Location Service Started: ${DateTime.now()}");
       Timer.periodic(const Duration(minutes: 15), (timer) async {
+        logToFile("Timer tick: ${DateTime.now()}");
+        // if (service is AndroidServiceInstance && await service.isForegroundService()) {
+        //   flutterLocalNotificationsPlugin.show(
+        //     888,
+        //     'Location Service',
+        //     'Tracking at ${DateTime.now()}',
+        //     const NotificationDetails(
+        //       android: AndroidNotificationDetails(
+        //         'location_service_channel',
+        //         'Location Service',
+        //         channelDescription: 'This channel is used for location service notifications.',
+        //         icon: 'ic_bg_service_small',
+        //         ongoing: true,
+        //       ),
+        //     ),
+        //   );
+        // }
         await trackLocation(baseUrl, token, empId, body);
       });
     }
@@ -100,6 +131,7 @@ Future<void> trackLocation(
     }
   } catch (e) {
     print(e.toString());
+    logToFile("API failed :${e.toString()}");
   }
 }
 

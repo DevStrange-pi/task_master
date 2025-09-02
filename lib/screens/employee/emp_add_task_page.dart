@@ -72,11 +72,12 @@ class EmpAddTaskPage extends StatelessWidget {
                       selectedValue: empAddTaskPageController.taskTypeSelected,
                       onChanged: (val) {
                         empAddTaskPageController.taskTypeSelected = val;
-                        if (val == "Daily") {
-                          empAddTaskPageController.setDeadlineToTodayMidnight();
-                        }else {
-                          empAddTaskPageController.enableDeadlineField();
-                        }
+                        // if (val == "Daily") {
+                        //   empAddTaskPageController.setDeadlineToTodayMidnight();
+                        // }else {
+                        //   empAddTaskPageController.enableDeadlineField();
+                        // }
+                        empAddTaskPageController.setDefaultDeadlineForTaskType(val);
                       },
                     ),
                     const SizedBox(

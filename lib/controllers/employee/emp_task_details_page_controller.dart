@@ -250,7 +250,7 @@ class EmpTaskDetailsPageController extends GetxController {
     DateTime? selectedDate = await showDatePicker(
       context: Get.context!,
       initialDate: now,
-      firstDate: DateTime(now.year, now.month, now.day),
+      firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
 
@@ -277,6 +277,28 @@ class EmpTaskDetailsPageController extends GetxController {
     }
     FocusScope.of(Get.context!).unfocus();
   }
+
+  // void setDefaultDeadlineForTaskType([String? type]) {
+  //   final now = DateTime.parse('2025-09-02T23:18:37');
+  //   DateTime defaultDate;
+  //   switch (type ?? taskTypeSelected.value) {
+  //     case "Weekly":
+  //       defaultDate = now.add(const Duration(days: 7));
+  //       break;
+  //     case "Monthly":
+  //       defaultDate = now.add(const Duration(days: 30));
+  //       break;
+  //     case "Yearly":
+  //       defaultDate = now.add(const Duration(days: 365));
+  //       break;
+  //     case "Daily":
+  //       defaultDate = DateTime(now.year, now.month, now.day, 23, 59);
+  //       break;
+  //     default:
+  //       defaultDate = now;
+  //   }
+  //   dateCont.text = DateFormat('dd MMMM yyyy, hh:mm a').format(defaultDate);
+  // }
 
   Future<bool> updateTaskDetails(String name, String desc, String type,
       String status, String deadline, List<int> employeeIds) async {
@@ -344,8 +366,8 @@ class EmpTaskDetailsPageController extends GetxController {
       }
     }
   }
-  
-  Future<void> onRefresh()async{
+
+  Future<void> onRefresh() async {
     initAsync();
   }
 

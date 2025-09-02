@@ -20,4 +20,5 @@ class AppRoutes {
   static const String employeeAddTaskPage = '/employeeAddTaskPage';
   static const String employeeMyProfilePage = '/employeeMyProfilePage';
   static const String employeeNotificationPage = '/employeeNotificationPage';
+  static const String employeeCreatedAndAssignedPage = '/employeeCreatedAndAssignedPage';
 }

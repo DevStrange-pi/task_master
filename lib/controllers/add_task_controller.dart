@@ -32,7 +32,7 @@ class AddTaskController extends GetxController {
     "Yearly",
     "Once"
   ];
-  String taskTypeSelected = "Weekly";
+  String taskTypeSelected = "Once";
   final RxList<DropdownItem<String>> assignDropdownOptions =
       <DropdownItem<String>>[].obs;
   List<DropdownItem<String>> assignSelected = [];
@@ -154,13 +154,14 @@ class AddTaskController extends GetxController {
     }
   }
 
-  void setDeadlineToTodayMidnight() {
+  DateTime setDeadlineToTodayMidnight() {
     final now = DateTime.now();
     final tomorrow = now.add(const Duration(days: 1));
     final midnight =
         DateTime(tomorrow.year, tomorrow.month, tomorrow.day, 0, 0);
-    dateCont.text = DateFormat('dd MMMM yyyy, hh:mm a').format(midnight);
+    // dateCont.text = DateFormat('dd MMMM yyyy, hh:mm a').format(midnight);
     isDeadlineDisabled.value = true;
+    return midnight;
   }
 
   void enableDeadlineField() {
@@ -168,10 +169,11 @@ class AddTaskController extends GetxController {
   }
 
   Future<void> showDateTimePicker() async {
+    DateTime now = DateTime.now();
     DateTime? selectedDate = await showDatePicker(
       context: Get.context!,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
+      initialDate: now,
+      firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
 
@@ -200,6 +202,33 @@ class AddTaskController extends GetxController {
       dateCont.clear();
     }
     FocusScope.of(Get.context!).unfocus();
+  }
+
+  void setDefaultDeadlineForTaskType([String? type]) {
+    final now = DateTime.now();
+    DateTime defaultDate;
+    switch (type ?? taskTypeSelected) {
+      case "Weekly":
+        defaultDate = now.add(const Duration(days: 7));
+        break;
+      case "Monthly":
+        defaultDate = now.add(const Duration(days: 30));
+        break;
+      case "Yearly":
+        defaultDate = now.add(const Duration(days: 365));
+        break;
+      case "Daily":
+        defaultDate = setDeadlineToTodayMidnight();
+        // defaultDate = DateTime(now.year, now.month, now.day, 23, 59);
+        break;
+      default:
+        defaultDate = now;
+    }
+    dateCont.text = DateFormat('dd MMMM yyyy, hh:mm a').format(defaultDate);
+    isDeadlineDisabled.value = true;
+    if (type == "Once") {
+      enableDeadlineField();
+    }
   }
 
   String convertToApiDateFormat(String input) {

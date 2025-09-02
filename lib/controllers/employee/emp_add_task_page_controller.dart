@@ -30,7 +30,7 @@ class EmpAddTaskPageController extends GetxController {
     "Yearly",
     "Once"
   ];
-  String taskTypeSelected = "Weekly";
+  String taskTypeSelected = "Once";
   final RxList<DropdownItem<String>> assignDropdownOptions =
       <DropdownItem<String>>[].obs;
   List<DropdownItem<String>> assignSelected = [];
@@ -166,9 +166,10 @@ class EmpAddTaskPageController extends GetxController {
   }
 
   Future<void> showDateTimePicker() async {
+    DateTime now = DateTime.now();
     DateTime? selectedDate = await showDatePicker(
       context: Get.context!,
-      initialDate: DateTime.now(),
+      initialDate: now,
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
@@ -198,6 +199,32 @@ class EmpAddTaskPageController extends GetxController {
       dateCont.clear();
     }
     FocusScope.of(Get.context!).unfocus();
+  }
+
+  void setDefaultDeadlineForTaskType([String? type]) {
+    final now = DateTime.now();
+    DateTime defaultDate;
+    switch (type ?? taskTypeSelected) {
+      case "Weekly":
+        defaultDate = now.add(const Duration(days: 7));
+        break;
+      case "Monthly":
+        defaultDate = now.add(const Duration(days: 30));
+        break;
+      case "Yearly":
+        defaultDate = now.add(const Duration(days: 365));
+        break;
+      case "Daily":
+        defaultDate = DateTime(now.year, now.month, now.day, 23, 59);
+        break;
+      default:
+        defaultDate = now;
+    }
+    dateCont.text = DateFormat('dd MMMM yyyy, hh:mm a').format(defaultDate);
+    isDeadlineDisabled.value = true;
+    if (type == "Once") {
+      enableDeadlineField();
+    }
   }
 
   String convertToApiDateFormat(String input) {
