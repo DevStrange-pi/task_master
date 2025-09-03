@@ -14,8 +14,10 @@ import '../models/employee/emp_location_track_response_model.dart';
 import '../network/http_req.dart';
 
 // Notification plugin and channel for foreground service
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-const AndroidNotificationChannel locationServiceChannel = AndroidNotificationChannel(
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+const AndroidNotificationChannel locationServiceChannel =
+    AndroidNotificationChannel(
   'location_service_channel',
   'Location Service',
   description: 'This channel is used for location service notifications.',
@@ -33,7 +35,10 @@ void backgroundServiceOnStart(ServiceInstance service) async {
     service.setAsForegroundService();
     // Setup notification for foreground service using flutter_local_notifications
     // Ensure notification channel is created
-    await flutterLocalNotificationsPlugin.resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()?.createNotificationChannel(locationServiceChannel);
+    await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.createNotificationChannel(locationServiceChannel);
     service.on('setAsForeground').listen((event) {
       service.setAsForegroundService();
     });
@@ -46,31 +51,13 @@ void backgroundServiceOnStart(ServiceInstance service) async {
     service.stopSelf();
   });
   try {
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
-    );
-    List<Placemark> placemarks =
-        await placemarkFromCoordinates(position.latitude, position.longitude).timeout(const Duration(seconds: 5));
-    Placemark place = placemarks.first;
-
-    String name = "${place.name ?? ''}, ${place.subLocality ?? ''}";
-    String address =
-        "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
-    final body = {
-      "name": name,
-      // "Office HQ 1",
-      "address": address,
-      // "Connaught Place, Delhi",
-      "latitude": position.latitude,
-      "longitude": position.longitude,
-    };
+    Map<String, dynamic> body = await getLocationData();
     int? empId = prefs.getInt(SpString.id) ?? 0;
-    if (empId != 0 && baseUrl.isNotEmpty) {
+    if (empId != 0 && baseUrl.isNotEmpty && body.isNotEmpty) {
       await trackLocation(baseUrl, token, empId, body);
-      logToFile(
-          "Location Service Started: ${DateTime.now()}");
+      logToFile("Location Service Started: ${DateTime.now()}");
       Timer.periodic(const Duration(minutes: 15), (timer) async {
-        logToFile("Timer tick: ${DateTime.now()}");
+        logToFile("\nTimer tick: ${DateTime.now()}");
         // if (service is AndroidServiceInstance && await service.isForegroundService()) {
         //   flutterLocalNotificationsPlugin.show(
         //     888,
@@ -87,12 +74,13 @@ void backgroundServiceOnStart(ServiceInstance service) async {
         //     ),
         //   );
         // }
+        body = await getLocationData();
         await trackLocation(baseUrl, token, empId, body);
       });
     }
   } catch (e) {
-    print('Reverse geocoding failed: ${e.toString()}');
-    logToFile('Reverse geocoding failed: ${e.toString()}');
+    print('API failed: ${e.toString()}');
+    logToFile('API failed: ${e.toString()}');
   }
 }
 
@@ -101,8 +89,37 @@ bool onIosBackground(ServiceInstance service) {
   return true;
 }
 
+Future<Map<String, dynamic>> getLocationData() async {
+  try {
+    Position position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude)
+            .timeout(const Duration(seconds: 5));
+    Placemark place = placemarks.first;
+
+    String name = "${place.name ?? ''}, ${place.subLocality ?? ''}";
+    String address =
+        "${place.street}, ${place.locality}, ${place.administrativeArea}, ${place.country}";
+    final body = {
+      "name": name,
+      // "Office HQ 1",
+      "address": address,
+      // "Connaught Place, Delhi",
+      "latitude": position.latitude,
+      "longitude": position.longitude,
+    };
+    return body;
+  } catch (e) {
+    print('Reverse geocoding failed: ${e.toString()}');
+    logToFile('Reverse geocoding failed: ${e.toString()}');
+    return {};
+  }
+}
+
 Future<void> trackLocation(
-    String baseUrl, String token, int empId, Map<String, Object> body) async {
+    String baseUrl, String token, int empId, Map<String, dynamic> body) async {
   try {
     String newUrl = "$baseUrl/employee/$empId/track-location";
     var headers = {
@@ -124,8 +141,7 @@ Future<void> trackLocation(
           "Location Data ${DateTime.now()} : ${locationTrackResponseModel.toJson()}");
     } else {
       print('Failed to send location: ${resp.body}');
-      logToFile(
-          "Failed to send location ${DateTime.now()}: ${resp.body}");
+      logToFile("Failed to send location ${DateTime.now()}: ${resp.body}");
       // myBotToast('Failed to send location: ${resp.body}', duration: const Duration(seconds: 2));
       // myBotToast("Failed to send location: ${resp.body}");
     }
