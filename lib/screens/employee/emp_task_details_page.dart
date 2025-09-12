@@ -114,22 +114,62 @@ class EmpTaskDetailsPage extends StatelessWidget {
                             const SizedBox(
                               height: 16,
                             ),
-                            SpeedTextfield(
-                              isEnabled:
-                                  empTaskDetailsPageController.statusFlag! &&
+                            Obx(() {
+                              if (empTaskDetailsPageController.taskTypeSelected.value == "Weekly") {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    DropdownButtonFormField<String>(
+                                      decoration: const InputDecoration(
+                                        labelText: "Select Weekday",
+                                        border: OutlineInputBorder(),
+                                      ),
+                                      value: empTaskDetailsPageController.selectedWeekday ?? empTaskDetailsPageController.weekdays[0],
+                                      items: empTaskDetailsPageController.weekdays.map((day) {
+                                        return DropdownMenuItem<String>(
+                                          value: day,
+                                          child: Text(day),
+                                        );
+                                      }).toList(),
+                                      onChanged: (val) {
+                                        if (val != null) {
+                                          empTaskDetailsPageController.selectedWeekday = val;
+                                          DateTime nextDate = empTaskDetailsPageController.getNextWeekdayDate(val);
+                                          DateTime deadline = DateTime(nextDate.year, nextDate.month, nextDate.day, 19, 0, 0);
+                                          empTaskDetailsPageController.dateCont.text = '${val} 7:00 PM';
+                                          empTaskDetailsPageController.weeklyDeadlineForApi = deadline;
+                                        }
+                                      },
+                                    ),
+                                    const SizedBox(height: 8),
+                                    TextField(
+                                      enabled: false,
+                                      controller: empTaskDetailsPageController.dateCont,
+                                      decoration: const InputDecoration(
+                                        labelText: "Deadline",
+                                        border: OutlineInputBorder(),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              } else {
+                                return SpeedTextfield(
+                                  isEnabled: empTaskDetailsPageController.statusFlag! &&
                                       !empTaskDetailsPageController.isEmployee,
-                              isPasswordHidden: false,
-                              needSuffixIcon: true,
-                              suffixIconData: Icons.calendar_month_sharp,
-                              labelText: "Deadline Date Time",
-                              hintText: "Select here...",
-                              textEditingController:
-                                  empTaskDetailsPageController.dateCont,
-                              isDateTimePicker: true,
-                              fieldOnTap: () {
-                                empTaskDetailsPageController.showDateTimePicker();
-                              },
-                            ),
+                                  isPasswordHidden: false,
+                                  needSuffixIcon: true,
+                                  suffixIconData: Icons.calendar_month_sharp,
+                                  labelText: "Deadline Date Time",
+                                  hintText: "Select here...",
+                                  textEditingController:
+                                      empTaskDetailsPageController.dateCont,
+                                  isDateTimePicker: true,
+                                  fieldOnTap: () {
+                                    empTaskDetailsPageController.showDateTimePicker();
+                                  },
+                                );
+                              }
+                            }),
                             const SizedBox(
                               height: 16,
                             ),

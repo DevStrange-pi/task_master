@@ -30,7 +30,7 @@ class EmpAddTaskPageController extends GetxController {
     "Yearly",
     "Once"
   ];
-  String taskTypeSelected = "Once";
+  RxString taskTypeSelected = "Once".obs;
   final RxList<DropdownItem<String>> assignDropdownOptions =
       <DropdownItem<String>>[].obs;
   List<DropdownItem<String>> assignSelected = [];
@@ -165,7 +165,59 @@ class EmpAddTaskPageController extends GetxController {
     isDeadlineDisabled.value = false;
   }
 
+  // Weekday dropdown support for Weekly task type
+  final List<String> weekdays = [
+    'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
+  ];
+  String? selectedWeekday;
+
   Future<void> showDateTimePicker() async {
+    if (taskTypeSelected.value == "Weekly") {
+      // Show weekday dropdown dialog
+      String? picked = await showDialog<String>(
+        context: Get.context!,
+        builder: (context) {
+          String? tempSelected = selectedWeekday ?? weekdays[0];
+          return AlertDialog(
+            title: Text('Select a weekday'),
+            content: DropdownButton<String>(
+              value: tempSelected,
+              items: weekdays.map((day) {
+                return DropdownMenuItem<String>(
+                  value: day,
+                  child: Text(day),
+                );
+              }).toList(),
+              onChanged: (val) {
+                tempSelected = val;
+                (context as Element).markNeedsBuild();
+              },
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(tempSelected),
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      if (picked != null) {
+        selectedWeekday = picked;
+        DateTime nextDate = getNextWeekdayDate(picked);
+        DateTime deadline = DateTime(nextDate.year, nextDate.month, nextDate.day, 19, 0, 0);
+        dateCont.text = '${picked} 7:00 PM';
+        // Save for API as well
+        weeklyDeadlineForApi = deadline;
+      }
+      FocusScope.of(Get.context!).unfocus();
+      return;
+    }
+    // Default picker for other types
     DateTime now = DateTime.now();
     DateTime? selectedDate = await showDatePicker(
       context: Get.context!,
@@ -173,13 +225,11 @@ class EmpAddTaskPageController extends GetxController {
       firstDate: DateTime(2000),
       lastDate: DateTime(2100),
     );
-
     if (selectedDate != null) {
       TimeOfDay? selectedTime = await showTimePicker(
         context: Get.context!,
         initialTime: TimeOfDay.now(),
       );
-
       if (selectedTime != null) {
         final DateTime finalDateTime = DateTime(
           selectedDate.year,
@@ -188,10 +238,8 @@ class EmpAddTaskPageController extends GetxController {
           selectedTime.hour,
           selectedTime.minute,
         );
-
         final formattedDateTime =
             DateFormat('dd MMMM yyyy, hh:mm a').format(finalDateTime);
-
         dateCont.text = formattedDateTime;
       }
     }
@@ -201,10 +249,21 @@ class EmpAddTaskPageController extends GetxController {
     FocusScope.of(Get.context!).unfocus();
   }
 
+  DateTime getNextWeekdayDate(String weekday) {
+    final now = DateTime.now();
+    int weekdayIndex = weekdays.indexOf(weekday);
+    int daysAhead = (weekdayIndex + 1 - now.weekday) % 7;
+    if (daysAhead <= 0) daysAhead += 7;
+    return now.add(Duration(days: daysAhead));
+  }
+
+  DateTime? weeklyDeadlineForApi;
+
+
   void setDefaultDeadlineForTaskType([String? type]) {
     final now = DateTime.now();
     DateTime defaultDate;
-    switch (type ?? taskTypeSelected) {
+    switch (type ?? taskTypeSelected.value) {
       case "Weekly":
         defaultDate = now.add(const Duration(days: 7));
         break;
@@ -228,6 +287,9 @@ class EmpAddTaskPageController extends GetxController {
   }
 
   String convertToApiDateFormat(String input) {
+    if (taskTypeSelected.value == "Weekly" && weeklyDeadlineForApi != null) {
+      return DateFormat('yyyy-MM-dd HH:mm:ss').format(weeklyDeadlineForApi!);
+    }
     final dateTime = DateFormat('dd MMMM yyyy, hh:mm a').parse(input);
     return DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
   }
@@ -262,7 +324,7 @@ class EmpAddTaskPageController extends GetxController {
     await submitTaskDetails(
         taskNameController.text,
         descController.text,
-        taskTypeSelected.toString().toLowerCase(),
+        taskTypeSelected.value.toString().toLowerCase(),
         convertToApiDateFormat(dateCont.text),
         selectedIds);
   }

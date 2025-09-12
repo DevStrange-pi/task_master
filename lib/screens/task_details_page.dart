@@ -104,20 +104,61 @@ class TaskDetailsPage extends StatelessWidget {
                             const SizedBox(
                               height: 16,
                             ),
-                            SpeedTextfield(
-                              isEnabled: taskDetailsController.statusFlag,
-                              isPasswordHidden: false,
-                              needSuffixIcon: true,
-                              suffixIconData: Icons.calendar_month_sharp,
-                              labelText: "Deadline Date Time",
-                              hintText: "Select here...",
-                              textEditingController:
-                                  taskDetailsController.dateCont,
-                              isDateTimePicker: true,
-                              fieldOnTap: () {
-                                taskDetailsController.showDateTimePicker();
-                              },
-                            ),
+                            Obx(() {
+                              if (taskDetailsController.taskTypeSelected.value == "Weekly") {
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    DropdownButtonFormField<String>(
+                                      decoration: const InputDecoration(
+                                        labelText: "Select Weekday",
+                                        border: OutlineInputBorder(),
+                                      ),
+                                      value: taskDetailsController.selectedWeekday ?? taskDetailsController.weekdays[0],
+                                      items: taskDetailsController.weekdays.map((day) {
+                                        return DropdownMenuItem<String>(
+                                          value: day,
+                                          child: Text(day),
+                                        );
+                                      }).toList(),
+                                      onChanged: (val) {
+                                        if (val != null) {
+                                          taskDetailsController.selectedWeekday = val;
+                                          DateTime nextDate = taskDetailsController.getNextWeekdayDate(val);
+                                          DateTime deadline = DateTime(nextDate.year, nextDate.month, nextDate.day, 19, 0, 0);
+                                          taskDetailsController.dateCont.text = '$val 7:00 PM';
+                                          taskDetailsController.weeklyDeadlineForApi = deadline;
+                                        }
+                                      },
+                                    ),
+                                    const SizedBox(height: 8),
+                                    TextField(
+                                      enabled: false,
+                                      controller: taskDetailsController.dateCont,
+                                      decoration: const InputDecoration(
+                                        labelText: "Deadline",
+                                        border: OutlineInputBorder(),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              } else {
+                                return SpeedTextfield(
+                                  isEnabled: taskDetailsController.statusFlag,
+                                  isPasswordHidden: false,
+                                  needSuffixIcon: true,
+                                  suffixIconData: Icons.calendar_month_sharp,
+                                  labelText: "Deadline Date Time",
+                                  hintText: "Select here...",
+                                  textEditingController:
+                                      taskDetailsController.dateCont,
+                                  isDateTimePicker: true,
+                                  fieldOnTap: () {
+                                    taskDetailsController.showDateTimePicker();
+                                  },
+                                );
+                              }
+                            }),
                             const SizedBox(
                               height: 16,
                             ),
