@@ -243,7 +243,7 @@ class TaskDetailsPage extends StatelessWidget {
                             const SizedBox(
                               height: 32,
                             ),
-                            Obx(() => buildPhotoThumbnails(context)),
+                            Visibility(visible: !taskDetailsController.statusFlag, child: Obx(() => buildPhotoThumbnails(context))),
                             const SizedBox(
                               height: 32,
                             ),
