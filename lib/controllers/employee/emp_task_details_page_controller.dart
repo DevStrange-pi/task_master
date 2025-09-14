@@ -384,7 +384,7 @@ class EmpTaskDetailsPageController extends GetxController {
         "Accept": "application/json"
       };
       var resp = await HttpReq.patchApi(
-          apiUrl: AppUrl().employeeUpdateTask(task.value.id!),
+          apiUrl: AppUrl().employeeUpdateTask(task.value.id ?? task.value.taskId ?? task.value.taskNo!),
           headers: headers,
           body: {
             // "name": name,

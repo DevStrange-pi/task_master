@@ -91,8 +91,7 @@ class TaskListPage extends StatelessWidget {
                           onTap: () {
                             Get.toNamed(AppRoutes.taskDetailsPage, arguments: {
                               "taskId": taskListController.tasksList[index].
-                              taskId!
-                                  .toString(),
+                              taskId?.toString() ?? taskListController.tasksList[index].taskNo?.toString() ?? taskListController.tasksList[index].id.toString(),
                               "taskName":
                                   taskListController.tasksList[index].name!,
                               "taskDescription": taskListController

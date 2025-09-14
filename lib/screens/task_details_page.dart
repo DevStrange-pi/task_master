@@ -109,7 +109,7 @@ class TaskDetailsPage extends StatelessWidget {
                             Obx(() {
                               if (taskDetailsController
                                       .taskTypeSelected.value ==
-                                  "Weekly") {
+                                  "Weekly" && taskDetailsController.statusFlag) {
                                 return Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
