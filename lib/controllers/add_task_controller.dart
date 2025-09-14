@@ -267,9 +267,9 @@ class AddTaskController extends GetxController {
     final now = DateTime.now();
     DateTime defaultDate;
     switch (type ?? taskTypeSelected.value) {
-      case "Weekly":
-        defaultDate = now.add(const Duration(days: 7));
-        break;
+      // case "Weekly":
+      //   defaultDate = now.add(const Duration(days: 7));
+      //   break;
       case "Monthly":
         defaultDate = now.add(const Duration(days: 30));
         break;

@@ -46,12 +46,16 @@ class Data {
 
 class Task {
     int? id;
+    int? taskId;
+    int? taskNo;
     String? name;
     String? description;
     String? type;
+    List<String>? assignedTo;
     DateTime? deadline;
     String? status;
     DateTime? createdAt;
+    int? createdBy;
     DateTime? updatedAt;
     int? expiredCount; 
     List<Employee>? employees;
@@ -59,12 +63,16 @@ class Task {
 
     Task({
         this.id,
+        this.taskId,
+        this.taskNo,
         this.name,
         this.description,
         this.type,
+        this.assignedTo,
         this.deadline,
         this.status,
         this.createdAt,
+        this.createdBy,
         this.updatedAt,
         this.expiredCount,
         this.employees,
@@ -73,12 +81,16 @@ class Task {
 
     factory Task.fromJson(Map<String, dynamic> json) => Task(
         id: json["id"],
+        taskId: json["task_id"],
+        taskNo: json["task_no"],
         name: json["name"],
         description: json["description"],
         type: json["type"],
+        assignedTo: json["assigned_to"] == null ? [] : List<String>.from(json["assigned_to"]!),
         deadline: json["deadline"] == null ? null : DateTime.parse(json["deadline"]),
         status: json["status"],
         createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
+        createdBy: json["created_by"],
         updatedAt: json["updated_at"] == null ? null : DateTime.parse(json["updated_at"]),
         expiredCount: json["expired_count"],
         employees: json["employees"] == null ? [] : List<Employee>.from(json["employees"]!.map((x) => Employee.fromJson(x))),
@@ -106,12 +118,16 @@ class Task {
 
     Map<String, dynamic> toJson() => {
         "id": id,
+        "task_id": taskId,
+        "task_no": taskNo,
         "name": name,
         "description": description,
         "type": type,
+        "assigned_to": assignedTo,
         "deadline": deadline?.toIso8601String(),
         "status": status,
         "created_at": createdAt?.toIso8601String(),
+        "created_by": createdBy,
         "updated_at": updatedAt?.toIso8601String(),
         "expired_count": expiredCount,
         "employees": employees == null ? [] : List<dynamic>.from(employees!.map((x) => x.toJson())),
@@ -131,6 +147,8 @@ class Employee {
     int? id;
     String? name;
     String? email;
+    String? status;
+    int? assignedBy;
     String? contactNumber;
     String? designation;
     String? employeeId;
@@ -147,6 +165,8 @@ class Employee {
         this.id,
         this.name,
         this.email,
+        this.status,
+        this.assignedBy,
         this.contactNumber,
         this.designation,
         this.employeeId,
@@ -164,6 +184,8 @@ class Employee {
         id: json["id"],
         name: json["name"],
         email: json["email"],
+        status: json["status"],
+        assignedBy: json["assigned_by"],
         contactNumber: json["contact_number"],
         designation: json["designation"],
         employeeId: json["employee_id"],
@@ -181,6 +203,8 @@ class Employee {
         "id": id,
         "name": name,
         "email": email,
+        "status": status,
+        "assigned_by": assignedBy,
         "contact_number": contactNumber,
         "designation": designation,
         "employee_id": employeeId,

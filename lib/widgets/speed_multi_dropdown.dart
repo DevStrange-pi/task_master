@@ -51,8 +51,8 @@ class SpeedMultiDropdown extends StatelessWidget {
                       searchEnabled: true,
                       chipDecoration: ChipDecoration(
                         labelStyle: TextStyle(
-                            color: enabled ? AppColors.black : AppColors.darkGrey,
-                            ),
+                          color: enabled ? AppColors.black : AppColors.darkGrey,
+                        ),
                         deleteIcon: enabled
                             ? null
                             : const Icon(
@@ -64,10 +64,13 @@ class SpeedMultiDropdown extends StatelessWidget {
                         runSpacing: 2,
                         spacing: 8,
                       ),
-                      fieldDecoration: const FieldDecoration(
+                      fieldDecoration: FieldDecoration(
                         hintText: 'Select Employees',
                         hintStyle: TextStyle(
-                            color: AppColors.blue, fontWeight: FontWeight.bold),
+                            color: enabled
+                                ? AppColors.blue
+                                : AppColors.lightBlue.withValues(alpha: 0.55),
+                            fontWeight: FontWeight.bold),
                         showClearIcon: false,
                         border: InputBorder.none,
                         focusedBorder: InputBorder.none,

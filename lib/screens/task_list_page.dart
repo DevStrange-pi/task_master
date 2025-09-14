@@ -63,7 +63,7 @@ class TaskListPage extends StatelessWidget {
                           customFloatingWidget: GestureDetector(
                             onTap: () async {
                               await taskListController.deleteTask(context,
-                                  taskListController.tasksList[index].id!);
+                                  taskListController.tasksList[index].taskId!);
                             },
                             child: CircleAvatar(
                               backgroundColor:
@@ -86,11 +86,12 @@ class TaskListPage extends StatelessWidget {
                                   : null,
                           reassignCallback: () {
                             taskListController.reassignCallback(context,
-                                taskListController.tasksList[index].id!);
+                                taskListController.tasksList[index].taskId!);
                           },
                           onTap: () {
                             Get.toNamed(AppRoutes.taskDetailsPage, arguments: {
-                              "taskId": taskListController.tasksList[index].id!
+                              "taskId": taskListController.tasksList[index].
+                              taskId!
                                   .toString(),
                               "taskName":
                                   taskListController.tasksList[index].name!,

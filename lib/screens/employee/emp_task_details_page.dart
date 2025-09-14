@@ -42,7 +42,7 @@ class EmpTaskDetailsPage extends StatelessWidget {
                 child: empTaskDetailsPageController.task.value.isNull()
                     ? const SizedBox()
                     : SingleChildScrollView(
-                      physics: const AlwaysScrollableScrollPhysics(),
+                        physics: const AlwaysScrollableScrollPhysics(),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -54,7 +54,8 @@ class EmpTaskDetailsPage extends StatelessWidget {
                               labelText: "Task Name",
                               hintText: "Type here...",
                               textEditingController:
-                                  empTaskDetailsPageController.taskNameController,
+                                  empTaskDetailsPageController
+                                      .taskNameController,
                             ),
                             const SizedBox(
                               height: 16,
@@ -72,9 +73,9 @@ class EmpTaskDetailsPage extends StatelessWidget {
                             ),
                             Obx(
                               () => SpeedDropdown(
-                                enabled:
-                                    empTaskDetailsPageController.statusFlag! &&
-                                        !empTaskDetailsPageController.isEmployee,
+                                enabled: empTaskDetailsPageController
+                                        .statusFlag! &&
+                                    !empTaskDetailsPageController.isEmployee,
                                 labelText: "Task Type",
                                 dropdownItems: empTaskDetailsPageController
                                     .taskTypeDropdownOptions,
@@ -91,11 +92,11 @@ class EmpTaskDetailsPage extends StatelessWidget {
                             ),
                             Obx(
                               () => SpeedDropdown(
-                                enabled:
-                                    empTaskDetailsPageController.statusFlag! &&
-                                        empTaskDetailsPageController.isEmployee &&
-                                        !empTaskDetailsPageController
-                                            .isMultiDropdownValueChanged.value,
+                                enabled: empTaskDetailsPageController
+                                        .statusFlag! &&
+                                    empTaskDetailsPageController.isEmployee &&
+                                    !empTaskDetailsPageController
+                                        .isMultiDropdownValueChanged.value,
                                 labelText: "Status",
                                 dropdownItems:
                                     empTaskDetailsPageController.taskStatus,
@@ -104,7 +105,8 @@ class EmpTaskDetailsPage extends StatelessWidget {
                                 disabledItems: empTaskDetailsPageController
                                         .isMultiDropdownValueChanged.value
                                     ? []
-                                    : empTaskDetailsPageController.disabledItems,
+                                    : empTaskDetailsPageController
+                                        .disabledItems,
                                 onChanged: (val) {
                                   empTaskDetailsPageController
                                       .taskStatusSelected.value = val;
@@ -153,30 +155,35 @@ class EmpTaskDetailsPage extends StatelessWidget {
                             //       ],
                             //     );
                             //   } else {
-                            //     return 
-                                SpeedTextfield(
-                                  isEnabled: empTaskDetailsPageController.statusFlag! &&
+                            //     return
+                            SpeedTextfield(
+                              isEnabled:
+                                  empTaskDetailsPageController.statusFlag! &&
                                       !empTaskDetailsPageController.isEmployee,
-                                  isPasswordHidden: false,
-                                  needSuffixIcon: true,
-                                  suffixIconData: Icons.calendar_month_sharp,
-                                  labelText: "Deadline Date Time",
-                                  hintText: "Select here...",
-                                  textEditingController:
-                                      empTaskDetailsPageController.dateCont,
-                                  isDateTimePicker: true,
-                                  fieldOnTap: () {
-                                    empTaskDetailsPageController.showDateTimePicker();
-                                  },
-                                ),
+                              isPasswordHidden: false,
+                              needSuffixIcon: true,
+                              suffixIconData: Icons.calendar_month_sharp,
+                              labelText: "Deadline Date Time",
+                              hintText: "Select here...",
+                              textEditingController:
+                                  empTaskDetailsPageController.dateCont,
+                              isDateTimePicker: true,
+                              fieldOnTap: () {
+                                empTaskDetailsPageController
+                                    .showDateTimePicker();
+                              },
+                            ),
                             const SizedBox(
                               height: 16,
                             ),
                             SpeedMultiDropdown(
-                              enabled: empTaskDetailsPageController.statusFlag! &&
-                                  empTaskDetailsPageController.isEmployee,
-                              multiSelectController: empTaskDetailsPageController
-                                  .multiSelectController,
+                              enabled:
+                                  empTaskDetailsPageController.statusFlag! &&
+                                      empTaskDetailsPageController.isEmployee &&
+                                      empTaskDetailsPageController.isTaskOwner,
+                              multiSelectController:
+                                  empTaskDetailsPageController
+                                      .multiSelectController,
                               labelText: "Whom to Assign",
                               dropdownItems: empTaskDetailsPageController
                                   .assignDropdownOptions.value,
@@ -210,8 +217,9 @@ class EmpTaskDetailsPage extends StatelessWidget {
                                         borderRadius: BorderRadius.circular(12),
                                         side: BorderSide(
                                           color: empTaskDetailsPageController
-                                              .isPhotoUploadEnabled
-                                      ? AppColors.lightBlue : AppColors.lightestBlue,
+                                                  .isPhotoUploadEnabled
+                                              ? AppColors.lightBlue
+                                              : AppColors.lightestBlue,
                                           width: 2,
                                         ),
                                       ),
@@ -220,8 +228,10 @@ class EmpTaskDetailsPage extends StatelessWidget {
                                   icon: Icon(
                                     Icons.upload_file,
                                     color: empTaskDetailsPageController
-                                              .isPhotoUploadEnabled
-                                      ? AppColors.lightBlue : AppColors.lightBlue.withValues(alpha: 0.55),
+                                            .isPhotoUploadEnabled
+                                        ? AppColors.lightBlue
+                                        : AppColors.lightBlue
+                                            .withValues(alpha: 0.55),
                                     size: 22,
                                   ),
                                   label: Text(
@@ -229,12 +239,14 @@ class EmpTaskDetailsPage extends StatelessWidget {
                                     style: TextStyle(
                                         fontSize: 16,
                                         color: empTaskDetailsPageController
-                                              .isPhotoUploadEnabled
-                                      ? AppColors.lightBlue : AppColors.lightBlue.withValues(alpha: 0.55),
+                                                .isPhotoUploadEnabled
+                                            ? AppColors.lightBlue
+                                            : AppColors.lightBlue
+                                                .withValues(alpha: 0.55),
                                         fontWeight: FontWeight.bold),
                                   ),
                                   onPressed: empTaskDetailsPageController
-                                              .isPhotoUploadEnabled
+                                          .isPhotoUploadEnabled
                                       ? () {
                                           // empTaskDetailsPageController.pickFiles();
                                           showModalBottomSheet(
@@ -245,7 +257,8 @@ class EmpTaskDetailsPage extends StatelessWidget {
                                                   ListTile(
                                                     leading: const Icon(
                                                       Icons.camera_alt,
-                                                      color: AppColors.lightBlue,
+                                                      color:
+                                                          AppColors.lightBlue,
                                                     ),
                                                     title: const Text(
                                                       'Camera',
@@ -259,9 +272,11 @@ class EmpTaskDetailsPage extends StatelessWidget {
                                                   ListTile(
                                                     leading: const Icon(
                                                       Icons.photo_library,
-                                                      color: AppColors.lightBlue,
+                                                      color:
+                                                          AppColors.lightBlue,
                                                     ),
-                                                    title: const Text('Gallery'),
+                                                    title:
+                                                        const Text('Gallery'),
                                                     onTap: () {
                                                       Get.back();
                                                       empTaskDetailsPageController
@@ -292,7 +307,8 @@ class EmpTaskDetailsPage extends StatelessWidget {
                                       alignment: Alignment.topRight,
                                       children: [
                                         ClipRRect(
-                                          borderRadius: BorderRadius.circular(8),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
                                           child: Image.file(
                                             file,
                                             width: 64,

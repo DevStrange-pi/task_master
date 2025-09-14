@@ -349,9 +349,33 @@ class TaskListController extends GetxController {
     } else {
       String titleToCompare = title!.toLowerCase().split(" ").first;
       if (await getAllTasks()) {
-        List<Task> filteredTasks = tasks
-            .where((task) => task.status.toString() == titleToCompare)
-            .toList();
+        List<Task> filteredTasks = [];
+        // List<Task> filteredTasks = tasks
+        //     .where((task) => task.status.toString() == titleToCompare)
+        //     .toList();
+        for (var task in tasks) {
+          if (task.employees != null) {
+            var matchingEmps = task.employees!.where((emp) => emp.status?.toString() == titleToCompare).toList();
+            if (matchingEmps.isNotEmpty) {
+              filteredTasks.add(Task(
+                id: task.id,
+                taskId: task.taskId,
+                name: task.name,
+                description: task.description,
+                type: task.type,
+                deadline: task.deadline,
+                status: matchingEmps[0].status,
+                // task.status, // keep original status
+                createdAt: task.createdAt,
+                createdBy: task.createdBy,
+                updatedAt: task.updatedAt,
+                expiredCount: task.expiredCount,
+                employees: matchingEmps,
+                photos: task.photos,
+              ));
+            }
+          }
+        }
         tasksList.assignAll(filteredTasks);
         updateCountdowns();
         createEmployeeNameList();

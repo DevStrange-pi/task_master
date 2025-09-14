@@ -126,9 +126,30 @@ class AllTasksController extends GetxController {
   void onTapMenuTile(String title) async {
     String newTitle = title.split(" ").first;
     if (await getAllTasks()) {
-      filteredTasks = tasks!
-          .where((task) => task.status.toString() == newTitle.toLowerCase())
-          .toList();
+      filteredTasks = [];
+      for (var task in tasks!) {
+        if (task.employees != null) {
+          var matchingEmps = task.employees!.where((emp) => emp.status?.toLowerCase() == newTitle.toLowerCase()).toList();
+          if (matchingEmps.isNotEmpty) {
+            filteredTasks.add(Task(
+              id: task.id,
+              taskId: task.taskId,
+              name: task.name,
+              description: task.description,
+              type: task.type,
+              deadline: task.deadline,
+              status: matchingEmps[0].status,
+              // task.status, // keep original status
+              createdAt: task.createdAt,
+              createdBy: task.createdBy,
+              updatedAt: task.updatedAt,
+              expiredCount: task.expiredCount,
+              employees: matchingEmps,
+              photos: task.photos,
+            ));
+          }
+        }
+      }
       if (filteredTasks.isNotEmpty) {
         Get.toNamed(
           AppRoutes.taskListPage,

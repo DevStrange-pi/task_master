@@ -87,7 +87,6 @@ class AddTaskPage extends StatelessWidget {
                               children: [
                                 DropdownButtonFormField<String>(
                                   decoration: const InputDecoration(
-                                    
                                     enabledBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.all(
                                         Radius.circular(12),

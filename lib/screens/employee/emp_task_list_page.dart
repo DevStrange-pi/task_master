@@ -118,21 +118,22 @@ class EmpTaskListPage extends StatelessWidget {
                                               : null)
                                           : null
                                       : null,
-                                  customFloatingWidget: GestureDetector(
-                                    onTap: () async {
-                                      await empTaskListPageController.deleteTask(
-                                          context,
-                                          empTaskListPageController
-                                              .tasksList![index].id!);
-                                    },
-                                    child: CircleAvatar(
-                                      backgroundColor: AppColors.darkGrey
-                                          .withValues(alpha: 0.8),
-                                      radius: 19,
-                                      child: const Icon(Icons.delete,
-                                          color: AppColors.red),
-                                    ),
-                                  ),
+                                      // commented because Employee can't delete other Employee's assigned task
+                                  // customFloatingWidget: GestureDetector(
+                                  //   onTap: () async {
+                                  //     await empTaskListPageController.deleteTask(
+                                  //         context,
+                                  //         empTaskListPageController
+                                  //             .tasksList![index].taskNo!);
+                                  //   },
+                                  //   child: CircleAvatar(
+                                  //     backgroundColor: AppColors.darkGrey
+                                  //         .withValues(alpha: 0.8),
+                                  //     radius: 19,
+                                  //     child: const Icon(Icons.delete,
+                                  //         color: AppColors.red),
+                                  //   ),
+                                  // ),
                                   statusColor:
                                       empTaskListPageController.taskStatusColor[
                                           empTaskListPageController

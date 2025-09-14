@@ -58,6 +58,7 @@ class EmpTaskDetailsPageController extends GetxController {
   bool? statusFlag;
   bool isEmployee = true;
   bool isAdmin = false;
+  bool isTaskOwner = false;
   RxBool isMultiDropdownValueChanged = false.obs;
   List<String> originalValues = [];
   String originaltaskStatusSelected = "";
@@ -81,6 +82,7 @@ class EmpTaskDetailsPageController extends GetxController {
     prefs = await SharedPreferences.getInstance();
     isEmployee = prefs!.getString(SpString.role) == "admin" ? false : true;
     isAdmin = prefs!.getString(SpString.role) == "admin" ? true : false;
+    isTaskOwner = task.value.createdBy == prefs!.getInt(SpString.id);
     await Future.wait([
       getEmployees(),
     ]);
@@ -166,9 +168,10 @@ class EmpTaskDetailsPageController extends GetxController {
   }
 
   void createAssignSelected() {
-    if (task.value.employees == null) {
+    if (task.value.employees == null && task.value.assignedTo == null) {
       return;
     }
+    if (task.value.employees != null) {
     assignSelected = task.value.employees!
         .map((employee) => DropdownItem(
               label: employee.name ?? "",
@@ -176,6 +179,16 @@ class EmpTaskDetailsPageController extends GetxController {
               selected: true,
             ))
         .toList();
+    }
+    if (task.value.assignedTo != null && task.value.assignedTo!.isNotEmpty) {
+    assignSelected = task.value.assignedTo!
+        .map((employee) => DropdownItem(
+              label: employee,
+              value: employee,
+              selected: true,
+            ))
+        .toList();
+    }
     originalValues = assignSelected.map((e) => e.value).toList()..sort();
   }
 
