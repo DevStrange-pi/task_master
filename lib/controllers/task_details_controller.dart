@@ -113,7 +113,7 @@ class TaskDetailsController extends GetxController {
     if (task?.value == null || task?.value.employees == null) {
       return;
     }
-    assignSelected = task!.value.employees!
+    assignSelected = task!.value.employees!.where((emp) => emp.status?.toString() == taskStatusSelected.value.toLowerCase())
         .map((employee) => DropdownItem(
               label: employee.name ?? "",
               value: employee.name ?? "",
