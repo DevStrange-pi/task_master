@@ -134,6 +134,9 @@ class TaskDetailsController extends GetxController {
       dateCont.text = "";
     }
     taskTypeSelected.value = task?.value.type?.capitalizeFirst ?? "";
+    if (task?.value.deadline != null) {
+      selectedWeekday = DateFormat('EEEE').format(task!.value.deadline!);
+    }
   }
 
   Future<bool> getTask() async {
