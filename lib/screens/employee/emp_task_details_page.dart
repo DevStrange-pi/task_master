@@ -126,7 +126,7 @@ class EmpTaskDetailsPage extends StatelessWidget {
                             //             labelText: "Select Weekday",
                             //             border: OutlineInputBorder(),
                             //           ),
-                            //           value: empTaskDetailsPageController.selectedWeekday ?? empTaskDetailsPageController.weekdays[0],
+                            //           value: empTaskDetailsPageController.selectedWeekday?.value ?? empTaskDetailsPageController.weekdays[0],
                             //           items: empTaskDetailsPageController.weekdays.map((day) {
                             //             return DropdownMenuItem<String>(
                             //               value: day,
@@ -135,7 +135,7 @@ class EmpTaskDetailsPage extends StatelessWidget {
                             //           }).toList(),
                             //           onChanged: (val) {
                             //             if (val != null) {
-                            //               empTaskDetailsPageController.selectedWeekday = val;
+                            //               empTaskDetailsPageController.selectedWeekday?.value = val;
                             //               DateTime nextDate = empTaskDetailsPageController.getNextWeekdayDate(val);
                             //               DateTime deadline = DateTime(nextDate.year, nextDate.month, nextDate.day, 19, 0, 0);
                             //               empTaskDetailsPageController.dateCont.text = '${val} 7:00 PM';

@@ -135,7 +135,7 @@ class TaskDetailsController extends GetxController {
     }
     taskTypeSelected.value = task?.value.type?.capitalizeFirst ?? "";
     if (task?.value.deadline != null) {
-      selectedWeekday = DateFormat('EEEE').format(task!.value.deadline!);
+      selectedWeekday?.value = DateFormat('EEEE').format(task!.value.deadline!);
     }
   }
 
@@ -206,7 +206,7 @@ class TaskDetailsController extends GetxController {
   final List<String> weekdays = [
     'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
   ];
-  String? selectedWeekday;
+  RxString? selectedWeekday = "".obs;
 
   Future<void> showDateTimePicker() async {
     if (taskTypeSelected.value == "Weekly") {
@@ -214,7 +214,7 @@ class TaskDetailsController extends GetxController {
       String? picked = await showDialog<String>(
         context: Get.context!,
         builder: (context) {
-          String? tempSelected = selectedWeekday ?? weekdays[0];
+          String? tempSelected = selectedWeekday?.value ?? weekdays[0];
           return AlertDialog(
             title: Text('Select a weekday'),
             content: DropdownButton<String>(
@@ -244,7 +244,7 @@ class TaskDetailsController extends GetxController {
         },
       );
       if (picked != null) {
-        selectedWeekday = picked;
+        selectedWeekday?.value = picked;
         DateTime nextDate = getNextWeekdayDate(picked);
         DateTime deadline = DateTime(nextDate.year, nextDate.month, nextDate.day, 19, 0, 0);
         dateCont.text = '${picked} 7:00 PM';

@@ -144,7 +144,7 @@ class TaskDetailsPage extends StatelessWidget {
                                         fontSize: 16,
                                       ),
                                       value: taskDetailsController
-                                              .selectedWeekday ??
+                                              .selectedWeekday?.value ??
                                           taskDetailsController.weekdays[0],
                                       items: taskDetailsController.weekdays
                                           .map((day) {
@@ -156,7 +156,7 @@ class TaskDetailsPage extends StatelessWidget {
                                       onChanged: (val) {
                                         if (val != null) {
                                           taskDetailsController
-                                              .selectedWeekday = val;
+                                              .selectedWeekday?.value = val;
                                           DateTime nextDate =
                                               taskDetailsController
                                                   .getNextWeekdayDate(val);
