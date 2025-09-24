@@ -20,6 +20,7 @@ class ReportingPageController extends GetxController {
   static RxBool employeeDeleted = false.obs;
   SharedPreferences? prefs;
   CircularLoader circularLoader = Get.find<CircularLoader>();
+  bool isAdmin = false;
 
   @override
   void onInit() {
@@ -29,6 +30,7 @@ class ReportingPageController extends GetxController {
 
   void initAsync() async {
     prefs = await SharedPreferences.getInstance();
+    isAdmin = prefs!.getString(SpString.role) == "admin" ? true : false;
     await getEmployees();
   }
 
@@ -48,6 +50,9 @@ class ReportingPageController extends GetxController {
       GetEmployeesResponseModel employeeListResp =
           GetEmployeesResponseModel.fromJson(respBody);
       employeeList.value = employeeListResp.data?.employees ?? [];
+      if (isAdmin) {
+        removeSuperAdmin();
+      }
       circularLoader.hideCircularLoader();
       isLoading.value = false;
       return true;
@@ -57,6 +62,10 @@ class ReportingPageController extends GetxController {
       myBotToast(respBody["message"]);
       return false;
     }
+  }
+
+  void removeSuperAdmin() {
+    employeeList.removeWhere((element) => element.role == "super_admin");
   }
 
   void onTapMenuTile(

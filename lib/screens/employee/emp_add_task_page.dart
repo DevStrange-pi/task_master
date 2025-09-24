@@ -201,8 +201,7 @@ class EmpAddTaskPage extends StatelessWidget {
                         labelText: "Whom to Assign",
                         dropdownItems:
                             // ignore: invalid_use_of_protected_member
-                            empAddTaskPageController
-                                .assignDropdownOptions.value,
+                            empAddTaskPageController.assignDropdownOptions.value,
                         selectedValues: empAddTaskPageController.assignSelected,
                         onChanged: (val) {
                           debugPrint("OnSelectionChange: $val");

@@ -59,6 +59,7 @@ class EmpTaskDetailsPageController extends GetxController {
   bool isEmployee = true;
   bool isAdmin = false;
   bool isTaskOwner = false;
+  bool isSuperAdmin = false;
   RxBool isMultiDropdownValueChanged = false.obs;
   List<String> originalValues = [];
   String originaltaskStatusSelected = "";
@@ -80,7 +81,8 @@ class EmpTaskDetailsPageController extends GetxController {
         ? false
         : true;
     prefs = await SharedPreferences.getInstance();
-    isEmployee = prefs!.getString(SpString.role) == "admin" ? false : true;
+    isEmployee = (prefs!.getString(SpString.role) != "super_admin" && prefs!.getString(SpString.role) != "admin" && prefs!.getString(SpString.role) == "employee");
+    isSuperAdmin = prefs!.getString(SpString.role) == "super_admin" ? true : false;
     isAdmin = prefs!.getString(SpString.role) == "admin" ? true : false;
     isTaskOwner = task.value.createdBy == prefs!.getInt(SpString.id);
     await Future.wait([

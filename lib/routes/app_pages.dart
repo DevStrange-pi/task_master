@@ -16,6 +16,7 @@ import 'package:task_master/screens/task_details_page.dart';
 import 'package:task_master/screens/task_list_page.dart';
 
 import '../bindings/add_task_binding.dart';
+import '../bindings/admin_home_binding.dart';
 import '../bindings/all_tasks_binding.dart';
 import '../bindings/emp_add_task_binding.dart';
 import '../bindings/emp_created_assigned_binding.dart';
@@ -30,6 +31,7 @@ import '../bindings/reporting_binding.dart';
 import '../bindings/reporting_emp_details_binding.dart';
 import '../bindings/task_details_binding.dart';
 import '../bindings/task_list_binding.dart';
+import '../screens/admin/admin_home_page.dart';
 import '../screens/employee/emp_add_task_page.dart';
 import '../screens/employee/emp_created_assigned_page.dart';
 import '../screens/employee/emp_home_page.dart';
@@ -41,6 +43,7 @@ import 'app_routes.dart';
 
 class AppPages {
   static var pages = [
+    // Super admin
     GetPage(
       name: AppRoutes.splashPage,
       page: () => SplashScreen(),
@@ -85,6 +88,12 @@ class AppPages {
         name: AppRoutes.reportingEmpDetailsPage,
         page: () => ReportingEmpDetailsPage(),
         binding: ReportingEmpDetailsBinding()),
+    
+    // Admin 
+    GetPage(
+        name: AppRoutes.adminHomePage,
+        page: () => AdminHomePage(),
+        binding: AdminHomeBinding()),
 
     // EMPLOYEE
     GetPage(

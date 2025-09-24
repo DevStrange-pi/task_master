@@ -8,6 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_master/models/register_employee_response_model.dart';
 
 import '../constants/app_url.dart';
+import '../constants/strings.dart';
 import '../network/http_req.dart';
 import '../utilities/circular_loader.dart';
 import '../utilities/utilities.dart';
@@ -26,6 +27,20 @@ class AddProfileController extends GetxController {
 
   Rx<XFile?>? pickedFile;
   Rx<CroppedFile?>? croppedFile;
+  RxBool isSuperAdmin = false.obs;
+  RxString role = "Employee".obs;
+  
+
+  @override
+  void onInit(){
+    initAsync();
+    super.onInit();
+  }
+
+  void initAsync() async {
+    prefs = await SharedPreferences.getInstance();
+    isSuperAdmin.value = prefs!.getString(SpString.role) == "super_admin" ? true : false;
+  }
 
   Future<void> cropImage() async {
     if (pickedFile != null) {
@@ -96,7 +111,7 @@ class AddProfileController extends GetxController {
             "employee_id": employeeId,
             "username": username,
             "password": password,
-            "role": "employee"
+            "role": role.value.toLowerCase()
           });
       var respBody = json.decode(resp!.body);
       if (resp.statusCode == 200 || resp.statusCode == 201) {

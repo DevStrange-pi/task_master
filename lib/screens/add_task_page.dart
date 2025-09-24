@@ -74,7 +74,7 @@ class AddTaskPage extends StatelessWidget {
                         // }else{
                         //   addTaskController.enableDeadlineField();
                         // }
-                        addTaskController.setDefaultDeadlineForTaskType(val);
+                        // addTaskController.setDefaultDeadlineForTaskType(val);
                       },
                     ),
                     const SizedBox(

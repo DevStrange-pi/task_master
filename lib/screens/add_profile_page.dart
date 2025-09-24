@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:task_master/controllers/add_profile_controller.dart';
 import 'package:task_master/widgets/scaffold_main.dart';
 import 'package:task_master/widgets/speed_button.dart';
+import 'package:task_master/widgets/speed_dropdown.dart';
 import 'package:task_master/widgets/speed_textfield.dart';
 
 class AddProfilePage extends StatelessWidget {
@@ -80,6 +81,27 @@ class AddProfilePage extends StatelessWidget {
                 ),
                 const SizedBox(
                   height: 16,
+                ),
+                Obx(
+                  () => Visibility(
+                    visible: addProfileController.isSuperAdmin.value,
+                    child: Column(
+                      children: [
+                        SpeedDropdown(
+                          labelText: "Role", 
+                          dropdownItems: const ["Admin","Employee"], 
+                          selectedValue: addProfileController.role.value,
+                          onChanged: (value) {
+                            addProfileController.role.value = value;
+                            // print(addProfileController.role.value.toLowerCase());
+                          },
+                        ),
+                        const SizedBox(
+                          height: 16,
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
                 // SpeedButton(
                 //   buttonText: "Upload Photo",

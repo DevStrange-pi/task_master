@@ -196,16 +196,16 @@ class AddTaskController extends GetxController {
                 (context as Element).markNeedsBuild();
               },
             ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(tempSelected),
-                child: Text('OK'),
-              ),
-            ],
+            // actions: [
+            //   TextButton(
+            //     onPressed: () => Navigator.of(context).pop(),
+            //     child: Text('Cancel'),
+            //   ),
+            //   TextButton(
+            //     onPressed: () => Navigator.of(context).pop(tempSelected),
+            //     child: Text('OK'),
+            //   ),
+            // ],
           );
         },
       );
@@ -263,32 +263,32 @@ class AddTaskController extends GetxController {
   DateTime? weeklyDeadlineForApi;
 
 
-  void setDefaultDeadlineForTaskType([String? type]) {
-    final now = DateTime.now();
-    DateTime defaultDate;
-    switch (type ?? taskTypeSelected.value) {
-      // case "Weekly":
-      //   defaultDate = now.add(const Duration(days: 7));
-      //   break;
-      case "Monthly":
-        defaultDate = now.add(const Duration(days: 30));
-        break;
-      case "Yearly":
-        defaultDate = now.add(const Duration(days: 365));
-        break;
-      case "Daily":
-        defaultDate = setDeadlineToTodayMidnight();
-        // defaultDate = DateTime(now.year, now.month, now.day, 23, 59);
-        break;
-      default:
-        defaultDate = now;
-    }
-    dateCont.text = DateFormat('dd MMMM yyyy, hh:mm a').format(defaultDate);
-    isDeadlineDisabled.value = true;
-    if (type == "Once") {
-      enableDeadlineField();
-    }
-  }
+  // void setDefaultDeadlineForTaskType([String? type]) {
+  //   final now = DateTime.now();
+  //   DateTime defaultDate;
+  //   switch (type ?? taskTypeSelected.value) {
+  //     // case "Weekly":
+  //     //   defaultDate = now.add(const Duration(days: 7));
+  //     //   break;
+  //     case "Monthly":
+  //       defaultDate = now.add(const Duration(days: 30));
+  //       break;
+  //     case "Yearly":
+  //       defaultDate = now.add(const Duration(days: 365));
+  //       break;
+  //     case "Daily":
+  //       defaultDate = setDeadlineToTodayMidnight();
+  //       // defaultDate = DateTime(now.year, now.month, now.day, 23, 59);
+  //       break;
+  //     default:
+  //       defaultDate = now;
+  //   }
+  //   dateCont.text = DateFormat('dd MMMM yyyy, hh:mm a').format(defaultDate);
+  //   isDeadlineDisabled.value = true;
+  //   if (type == "Once") {
+  //     enableDeadlineField();
+  //   }
+  // }
 
   String convertToApiDateFormat(String input) {
     if (taskTypeSelected.value == "Weekly" && weeklyDeadlineForApi != null) {

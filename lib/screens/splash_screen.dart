@@ -58,10 +58,12 @@ class _SplashScreenState extends State<SplashScreen>
     if (await ensureLocationPermission()) {
       token != null && token!.isNotEmpty
           ? role != null && role!.isNotEmpty
-              ? role == "admin"
+              ? role == "super_admin"
                   ? Get.offAllNamed(AppRoutes.homePage)
-                  : Get.offAllNamed(AppRoutes.employeeHomePage)
-              : Get.offAllNamed(AppRoutes.introPage)
+                  : role == "admin"
+                      ? Get.offAllNamed(AppRoutes.adminHomePage)
+                      : Get.offAllNamed(AppRoutes.employeeHomePage)
+                : Get.offAllNamed(AppRoutes.introPage)
           : Get.offAllNamed(AppRoutes.introPage);
     }
   }

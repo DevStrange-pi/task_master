@@ -4,6 +4,7 @@ class AppRoutes {
   static const String introPage= '/introPage';
   static const String loginPage = '/loginPage';
   static const String homePage = '/homePage';
+  static const String adminHomePage = '/adminHomePage';
   static const String addProfilePage = '/addProfilePage';
   static const String allTasksPage = '/allTasksPage';
   static const String taskListPage = '/taskListPage';

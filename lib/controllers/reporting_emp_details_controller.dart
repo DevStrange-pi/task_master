@@ -41,6 +41,7 @@ class ReportingEmpDetailsController extends GetxController {
   RxBool isDatePickerVisible = true.obs;
   bool flag = false;
 
+  bool isAdmin = false;
   SharedPreferences? prefs;
   CircularLoader circularLoader = Get.find<CircularLoader>();
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
@@ -54,6 +55,7 @@ class ReportingEmpDetailsController extends GetxController {
 
   void initAsync() async {
     prefs = await SharedPreferences.getInstance();
+    isAdmin = prefs!.getString(SpString.role) == "admin" ? true : false;
     employeeName.value = Get.arguments[0];
     employeeId = Get.arguments[1];
     latestLocation.value = Get.arguments[2];

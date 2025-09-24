@@ -95,8 +95,10 @@ class LoginPageController extends GetxController {
               loginData.data!.employee!.designation!,
               loginData.data!.employee!.employeeId!,
               loginData.data!.employee!.username!);
-          if (loginData.data!.role! == "admin") {
+          if (loginData.data!.role! == "super_admin") {
             Get.offAllNamed(AppRoutes.homePage, arguments: loginData.data!);
+          }else if(loginData.data!.role! == "admin"){
+            Get.offAllNamed(AppRoutes.adminHomePage, arguments: loginData.data!);
           } else {
             Get.offAllNamed(AppRoutes.employeeHomePage,
                 arguments: loginData.data!);
