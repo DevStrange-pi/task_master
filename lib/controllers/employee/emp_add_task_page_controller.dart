@@ -165,58 +165,48 @@ class EmpAddTaskPageController extends GetxController {
     isDeadlineDisabled.value = false;
   }
 
-  // Weekday dropdown support for Weekly task type
-  final List<String> weekdays = [
-    'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
-  ];
-  String? selectedWeekday;
+  // Commented out weekly functionality as per requirements
+  // final List<String> weekdays = [
+  //   'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'
+  // ];
+  // String? selectedWeekday;
 
   Future<void> showDateTimePicker() async {
-    if (taskTypeSelected.value == "Weekly") {
-      // Show weekday dropdown dialog
-      String? picked = await showDialog<String>(
-        context: Get.context!,
-        builder: (context) {
-          String? tempSelected = selectedWeekday ?? weekdays[0];
-          return AlertDialog(
-            title: Text('Select a weekday'),
-            content: DropdownButton<String>(
-              value: tempSelected,
-              items: weekdays.map((day) {
-                return DropdownMenuItem<String>(
-                  value: day,
-                  child: Text(day),
-                );
-              }).toList(),
-              onChanged: (val) {
-                tempSelected = val;
-                (context as Element).markNeedsBuild();
-              },
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () => Navigator.of(context).pop(tempSelected),
-                child: Text('OK'),
-              ),
-            ],
-          );
-        },
-      );
-      if (picked != null) {
-        selectedWeekday = picked;
-        DateTime nextDate = getNextWeekdayDate(picked);
-        DateTime deadline = DateTime(nextDate.year, nextDate.month, nextDate.day, 19, 0, 0);
-        dateCont.text = '${picked} 7:00 PM';
-        // Save for API as well
-        weeklyDeadlineForApi = deadline;
-      }
-      FocusScope.of(Get.context!).unfocus();
-      return;
-    }
+    // Removed weekly task type handling as per requirements
+    // if (taskTypeSelected.value == "Weekly") {
+    //   // Show weekday dropdown dialog
+    //   String? picked = await showDialog<String>(
+    //     context: Get.context!,
+    //     builder: (context) {
+    //       String? tempSelected = selectedWeekday ?? weekdays[0];
+    //       return AlertDialog(
+    //         title: Text('Select a weekday'),
+    //         content: DropdownButton<String>(
+    //           value: tempSelected,
+    //           items: weekdays.map((day) {
+    //             return DropdownMenuItem<String>(
+    //               value: day,
+    //               child: Text(day),
+    //             );
+    //           }).toList(),
+    //           onChanged: (val) {
+    //             tempSelected = val;
+    //             (context as Element).markNeedsBuild();
+    //           },
+    //         ),
+    //       );
+    //     },
+    //   );
+    //   if (picked != null) {
+    //     selectedWeekday = picked;
+    //     DateTime nextDate = getNextWeekdayDate(picked);
+    //     DateTime deadline = DateTime(nextDate.year, nextDate.month, nextDate.day, 19, 0, 0);
+    //     dateCont.text = '${picked} 7:00 PM';
+    //     weeklyDeadlineForApi = deadline;
+    //   }
+    //   FocusScope.of(Get.context!).unfocus();
+    //   return;
+    // }
     // Default picker for other types
     DateTime now = DateTime.now();
     DateTime? selectedDate = await showDatePicker(
@@ -249,47 +239,48 @@ class EmpAddTaskPageController extends GetxController {
     FocusScope.of(Get.context!).unfocus();
   }
 
-  DateTime getNextWeekdayDate(String weekday) {
-    final now = DateTime.now();
-    int weekdayIndex = weekdays.indexOf(weekday);
-    int daysAhead = (weekdayIndex + 1 - now.weekday) % 7;
-    if (daysAhead <= 0) daysAhead += 7;
-    return now.add(Duration(days: daysAhead));
-  }
+  // Commented out as part of removing weekly functionality
+  // DateTime getNextWeekdayDate(String weekday) {
+  //   final now = DateTime.now();
+  //   int weekdayIndex = weekdays.indexOf(weekday);
+  //   int daysAhead = (weekdayIndex + 1 - now.weekday) % 7;
+  //   if (daysAhead <= 0) daysAhead += 7;
+  //   return now.add(Duration(days: daysAhead));
+  // }
 
-  DateTime? weeklyDeadlineForApi;
+  // DateTime? weeklyDeadlineForApi;
 
-
-  void setDefaultDeadlineForTaskType([String? type]) {
-    final now = DateTime.now();
-    DateTime defaultDate;
-    switch (type ?? taskTypeSelected.value) {
-      case "Weekly":
-        defaultDate = now.add(const Duration(days: 7));
-        break;
-      case "Monthly":
-        defaultDate = now.add(const Duration(days: 30));
-        break;
-      case "Yearly":
-        defaultDate = now.add(const Duration(days: 365));
-        break;
-      case "Daily":
-        defaultDate = DateTime(now.year, now.month, now.day, 23, 59);
-        break;
-      default:
-        defaultDate = now;
-    }
-    dateCont.text = DateFormat('dd MMMM yyyy, hh:mm a').format(defaultDate);
-    isDeadlineDisabled.value = true;
-    if (type == "Once") {
-      enableDeadlineField();
-    }
-  }
+  // void setDefaultDeadlineForTaskType([String? type]) {
+  //   final now = DateTime.now();
+  //   DateTime defaultDate;
+  //   switch (type ?? taskTypeSelected.value) {
+  //     // case "Weekly":
+  //     //   defaultDate = now.add(const Duration(days: 7));
+  //     //   break;
+  //     case "Monthly":
+  //       defaultDate = now.add(const Duration(days: 30));
+  //       break;
+  //     case "Yearly":
+  //       defaultDate = now.add(const Duration(days: 365));
+  //       break;
+  //     case "Daily":
+  //       defaultDate = DateTime(now.year, now.month, now.day, 23, 59);
+  //       break;
+  //     default:
+  //       defaultDate = now;
+  //   }
+  //   dateCont.text = DateFormat('dd MMMM yyyy, hh:mm a').format(defaultDate);
+  //   isDeadlineDisabled.value = true;
+  //   if (type == "Once") {
+  //     enableDeadlineField();
+  //   }
+  // }
 
   String convertToApiDateFormat(String input) {
-    if (taskTypeSelected.value == "Weekly" && weeklyDeadlineForApi != null) {
-      return DateFormat('yyyy-MM-dd HH:mm:ss').format(weeklyDeadlineForApi!);
-    }
+    // Removed weekly deadline check as per requirements
+    // if (taskTypeSelected.value == "Weekly" && weeklyDeadlineForApi != null) {
+    //   return DateFormat('yyyy-MM-dd HH:mm:ss').format(weeklyDeadlineForApi!);
+    // }
     final dateTime = DateFormat('dd MMMM yyyy, hh:mm a').parse(input);
     return DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
   }

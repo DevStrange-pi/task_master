@@ -87,7 +87,7 @@ class EmpTaskListPageController extends GetxController {
   }
 
   void updateCountdowns() {
-    if (tasksList == null) return;
+    if (tasksList == null || tasksList!.isEmpty) return;
     final now = DateTime.now();
     // final now = DateTime.now();
     final List<String> updated = [];
@@ -212,15 +212,64 @@ class EmpTaskListPageController extends GetxController {
 
   Future<void> onRefresh() async {
     List<Task> filteredTasks = [];
-    print("Title: $title, From Page: $fromPage");
+    // List<Task> tempFilteredTasks = [];
+    String titleToCompare = title!.toLowerCase().split(" ").first;
     if (await getEmployeeMyTasks()) {
       if (fromPage == "fromReporting") {
-        filteredTasks = tasks!
-            .where((task) =>
-                task.status.toString() == title!.toLowerCase().split(" ").first)
-            .toList();
+        for (var task in tasks!) {
+          if (task.assignedTo != null) {
+            var matchingEmps = task.assignedTo!.where((emp) => emp.status?.toString() == titleToCompare).toList();
+            if (matchingEmps.isNotEmpty) {
+              filteredTasks.add(Task(
+                id: task.id,
+                taskId: task.taskId,
+                name: task.name,
+                description: task.description,
+                type: task.type,
+                deadline: task.deadline,
+                status: matchingEmps[0].status,
+                // task.status, // keep original status
+                createdAt: task.createdAt,
+                createdBy: task.createdBy,
+                updatedAt: task.updatedAt,
+                expiredCount: task.expiredCount,
+                employees: matchingEmps,
+                photos: task.photos,
+              ));
+            }
+          }
+        }
+        
+        // filteredTasks = tasks!
+        //     .where((task) =>
+        //         task.status.toString() == title!.toLowerCase().split(" ").first)
+        //     .toList();
       } else {
         // due to weekly, monthly, yearly page in between
+        // for (var task in tasks!) {
+        //   if (task.assignedTo != null) {
+        //     var matchingEmps = task.assignedTo!.where((emp) => emp.status?.toString() == titleToCompare).toList();
+        //     if (matchingEmps.isNotEmpty) {
+        //       tempFilteredTasks.add(Task(
+        //         id: task.id,
+        //         taskId: task.taskId,
+        //         name: task.name,
+        //         description: task.description,
+        //         type: task.type,
+        //         deadline: task.deadline,
+        //         status: matchingEmps[0].status,
+        //         // task.status, // keep original status
+        //         createdAt: task.createdAt,
+        //         createdBy: task.createdBy,
+        //         updatedAt: task.updatedAt,
+        //         expiredCount: task.expiredCount,
+        //         employees: matchingEmps,
+        //         photos: task.photos,
+        //       ));
+        //     }
+        //   }
+        // }
+        
         filteredTasks = tasks!
             .where((task) =>
                 task.type.toString() == title!.toLowerCase().split(" ").first)

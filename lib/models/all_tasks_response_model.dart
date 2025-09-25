@@ -51,7 +51,8 @@ class Task {
     String? name;
     String? description;
     String? type;
-    List<String>? assignedTo;
+    List<Employee>? assignedTo;
+    DateTime? assignedDate;
     DateTime? deadline;
     String? status;
     DateTime? createdAt;
@@ -69,6 +70,7 @@ class Task {
         this.description,
         this.type,
         this.assignedTo,
+        this.assignedDate,
         this.deadline,
         this.status,
         this.createdAt,
@@ -86,7 +88,8 @@ class Task {
         name: json["name"],
         description: json["description"],
         type: json["type"],
-        assignedTo: json["assigned_to"] == null ? [] : List<String>.from(json["assigned_to"]!),
+        assignedDate: json["assigned_date"] == null ? null : DateTime.parse(json["assigned_date"]),
+        assignedTo: json["assigned_to"] == null ? [] : List<Employee>.from(json["assigned_to"]!.map((x) => Employee.fromJson(x))),
         deadline: json["deadline"] == null ? null : DateTime.parse(json["deadline"]),
         status: json["status"],
         createdAt: json["created_at"] == null ? null : DateTime.parse(json["created_at"]),
@@ -123,6 +126,7 @@ class Task {
         "name": name,
         "description": description,
         "type": type,
+        "assigned_date": assignedDate?.toIso8601String(),
         "assigned_to": assignedTo,
         "deadline": deadline?.toIso8601String(),
         "status": status,
