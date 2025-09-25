@@ -170,10 +170,10 @@ class EmpTaskDetailsPageController extends GetxController {
   }
 
   void createAssignSelected() {
-    if (task.value.employees == null && task.value.assignedTo == null) {
+    if (task.value.employees!.isEmpty && task.value.assignedTo!.isEmpty) {
       return;
     }
-    if (task.value.employees != null && task.value.assignedTo == null) {
+    if (task.value.employees!.isNotEmpty && task.value.assignedTo!.isEmpty) {
     assignSelected = task.value.employees!
         .map((employee) => DropdownItem(
               label: employee.name ?? "",
@@ -182,7 +182,7 @@ class EmpTaskDetailsPageController extends GetxController {
             ))
         .toList();
     }
-    if (task.value.assignedTo != null && task.value.assignedTo!.isNotEmpty) {
+    if (task.value.assignedTo!.isNotEmpty) {
     assignSelected = task.value.assignedTo!.where((emp) => emp.status?.toString() == taskStatusSelected.value.toLowerCase())
         .map((employee) => DropdownItem(
               label: employee.name ?? "",
