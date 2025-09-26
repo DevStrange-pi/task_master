@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:task_master/utilities/utilities.dart';
 
 import '../constants/assets.dart';
+import '../constants/strings.dart';
 import '../main.dart';
 import '../styles/colors.dart';
 
@@ -19,6 +21,11 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
       this.isNotificationsVisible = false,
       this.onNotificationsPressed,
       this.notificationCount = 0});
+
+  Future<String?> _getRoleKey() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(SpString.role); // your key name
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,38 +103,59 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                   : const SizedBox(),
               const SizedBox(width: 8),
               // Profile Icon
-              PopupMenuButton<String>(
-                borderRadius: BorderRadius.circular(32),
-                offset: const Offset(0, 65),
-                color: Colors.white, // Popup background color
-                onSelected: (value) async {
-                  if (value == 'logout') {
-                    await AppUtility().logout();
-                  }
-                },
-                itemBuilder: (context) => [
-                  const PopupMenuItem(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    height: 16,
-                    value: 'logout',
-                    child: Text('Logout'),
-                  ),
-                ],
-                // Remove default splash/highlight by wrapping with InkWell
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(32),
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  child: CircleAvatar(
-                    radius: 24,
-                    backgroundColor: AppColors.lightestBlue,
-                    child: Image.asset(
-                      profileAsset,
-                      height: 24,
-                    ),
-                  ),
-                ),
-              ),
+              FutureBuilder(
+                  future: _getRoleKey(),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: CircularProgressIndicator(color: Colors.white),
+                      );
+                    }
+
+                    final role = snapshot.data ?? "guest";
+                    return PopupMenuButton<String>(
+                      borderRadius: BorderRadius.circular(32),
+                      offset: const Offset(0, 65),
+                      color: Colors.white, // Popup background color
+                      onSelected: (value) async {
+                        if (value == 'logout') {
+                          await AppUtility().logout();
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          padding:
+                              const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          height: 16,
+                          value: 'role',
+                          child: Text(role),
+                        ),
+                        const PopupMenuItem(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                          height: 16,
+                          value: 'logout',
+                          child: Text('Logout'),
+                        ),
+                      ],
+                      // Remove default splash/highlight by wrapping with InkWell
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(32),
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        child: CircleAvatar(
+                          radius: 24,
+                          backgroundColor: AppColors.lightestBlue,
+                          child: Image.asset(
+                            profileAsset,
+                            height: 24,
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
             ],
           ),
         ],
