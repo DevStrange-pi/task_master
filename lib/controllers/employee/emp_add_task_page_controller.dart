@@ -207,6 +207,29 @@ class EmpAddTaskPageController extends GetxController {
       FocusScope.of(Get.context!).unfocus();
       return;
     }
+    if (taskTypeSelected.value == "Daily") {
+      // Only show time picker; use today's date
+      DateTime now = DateTime.now();
+      TimeOfDay? selectedTime = await showTimePicker(
+        context: Get.context!,
+        initialTime: TimeOfDay.now(),
+      );
+      if (selectedTime != null) {
+        final DateTime finalDateTime = DateTime(
+          now.year,
+          now.month,
+          now.day,
+          selectedTime.hour,
+          selectedTime.minute,
+        );
+        final formattedDateTime =
+            DateFormat('dd MMMM yyyy, hh:mm a').format(finalDateTime);
+        dateCont.text = formattedDateTime;
+        // Store finalDateTime for API call if needed
+      }
+      FocusScope.of(Get.context!).unfocus();
+      return;
+    }
     // Default picker for other types
     DateTime now = DateTime.now();
     DateTime? selectedDate = await showDatePicker(
