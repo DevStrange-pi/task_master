@@ -130,7 +130,7 @@ class MainAppBar extends StatelessWidget implements PreferredSizeWidget {
                               const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                           height: 16,
                           value: 'role',
-                          child: Text(role),
+                          child: Text(role.toString().capitalizeFirst!.replaceFirst("_", " ")),
                         ),
                         const PopupMenuItem(
                           padding:
