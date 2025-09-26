@@ -270,51 +270,51 @@ class EmpTaskDetailsPageController extends GetxController {
   RxString? selectedWeekday = "".obs;
 
   Future<void> showDateTimePicker() async {
-    // if (taskTypeSelected.value == "Weekly") {
-    //   // Show weekday dropdown dialog
-    //   String? picked = await showDialog<String>(
-    //     context: Get.context!,
-    //     builder: (context) {
-    //       String? tempSelected = selectedWeekday?.value ?? weekdays[0];
-    //       return AlertDialog(
-    //         title: Text('Select a weekday'),
-    //         content: DropdownButton<String>(
-    //           value: tempSelected,
-    //           items: weekdays.map((day) {
-    //             return DropdownMenuItem<String>(
-    //               value: day,
-    //               child: Text(day),
-    //             );
-    //           }).toList(),
-    //           onChanged: (val) {
-    //             tempSelected = val;
-    //             (context as Element).markNeedsBuild();
-    //           },
-    //         ),
-    //         actions: [
-    //           TextButton(
-    //             onPressed: () => Navigator.of(context).pop(),
-    //             child: Text('Cancel'),
-    //           ),
-    //           TextButton(
-    //             onPressed: () => Navigator.of(context).pop(tempSelected),
-    //             child: Text('OK'),
-    //           ),
-    //         ],
-    //       );
-    //     },
-    //   );
-    //   if (picked != null) {
-    //     selectedWeekday?.value = picked;
-    //     DateTime nextDate = getNextWeekdayDate(picked);
-    //     DateTime deadline = DateTime(nextDate.year, nextDate.month, nextDate.day, 19, 0, 0);
-    //     dateCont.text = '${picked} 7:00 PM';
-    //     // Save for API as well
-    //     weeklyDeadlineForApi = deadline;
-    //   }
-    //   FocusScope.of(Get.context!).unfocus();
-    //   return;
-    // }
+    if (taskTypeSelected.value == "Weekly") {
+      // Show weekday dropdown dialog
+      String? picked = await showDialog<String>(
+        context: Get.context!,
+        builder: (context) {
+          String? tempSelected = selectedWeekday?.value ?? weekdays[0];
+          return AlertDialog(
+            title: Text('Select a weekday'),
+            content: DropdownButton<String>(
+              value: tempSelected,
+              items: weekdays.map((day) {
+                return DropdownMenuItem<String>(
+                  value: day,
+                  child: Text(day),
+                );
+              }).toList(),
+              onChanged: (val) {
+                tempSelected = val;
+                (context as Element).markNeedsBuild();
+              },
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(tempSelected),
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+      if (picked != null) {
+        selectedWeekday?.value = picked;
+        DateTime nextDate = getNextWeekdayDate(picked);
+        DateTime deadline = DateTime(nextDate.year, nextDate.month, nextDate.day, 19, 0, 0);
+        dateCont.text = '${picked} 7:00 PM';
+        // Save for API as well
+        weeklyDeadlineForApi = deadline;
+      }
+      FocusScope.of(Get.context!).unfocus();
+      return;
+    }
     // Default picker for other types
     DateTime now = DateTime.now();
     DateTime? selectedDate = await showDatePicker(
@@ -344,15 +344,15 @@ class EmpTaskDetailsPageController extends GetxController {
     FocusScope.of(Get.context!).unfocus();
   }
 
-  // DateTime getNextWeekdayDate(String weekday) {
-  //   final now = DateTime.now();
-  //   int weekdayIndex = weekdays.indexOf(weekday);
-  //   int daysAhead = (weekdayIndex + 1 - now.weekday) % 7;
-  //   if (daysAhead <= 0) daysAhead += 7;
-  //   return now.add(Duration(days: daysAhead));
-  // }
+  DateTime getNextWeekdayDate(String weekday) {
+    final now = DateTime.now();
+    int weekdayIndex = weekdays.indexOf(weekday);
+    int daysAhead = (weekdayIndex + 1 - now.weekday) % 7;
+    if (daysAhead <= 0) daysAhead += 7;
+    return now.add(Duration(days: daysAhead));
+  }
 
-  // DateTime? weeklyDeadlineForApi;
+  DateTime? weeklyDeadlineForApi;
 
 
   // void setDefaultDeadlineForTaskType([String? type]) {

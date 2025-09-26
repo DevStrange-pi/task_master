@@ -72,6 +72,7 @@ class EmpAddTaskPage extends StatelessWidget {
                       selectedValue:
                           empAddTaskPageController.taskTypeSelected.value,
                       onChanged: (val) {
+                        empAddTaskPageController.dateCont.clear();
                         empAddTaskPageController.taskTypeSelected.value = val;
                         // if (val == "Daily") {
                         //   empAddTaskPageController.setDeadlineToTodayMidnight();
@@ -85,131 +86,132 @@ class EmpAddTaskPage extends StatelessWidget {
                     const SizedBox(
                       height: 22,
                     ),
-                    // Obx(
-                    //   () => empAddTaskPageController.taskTypeSelected.value ==
-                    //           "Weekly"
-                    //       ? Column(
-                    //           crossAxisAlignment: CrossAxisAlignment.start,
-                    //           children: [
-                    //             DropdownButtonFormField<String>(
-                    //               decoration: const InputDecoration(
-                    //                 enabledBorder: OutlineInputBorder(
-                    //                   borderRadius: BorderRadius.all(
-                    //                     Radius.circular(12),
-                    //                   ),
-                    //                   borderSide: BorderSide(
-                    //                     color: AppColors.lightBlue,
-                    //                     width: 2,
-                    //                   ),
-                    //                 ),
-                    //                 labelText: "Select Weekday",
-                    //                 labelStyle: TextStyle(
-                    //                     color: AppColors.lightBlue,
-                    //                     fontWeight: FontWeight.bold,
-                    //                     fontSize: 18),
-                    //                 border: OutlineInputBorder(
-                    //                   borderRadius: BorderRadius.all(
-                    //                     Radius.circular(12),
-                    //                   ),
-                    //                   borderSide: BorderSide(
-                    //                     color: AppColors.lightBlue,
-                    //                   ),
-                    //                 ),
-                    //               ),
-                    //               style: const TextStyle(
-                    //                 color: AppColors.blue,
-                    //                 fontWeight: FontWeight.bold,
-                    //                 fontSize: 16,
-                    //               ),
-                    //               value: empAddTaskPageController
-                    //                       .selectedWeekday ??
-                    //                   empAddTaskPageController.weekdays[0],
-                    //               items: empAddTaskPageController.weekdays
-                    //                   .map((day) {
-                    //                 return DropdownMenuItem<String>(
-                    //                   value: day,
-                    //                   child: Text(day),
-                    //                 );
-                    //               }).toList(),
-                    //               onChanged: (val) {
-                    //                 if (val != null) {
-                    //                   empAddTaskPageController.selectedWeekday =
-                    //                       val;
-                    //                   DateTime nextDate =
-                    //                       empAddTaskPageController
-                    //                           .getNextWeekdayDate(val);
-                    //                   DateTime deadline = DateTime(
-                    //                       nextDate.year,
-                    //                       nextDate.month,
-                    //                       nextDate.day,
-                    //                       19,
-                    //                       0,
-                    //                       0);
-                    //                   empAddTaskPageController.dateCont.text =
-                    //                       '$val 7:00 PM';
-                    //                   empAddTaskPageController
-                    //                       .weeklyDeadlineForApi = deadline;
-                    //                   print(deadline);
-                    //                 }
-                    //               },
-                    //             ),
-                    //             const SizedBox(height: 24),
-                    //             TextField(
-                    //               enabled: false,
-                    //               controller: empAddTaskPageController.dateCont,
-                    //               decoration: const InputDecoration(
-                    //                 labelText: "Deadline",
-                    //                 labelStyle: TextStyle(
-                    //                     fontWeight: FontWeight.bold,
-                    //                     fontSize: 18),
-                    //                 border: OutlineInputBorder(
-                    //                   borderRadius: BorderRadius.all(
-                    //                     Radius.circular(12),
-                    //                   ),
-                    //                 ),
-                    //               ),
-                    //             ),
-                    //           ],
-                    //         )
-                    //       : SpeedTextfield(
-                    //           isPasswordHidden: false,
-                    //           needSuffixIcon: true,
-                    //           suffixIconData: Icons.calendar_month_sharp,
-                    //           labelText: "Deadline Date Time",
-                    //           hintText: "Select here...",
-                    //           textEditingController:
-                    //               empAddTaskPageController.dateCont,
-                    //           isDateTimePicker: true,
-                    //           isEnabled: !empAddTaskPageController
-                    //               .isDeadlineDisabled.value,
-                    //           fieldOnTap: empAddTaskPageController
-                    //                   .isDeadlineDisabled.value
-                    //               ? null
-                    //               : () {
-                    //                   empAddTaskPageController
-                    //                       .showDateTimePicker();
-                    //                 },
-                    //         ),
-                    // ),
-                    SpeedTextfield(
-                      isPasswordHidden: false,
-                      needSuffixIcon: true,
-                      suffixIconData: Icons.calendar_month_sharp,
-                      labelText: "Deadline Date Time",
-                      hintText: "Select here...",
-                      textEditingController:
-                          empAddTaskPageController.dateCont,
-                      isDateTimePicker: true,
-                      isEnabled: !empAddTaskPageController
-                          .isDeadlineDisabled.value,
-                      fieldOnTap: empAddTaskPageController
-                              .isDeadlineDisabled.value
-                          ? null
-                          : () {
-                              empAddTaskPageController
-                                  .showDateTimePicker();
-                            },
+                    Obx(
+                      () => empAddTaskPageController.taskTypeSelected.value ==
+                              "Weekly"
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                DropdownButtonFormField<String>(
+                                  decoration: const InputDecoration(
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(12),
+                                      ),
+                                      borderSide: BorderSide(
+                                        color: AppColors.lightBlue,
+                                        width: 2,
+                                      ),
+                                    ),
+                                    labelText: "Select Weekday",
+                                    labelStyle: TextStyle(
+                                        color: AppColors.lightBlue,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(12),
+                                      ),
+                                      borderSide: BorderSide(
+                                        color: AppColors.lightBlue,
+                                      ),
+                                    ),
+                                  ),
+                                  style: const TextStyle(
+                                    color: AppColors.blue,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                  value: empAddTaskPageController
+                                          .selectedWeekday ??
+                                      empAddTaskPageController.weekdays[0],
+                                  items: empAddTaskPageController.weekdays
+                                      .map((day) {
+                                    return DropdownMenuItem<String>(
+                                      value: day,
+                                      child: Text(day),
+                                    );
+                                  }).toList(),
+                                  onChanged: (val) {
+                                    if (val != null) {
+                                      empAddTaskPageController.selectedWeekday =
+                                          val;
+                                      DateTime nextDate =
+                                          empAddTaskPageController
+                                              .getNextWeekdayDate(val);
+                                      DateTime deadline = DateTime(
+                                          nextDate.year,
+                                          nextDate.month,
+                                          nextDate.day,
+                                          19,
+                                          0,
+                                          0);
+                                      empAddTaskPageController.dateCont.text =
+                                          '$val 7:00 PM';
+                                      empAddTaskPageController
+                                          .weeklyDeadlineForApi = deadline;
+                                      print(deadline);
+                                    }
+                                  },
+                                ),
+                                const SizedBox(height: 24),
+                                TextField(
+                                  enabled: false,
+                                  controller: empAddTaskPageController.dateCont,
+                                  decoration: const InputDecoration(
+                                    labelText: "Deadline",
+                                    labelStyle: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(12),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : SpeedTextfield(
+                              isPasswordHidden: false,
+                              needSuffixIcon: true,
+                              suffixIconData: Icons.calendar_month_sharp,
+                              labelText: "Deadline Date Time",
+                              hintText: "Select here...",
+                              textEditingController:
+                                  empAddTaskPageController.dateCont,
+                              isDateTimePicker: true,
+                              isEnabled: !empAddTaskPageController
+                                  .isDeadlineDisabled.value,
+                              fieldOnTap: empAddTaskPageController
+                                      .isDeadlineDisabled.value
+                                  ? null
+                                  : () {
+                                      empAddTaskPageController
+                                          .showDateTimePicker();
+                                    },
+                            ),
                     ),
+
+                    // SpeedTextfield(
+                    //   isPasswordHidden: false,
+                    //   needSuffixIcon: true,
+                    //   suffixIconData: Icons.calendar_month_sharp,
+                    //   labelText: "Deadline Date Time",
+                    //   hintText: "Select here...",
+                    //   textEditingController:
+                    //       empAddTaskPageController.dateCont,
+                    //   isDateTimePicker: true,
+                    //   isEnabled: !empAddTaskPageController
+                    //       .isDeadlineDisabled.value,
+                    //   fieldOnTap: empAddTaskPageController
+                    //           .isDeadlineDisabled.value
+                    //       ? null
+                    //       : () {
+                    //           empAddTaskPageController
+                    //               .showDateTimePicker();
+                    //         },
+                    // ),
                     const SizedBox(
                       height: 16,
                     ),

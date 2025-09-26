@@ -68,6 +68,7 @@ class AddTaskPage extends StatelessWidget {
                       dropdownItems: addTaskController.taskTypeDropdownOptions,
                       selectedValue: addTaskController.taskTypeSelected.value,
                       onChanged: (val) {
+                        addTaskController.dateCont.clear();
                         addTaskController.taskTypeSelected.value = val;
                         // if (val == "Daily") {
                         //   addTaskController.setDeadlineToTodayMidnight();
@@ -80,130 +81,131 @@ class AddTaskPage extends StatelessWidget {
                     const SizedBox(
                       height: 22,
                     ),
-                    // Obx(
-                    //   () => addTaskController.taskTypeSelected.value == "Weekly"
-                    //       ? Column(
-                    //           crossAxisAlignment: CrossAxisAlignment.start,
-                    //           children: [
-                    //             DropdownButtonFormField<String>(
-                    //               decoration: const InputDecoration(
-                    //                 enabledBorder: OutlineInputBorder(
-                    //                   borderRadius: BorderRadius.all(
-                    //                     Radius.circular(12),
-                    //                   ),
-                    //                   borderSide: BorderSide(
-                    //                     color: AppColors.lightBlue,
-                    //                     width: 2,
-                    //                   ),
-                    //                 ),
-                    //                 labelText: "Select Weekday",
-                    //                 labelStyle: TextStyle(
-                    //                     color: AppColors.lightBlue,
-                    //                     fontWeight: FontWeight.bold,
-                    //                     fontSize: 18),
-                    //                 border: OutlineInputBorder(
-                    //                   borderRadius: BorderRadius.all(
-                    //                     Radius.circular(12),
-                    //                   ),
-                    //                   borderSide: BorderSide(
-                    //                     color: AppColors.lightBlue,
-                    //                   ),
-                    //                 ),
-                    //               ),
-                    //               style: const TextStyle(
-                    //                 color: AppColors.blue,
-                    //                 fontWeight: FontWeight.bold,
-                    //                 fontSize: 16,
-                    //               ),
-                    //               value: addTaskController.selectedWeekday ??
-                    //                   addTaskController.weekdays[0],
-                    //               items: addTaskController.weekdays.map((day) {
-                    //                 return DropdownMenuItem<String>(
-                    //                   value: day,
-                    //                   child: Text(day),
-                    //                 );
-                    //               }).toList(),
-                    //               onChanged: (val) {
-                    //                 if (val != null) {
-                    //                   addTaskController.selectedWeekday = val;
-                    //                   DateTime nextDate = addTaskController
-                    //                       .getNextWeekdayDate(val);
-                    //                   DateTime deadline = DateTime(
-                    //                       nextDate.year,
-                    //                       nextDate.month,
-                    //                       nextDate.day,
-                    //                       19,
-                    //                       0,
-                    //                       0);
-                    //                   addTaskController.dateCont.text =
-                    //                       '${val} 7:00 PM';
-                    //                   addTaskController.weeklyDeadlineForApi =
-                    //                       deadline;
-                    //                   print(deadline);
-                    //                 }
-                    //               },
-                    //             ),
-                    //             const SizedBox(height: 24),
-                    //             TextField(
-                    //               style: const TextStyle(
-                    //                 fontWeight: FontWeight.bold,
-                    //                 fontSize: 16,
-                    //               ),
-                    //               enabled: false,
-                    //               controller: addTaskController.dateCont,
-                    //               decoration: const InputDecoration(
-                    //                 labelText: "Deadline",
-                    //                 labelStyle: TextStyle(
-                    //                     fontWeight: FontWeight.bold,
-                    //                     fontSize: 18),
-                    //                 disabledBorder: OutlineInputBorder(
-                    //                   borderSide: BorderSide(
-                    //                     width: 2,
-                    //                     color: AppColors.grey,
-                    //                   ),
-                    //                   borderRadius: BorderRadius.all(
-                    //                     Radius.circular(12),
-                    //                   ),
-                    //                 ),
-                    //               ),
-                    //             ),
-                    //           ],
-                    //         )
-                    //       : SpeedTextfield(
-                    //           isPasswordHidden: false,
-                    //           needSuffixIcon: true,
-                    //           suffixIconData: Icons.calendar_month_sharp,
-                    //           labelText: "Deadline Date Time",
-                    //           hintText: "Select here...",
-                    //           textEditingController: addTaskController.dateCont,
-                    //           isDateTimePicker: true,
-                    //           isEnabled:
-                    //               !addTaskController.isDeadlineDisabled.value,
-                    //           fieldOnTap: addTaskController
-                    //                   .isDeadlineDisabled.value
-                    //               ? null
-                    //               : () {
-                    //                   addTaskController.showDateTimePicker();
-                    //                 },
-                    //         ),
-                    // ),
-                    SpeedTextfield(
-                      isPasswordHidden: false,
-                      needSuffixIcon: true,
-                      suffixIconData: Icons.calendar_month_sharp,
-                      labelText: "Deadline Date Time",
-                      hintText: "Select here...",
-                      textEditingController: addTaskController.dateCont,
-                      isDateTimePicker: true,
-                      isEnabled:
-                          !addTaskController.isDeadlineDisabled.value,
-                      fieldOnTap: addTaskController
-                              .isDeadlineDisabled.value
-                          ? null
-                          : () {
-                              addTaskController.showDateTimePicker();
-                            },
+                    Obx(
+                      () => addTaskController.taskTypeSelected.value == "Weekly"
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                DropdownButtonFormField<String>(
+                                  decoration: const InputDecoration(
+                                    enabledBorder: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(12),
+                                      ),
+                                      borderSide: BorderSide(
+                                        color: AppColors.lightBlue,
+                                        width: 2,
+                                      ),
+                                    ),
+                                    labelText: "Select Weekday",
+                                    labelStyle: TextStyle(
+                                        color: AppColors.lightBlue,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(12),
+                                      ),
+                                      borderSide: BorderSide(
+                                        color: AppColors.lightBlue,
+                                      ),
+                                    ),
+                                  ),
+                                  style: const TextStyle(
+                                    color: AppColors.blue,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                  value: addTaskController.selectedWeekday ??
+                                      addTaskController.weekdays[0],
+                                  items: addTaskController.weekdays.map((day) {
+                                    return DropdownMenuItem<String>(
+                                      value: day,
+                                      child: Text(day),
+                                    );
+                                  }).toList(),
+                                  onChanged: (val) {
+                                    if (val != null) {
+                                      addTaskController.selectedWeekday = val;
+                                      DateTime nextDate = addTaskController
+                                          .getNextWeekdayDate(val);
+                                      DateTime deadline = DateTime(
+                                          nextDate.year,
+                                          nextDate.month,
+                                          nextDate.day,
+                                          19,
+                                          0,
+                                          0);
+                                      addTaskController.dateCont.text =
+                                          '${val} 7:00 PM';
+                                      addTaskController.weeklyDeadlineForApi =
+                                          deadline;
+                                      print(deadline);
+                                    }
+                                  },
+                                ),
+                                const SizedBox(height: 24),
+                                TextField(
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                  enabled: false,
+                                  controller: addTaskController.dateCont,
+                                  decoration: const InputDecoration(
+                                    labelText: "Deadline",
+                                    labelStyle: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 18),
+                                    disabledBorder: OutlineInputBorder(
+                                      borderSide: BorderSide(
+                                        width: 2,
+                                        color: AppColors.grey,
+                                      ),
+                                      borderRadius: BorderRadius.all(
+                                        Radius.circular(12),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            )
+                          : SpeedTextfield(
+                              isPasswordHidden: false,
+                              needSuffixIcon: true,
+                              suffixIconData: Icons.calendar_month_sharp,
+                              labelText: "Deadline Date Time",
+                              hintText: "Select here...",
+                              textEditingController: addTaskController.dateCont,
+                              isDateTimePicker: true,
+                              isEnabled:
+                                  !addTaskController.isDeadlineDisabled.value,
+                              fieldOnTap: addTaskController
+                                      .isDeadlineDisabled.value
+                                  ? null
+                                  : () {
+                                      addTaskController.showDateTimePicker();
+                                    },
+                            ),
                     ),
+                    
+                    // SpeedTextfield(
+                    //   isPasswordHidden: false,
+                    //   needSuffixIcon: true,
+                    //   suffixIconData: Icons.calendar_month_sharp,
+                    //   labelText: "Deadline Date Time",
+                    //   hintText: "Select here...",
+                    //   textEditingController: addTaskController.dateCont,
+                    //   isDateTimePicker: true,
+                    //   isEnabled:
+                    //       !addTaskController.isDeadlineDisabled.value,
+                    //   fieldOnTap: addTaskController
+                    //           .isDeadlineDisabled.value
+                    //       ? null
+                    //       : () {
+                    //           addTaskController.showDateTimePicker();
+                    //         },
+                    // ),
                     const SizedBox(
                       height: 16,
                     ),
