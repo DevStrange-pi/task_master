@@ -445,9 +445,9 @@ class EmpTaskDetailsPageController extends GetxController {
   }
 
   String convertToApiDateFormat(String input) {
-    // if (taskTypeSelected.value == "Weekly" && weeklyDeadlineForApi != null) {
-    //   return DateFormat('yyyy-MM-dd HH:mm:ss').format(weeklyDeadlineForApi!);
-    // }
+    if (taskTypeSelected.value == "Weekly" && weeklyDeadlineForApi != null) {
+      return DateFormat('yyyy-MM-dd HH:mm:ss').format(weeklyDeadlineForApi!);
+    }
     final dateTime = DateFormat('dd MMMM yyyy, hh:mm a').parse(input);
     return DateFormat('yyyy-MM-dd HH:mm:ss').format(dateTime);
   }
